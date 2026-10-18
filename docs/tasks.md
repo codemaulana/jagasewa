@@ -257,7 +257,7 @@
   - **Estimasi:** S
   - **Story:** US-10 (BR-04)
 
-- [ ] **T-27** | CRUD blacklist di dashboard vendor
+- [x] **T-27** | CRUD blacklist di dashboard vendor
   - **Tujuan:** Vendor bisa menambah dan menghapus entri blacklist pribadi.
   - **Dependensi:** T-26, T-06
   - **Kriteria Selesai:** Tambah entri → hash tersimpan (bukan nilai asli); hapus entri; entri vendor lain tidak tampil.
