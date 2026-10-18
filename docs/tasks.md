@@ -49,7 +49,7 @@
   - **Estimasi:** M
   - **Story:** US-06
 
-- [ ] **T-06** | Middleware isolasi vendor, migrasi `audit_logs` + test otomatis
+- [x] **T-06** | Middleware isolasi vendor, migrasi `audit_logs` + test otomatis
   - **Tujuan:** Setiap request vendor hanya bisa mengakses resource milik vendor sendiri (HTTP 404 jika cross-vendor); struktur tabel dan service `audit_logs` siap mencatat log keamanan tanpa PII.
   - **Dependensi:** T-05
   - **Kriteria Selesai:** Middleware `EnsureVendorOwnership` aktif; migrasi `audit_logs` berjalan; request vendor A ke resource vendor B → HTTP 404 (bukan 403); pencatatan audit log berfungsi tanpa menyimpan PII.
