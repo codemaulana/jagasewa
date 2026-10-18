@@ -97,7 +97,7 @@
 
 ## Milestone 3 — Smart Buffer Calendar
 
-- [ ] **T-11** | Service: `BookingCalendarService` (logika buffer overlap)
+- [x] **T-11** | Service: `BookingCalendarService` (logika buffer overlap)
   - **Tujuan:** Kelas service yang mengecek apakah rentang tanggal baru bentrok dengan booking existing.
   - **Dependensi:** T-08
   - **Kriteria Selesai:** Method `isAvailable(itemId, startDate, endDate, bufferBefore, bufferAfter): bool`.
