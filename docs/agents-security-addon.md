@@ -41,9 +41,40 @@ Tambahkan setelah bagian **"Aturan Wajib (JANGAN DILANGGAR)"** yang sudah ada:
 
 17. **Tes IDOR wajib sebelum merge:** Setiap PR yang menyentuh resource ownership harus
     menyertakan atau memperbarui tes IDOR di VendorIsolationTest. (SEC-08, SEC-09)
+
+18. **Watermark wajib pada dokumen identitas:** Saat melakukan re-encode foto KTP/selfie (SEC-29),
+    wajib membubuhkan teks watermark dinamis melintang ("VERIFIKASI JAGASEWA - [VENDOR_ULID] - [TANGGAL]")
+    untuk mencegah penyalahgunaan dokumen oleh pihak internal/vendor.
+
+19. **Enkripsi PII & Normalisasi Blind Index:** Kolom sensitif penyewa (NIK, No WA, Alamat) yang
+    perlu ditampilkan ke vendor wajib dienkripsi di DB menggunakan Laravel `encrypted` cast.
+    Untuk pencarian/cek blacklist, gunakan kolom terpisah berisi HMAC-SHA256 (`BLACKLIST_SECRET`)
+    dari data yang SUDAH dinormalisasi (huruf kecil, tanpa spasi/simbol, awalan WA wajib `628`).
+
+20. **Transaksi & Pessimistic Locking di MySQL:** Karena menggunakan MySQL, setiap proses insert/update
+    jadwal booking WAJIB dibungkus dalam `DB::transaction()` dan melakukan `lockForUpdate()` pada
+    baris item/jadwal terkait untuk mencegah double-booking. (SEC-19)
+
+21. **CSP Whitelist untuk Object Storage:** Header Content-Security-Policy pada `img-src` wajib
+    menyertakan domain endpoint S3/Backblaze (`https://*.backblazeb2.com`) agar Signed URL
+    dokumen KYC tidak diblokir oleh browser. (SEC-37)
 ```
 
-*(17 aturan total termasuk 7 yang sudah ada di AGENTS.md — total dalam batas 25 baris)*
+*(21 aturan total termasuk 7 yang sudah ada di AGENTS.md)*
+
+---
+
+## Catatan Penyesuaian Infrastruktur (Cloud Hosting cPanel vs VPS)
+
+Karena lingkungan produksi menggunakan **Cloud Hosting Next Gen Jagoan Hosting (cPanel/LiteSpeed)** dan bukan Unmanaged VPS kosong:
+
+1. **Firewall & OS Config (SEC-15, SEC-17, T-40):**
+   - Tidak ada akses root, UFW, atau konfigurasi `/etc/nginx/nginx.conf`. Keamanan server dikelola hosting (Imunify360 + Web Server).
+   - Penyesuaian: Pengaturan batas upload (`upload_max_filesize 6M`, `post_max_size 8M`, `expose_php = Off`) dikonfigurasi melalui cPanel PHP Selector (`Options`) dan file `public/.htaccess`.
+   - Proteksi IP direct VPS diganti dengan Cloudflare Proxy (DNS A/CNAME proxied) + .htaccess blokir akses langsung atau pengecekan Cloudflare headers.
+
+2. **Rate Limiting & Cache Driver (SEC-11):**
+   - Menggunakan `CACHE_STORE=database` bawaan Laravel untuk rate limiting dan cache sesi/locks. Tidak bergantung pada daemon Redis terpisah.
 
 ---
 

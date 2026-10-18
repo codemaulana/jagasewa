@@ -10,9 +10,10 @@ JagaSewa adalah platform booking berbasis web (mobile-first) untuk rental barang
 ## Stack
 - **Backend:** Laravel 13, PHP 8.4
 - **Admin/Vendor UI:** Filament v5 + Livewire v4
-- **Database:** MySQL 8 atau PostgreSQL 16 (pilih saat setup)
-- **Storage:** S3-compatible (bucket **privat**)
-- **Queue:** Database driver (upgrade ke Redis jika perlu di Fase 2)
+- **Database:** MySQL 8 (Jagoan Hosting remote)
+- **Cache & Rate Limit:** Database driver (`CACHE_STORE=database`, ramah cPanel)
+- **Storage:** S3-compatible Backblaze B2 (bucket **privat**)
+- **Queue:** Database driver
 - **Timezone:** `Asia/Jakarta` — wajib dikonfigurasi di `config/app.php`
 
 ## Perintah Umum
@@ -72,6 +73,11 @@ tests/Unit/                  # Unit tests (Services, Helpers)
 5. **Tanpa dependensi baru tanpa izin:** Jangan `composer require` atau `npm install` tanpa bertanya terlebih dahulu.
 6. **Jangan kerjakan Fase 2:** Blacklist bersama, payment gateway, chat internal = di luar scope. Jika ada kolom Fase 2 di schema, biarkan nullable dan jangan implementasikan logikanya.
 7. **Storage selalu privat:** Jangan set ACL public pada bucket S3. Akses foto hanya via signed URL.
+8. **ULID sebagai ID publik:** Resource publik wajib pakai ULID, bukan integer sequential.
+9. **Watermark dokumen identitas:** Re-encode foto KTP/selfie wajib membubuhkan teks watermark dinamis ("VERIFIKASI JAGASEWA - [VENDOR_ULID] - [TANGGAL]").
+10. **Enkripsi PII & Blind Index:** NIK/WA disimpan dengan `encrypted` cast di DB; pencarian blacklist via HMAC-SHA256 dari data yang dinormalisasi (`628...`).
+11. **Pessimistic Locking di MySQL:** Semua update/insert booking wajib dalam `DB::transaction()` dengan `lockForUpdate()` untuk mencegah double-booking.
+12. **CSP Whitelist Backblaze:** Header CSP `img-src` wajib menyertakan `https://*.backblazeb2.com`.
 
 ## Alur Kerja per Tugas
 1. Baca task ID di `docs/tasks.md` + business rule terkait di `docs/business-rules.md`

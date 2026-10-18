@@ -168,11 +168,11 @@
   - **Estimasi:** S
   - **Story:** US-03 (BR-05, SEC-26)
 
-- [ ] **T-19** | Upload KTP + selfie ke S3 privat (re-encode & strip EXIF)
-  - **Tujuan:** File diunggah ke bucket privat; nama file di-UUID; validasi MIME & magic bytes PHP; re-encode gambar via GD dan hapus metadata EXIF (GPS/device).
+- [ ] **T-19** | Upload KTP + selfie ke S3 privat (re-encode, strip EXIF, auto-watermark)
+  - **Tujuan:** File diunggah ke bucket privat; nama file di-UUID; validasi MIME & magic bytes PHP; re-encode gambar via GD/Imagick, hapus metadata EXIF (GPS/device), dan bubuhkan teks watermark dinamis melintang ("VERIFIKASI JAGASEWA - [VENDOR_ULID] - [TANGGAL]").
   - **Dependensi:** T-18, T-02
-  - **Kriteria Selesai:** File tersimpan di S3 privat; URL langsung → 403; MIME exe/pdf → tolak; > 5MB → tolak; EXIF terhapus; gambar di-re-encode.
-  - **Tes:** Feature test: upload JPG valid (EXIF stripped); upload exe → 422; upload > 5MB → 422; direct URL → 403.
+  - **Kriteria Selesai:** File tersimpan di S3 privat; URL langsung → 403; MIME exe/pdf → tolak; > 5MB → tolak; EXIF terhapus; gambar di-re-encode dengan watermark dinamis tercetak.
+  - **Tes:** Feature test: upload JPG valid (EXIF stripped & watermark applied); upload exe → 422; upload > 5MB → 422; direct URL → 403.
   - **Estimasi:** M
   - **Story:** US-03 (SEC-28, SEC-29, SEC-30)
 
@@ -355,11 +355,11 @@
   - **Estimasi:** S
   - **SEC:** SEC-10
 
-- [ ] **T-40** | Hardening VPS: firewall Cloudflare IP only + SSH + Nginx
-  - **Tujuan:** VPS hanya menerima koneksi HTTP/HTTPS dari IP Cloudflare; port SSH diubah / restricted; root login nonaktif; server_tokens off.
+- [ ] **T-40** | Hardening Cloud Hosting cPanel (.htaccess, PHP Options, Cloudflare Proxy)
+  - **Tujuan:** Pengaturan keamanan lingkungan cPanel Jagoan Hosting: konfigurasi `public/.htaccess` untuk batas upload 6M, blokir akses file sensitif (.env/git), hide `X-Powered-By`/`expose_php=Off`, dan proxy DNS Cloudflare.
   - **Dependensi:** T-34
-  - **Kriteria Selesai:** Firewall UFW aktif; akses non-Cloudflare → connection refused; SSH root → denied.
-  - **Tes:** Manual test koneksi direct IP vs Cloudflare IP.
+  - **Kriteria Selesai:** File `.htaccess` terkonfigurasi dengan proteksi direktori; cPanel PHP Options `expose_php=Off` & `upload_max_filesize=6M`; domain diarahkan via Cloudflare Proxy (Orange Cloud).
+  - **Tes:** Manual test upload file 6.5MB ditolak server; curl header tidak menampilkan PHP version; akses direct `/.env` → 403 Forbidden.
   - **Estimasi:** M
   - **SEC:** SEC-15, SEC-16, SEC-17
 
