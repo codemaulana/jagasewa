@@ -194,7 +194,7 @@
   - **Estimasi:** M
   - **Story:** US-03 (SEC-28, SEC-29, SEC-30)
 
-- [ ] **T-20** | Signed URL sementara untuk akses foto (vendor)
+- [x] **T-20** | Signed URL sementara untuk akses foto (vendor)
   - **Tujuan:** Vendor bisa melihat foto KTP/selfie via URL bertanda tangan yang expire dalam 60 menit.
   - **Dependensi:** T-19, T-05
   - **Kriteria Selesai:** Signed URL valid 60 menit; URL expired → 403; URL vendor A tidak bisa akses foto vendor B.

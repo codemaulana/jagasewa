@@ -3,6 +3,7 @@
 use App\Http\Controllers\Public\DocumentUploadController;
 use App\Http\Controllers\Public\ItemController;
 use App\Http\Controllers\Vendor\AuthController;
+use App\Http\Controllers\Vendor\IdentityDocumentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,6 +26,16 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout.submit');
+
+    // Identity Documents (IDOR-03 / SEC-27)
+    Route::match(['GET', 'POST'], '/identity-documents/{ulid}/signed-url', [IdentityDocumentController::class, 'signedUrl'])
+        ->middleware('auth:vendor')
+        ->name('identity-documents.signed-url');
+
+    // Secure view / streaming with signed URL verification (TC-40)
+    Route::get('/identity-documents/{ulid}/secure-view', [IdentityDocumentController::class, 'secureView'])
+        ->middleware('signed')
+        ->name('identity-documents.secure-view');
 });
 
 // Route alias for Filament vendor panel logout action

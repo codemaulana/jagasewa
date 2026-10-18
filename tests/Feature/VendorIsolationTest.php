@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Booking;
 use App\Models\Concerns\BelongsToVendor;
+use App\Models\IdentityDocument;
 use App\Models\Vendor;
 use App\Models\VendorUser;
 use Illuminate\Database\Eloquent\Model;
@@ -156,5 +158,26 @@ class VendorIsolationTest extends TestCase
 
         $response->assertRedirect('/vendor/login');
         $this->assertGuest('vendor');
+    }
+
+    /**
+     * TC-18 / IDOR-03: Vendor A generate signed URL dokumen Vendor B -> 404
+     */
+    public function test_vendor_a_generate_signed_url_dokumen_vendor_b_returns_404(): void
+    {
+        $vendorA = Vendor::factory()->create(['is_active' => true]);
+        $userA = VendorUser::factory()->create(['vendor_id' => $vendorA->id]);
+
+        $vendorB = Vendor::factory()->create(['is_active' => true]);
+        $bookingB = Booking::factory()->create(['vendor_id' => $vendorB->id]);
+        $documentB = IdentityDocument::factory()->create([
+            'booking_id' => $bookingB->id,
+            'renter_id' => $bookingB->renter_id,
+        ]);
+
+        $response = $this->actingAs($userA, 'vendor')
+            ->postJson(route('vendor.identity-documents.signed-url', ['ulid' => $documentB->ulid]));
+
+        $response->assertStatus(404);
     }
 }
