@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Public;
 
+use App\Helpers\WaNotificationHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Item;
@@ -110,8 +111,11 @@ class ItemController extends Controller
             ->where('ulid', $ulid)
             ->firstOrFail();
 
+        $waUrl = WaNotificationHelper::generateVendorChatUrl($booking);
+
         return view('public.bookings.success', [
             'booking' => $booking,
+            'waUrl' => $waUrl,
         ]);
     }
 }

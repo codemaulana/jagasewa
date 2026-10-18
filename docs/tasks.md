@@ -158,7 +158,7 @@
   - **Estimasi:** L
   - **Story:** US-02, US-03, US-04 (BR-01, BR-02, SEC-19, SEC-20)
 
-- [ ] **T-16** | Halaman sukses booking publik dengan tautan wa.me
+- [x] **T-16** | Halaman sukses booking publik dengan tautan wa.me
   - **Tujuan:** Setelah booking dibuat, tampilkan halaman konfirmasi sukses (`/b/success/{booking_ulid}`) berisi nomor referensi, status pending, dan tombol "Hubungi Vendor via WhatsApp" menggunakan `WaNotificationHelper`.
   - **Dependensi:** T-15, T-32
   - **Kriteria Selesai:** Tampilan konfirmasi sesuai wireframe Layar 3; tombol WA menghasilkan URL terenkode valid via `WaNotificationHelper`; akses booking non-existent → 404.

@@ -8,14 +8,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Public Booking Success Route (static segment before wildcards)
+Route::get('/b/success/{ulid}', [ItemController::class, 'bookingSuccess'])->name('public.booking.success');
+
 // Public Vendor Catalog Route
 Route::get('/b/{vendor_slug}', [ItemController::class, 'catalog'])->name('public.vendor.catalog');
 
 // Public Item Catalog Route
 Route::get('/b/{vendor_slug}/{item_slug}', [ItemController::class, 'show'])->name('public.items.show');
-
-// Public Booking Success Route
-Route::get('/b/success/{ulid}', [ItemController::class, 'bookingSuccess'])->name('public.booking.success');
 
 Route::prefix('vendor')->name('vendor.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
