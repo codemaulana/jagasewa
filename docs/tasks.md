@@ -85,7 +85,7 @@
   - **Estimasi:** M
   - **Story:** US-07
 
-- [ ] **T-10** | Halaman barang publik (tanpa login)
+- [x] **T-10** | Halaman barang publik (tanpa login)
   - **Tujuan:** Penyewa bisa melihat detail barang via URL slug publik.
   - **Dependensi:** T-09
   - **Kriteria Selesai:** Route `/b/{vendor_slug}/{item_slug}` menampilkan info barang; foto dari signed URL.
