@@ -57,7 +57,7 @@
   - **Estimasi:** M
   - **Story:** US-13 (BR-06, SEC-08, SEC-09, SEC-46..49)
 
-- [ ] **T-07** | Admin panel: kelola vendor (list, activate, deactivate)
+- [x] **T-07** | Admin panel: kelola vendor (list, activate, deactivate)
   - **Tujuan:** Admin bisa menonaktifkan vendor; vendor dinonaktifkan tidak bisa login.
   - **Dependensi:** T-05
   - **Kriteria Selesai:** Toggle `is_active`; vendor inactive → redirect dengan pesan.

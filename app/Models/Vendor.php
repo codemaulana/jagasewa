@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\AuditService;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,5 +54,26 @@ class Vendor extends Model
     public function users(): HasMany
     {
         return $this->hasMany(VendorUser::class);
+    }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::updated(function (Vendor $vendor) {
+            if ($vendor->wasChanged('is_active')) {
+                AuditService::log(
+                    event: $vendor->is_active ? 'vendor_activated' : 'vendor_deactivated',
+                    entityType: 'vendor',
+                    entityId: (string) $vendor->id,
+                    payload: [
+                        'vendor_name' => $vendor->name,
+                        'is_active' => $vendor->is_active,
+                    ],
+                    vendorId: $vendor->id
+                );
+            }
+        });
     }
 }
