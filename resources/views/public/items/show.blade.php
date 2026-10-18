@@ -133,11 +133,17 @@
                     <span>✨</span> Kelengkapan & Spesifikasi
                 </h3>
 
-                @if(!empty($item->included_items))
+                @php
+                    $includedList = is_array($item->included_items) 
+                        ? $item->included_items 
+                        : (is_string($item->included_items) && trim($item->included_items) !== '' ? array_map('trim', explode(',', $item->included_items)) : []);
+                @endphp
+
+                @if(!empty($includedList))
                     <div>
                         <span class="text-xs text-gray-500 font-medium block mb-2">Item yang Didapat (Included Set):</span>
                         <div class="flex flex-wrap gap-1.5">
-                            @foreach($item->included_items as $included)
+                            @foreach($includedList as $included)
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
                                     ✓ {{ $included }}
                                 </span>
