@@ -33,7 +33,7 @@
 
 ## Milestone 1 — Auth, Multi-Vendor & Isolasi Data
 
-- [ ] **T-04** | Migrasi database & model: `vendors`, `vendor_users`
+- [x] **T-04** | Migrasi database & model: `vendors`, `vendor_users`
   - **Tujuan:** Struktur tabel vendor sesuai ERD; model Eloquent dengan relasi.
   - **Dependensi:** T-02
   - **Kriteria Selesai:** Migrasi berjalan; factory menghasilkan data valid; `vendor_users.vendor_id` FK ke `vendors`.
