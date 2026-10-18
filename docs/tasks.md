@@ -214,7 +214,7 @@
 
 ## Milestone 6 — Dashboard Persetujuan Vendor
 
-- [ ] **T-22** | Daftar booking di dashboard vendor (Filament)
+- [x] **T-22** | Daftar booking di dashboard vendor (Filament)
   - **Tujuan:** Vendor melihat semua booking miliknya, difilter per status dan barang.
   - **Dependensi:** T-14, T-06
   - **Kriteria Selesai:** Tabel menampilkan: referensi, nama barang, penyewa, status, tanggal; filter berfungsi; hanya booking vendor sendiri muncul.
