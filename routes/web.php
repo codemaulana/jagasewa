@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Public\DocumentUploadController;
 use App\Http\Controllers\Public\ItemController;
 use App\Http\Controllers\Vendor\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -7,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Public Document Upload Route (KTP & Selfie)
+Route::post('/booking/upload', [DocumentUploadController::class, 'upload'])->name('public.booking.upload');
 
 // Public Booking Success Route (static segment before wildcards)
 Route::get('/b/success/{ulid}', [ItemController::class, 'bookingSuccess'])->name('public.booking.success');

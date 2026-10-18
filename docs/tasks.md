@@ -186,7 +186,7 @@
   - **Estimasi:** S
   - **Story:** US-03 (BR-05, SEC-26)
 
-- [ ] **T-19** | Upload KTP + selfie ke S3 privat (re-encode, strip EXIF, auto-watermark)
+- [x] **T-19** | Upload KTP + selfie ke S3 privat (re-encode, strip EXIF, auto-watermark)
   - **Tujuan:** File diunggah ke bucket privat; nama file di-UUID; validasi MIME & magic bytes PHP; re-encode gambar via GD/Imagick, hapus metadata EXIF (GPS/device), dan bubuhkan teks watermark dinamis melintang ("VERIFIKASI JAGASEWA - [VENDOR_ULID] - [TANGGAL]").
   - **Dependensi:** T-18, T-02
   - **Kriteria Selesai:** File tersimpan di S3 privat; URL langsung → 403; MIME exe/pdf → tolak; > 5MB → tolak; EXIF terhapus; gambar di-re-encode dengan watermark dinamis tercetak.
