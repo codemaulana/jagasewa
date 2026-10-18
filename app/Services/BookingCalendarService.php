@@ -37,6 +37,22 @@ class BookingCalendarService
     ];
 
     /**
+     * Optional callable resolver to provide bookings for an item in a given range.
+     * Useful for mocking or injecting bookings during testing or custom pipelines.
+     *
+     * @var (callable(Item, Carbon, Carbon): iterable<array|object>)|null
+     */
+    protected static $bookingsResolver = null;
+
+    /**
+     * Set a custom bookings resolver.
+     */
+    public static function setBookingsResolver(?callable $resolver): void
+    {
+        static::$bookingsResolver = $resolver;
+    }
+
+    /**
      * Determine whether a booking status locks calendar slots.
      */
     public function isStatusLocking(string $status): bool
@@ -150,6 +166,11 @@ class BookingCalendarService
         // Fetch existing bookings if not provided
         $bookingsToCheck = $existingBookings;
 
+        if ($bookingsToCheck === null && static::$bookingsResolver !== null && $item) {
+            $resolver = static::$bookingsResolver;
+            $bookingsToCheck = $resolver($item, $parsedStart, $parsedEnd);
+        }
+
         if ($bookingsToCheck === null && Schema::hasTable('bookings')) {
             $bookingsToCheck = DB::table('bookings')
                 ->where('item_id', $resolvedItemId)
@@ -197,6 +218,135 @@ class BookingCalendarService
         }
 
         return true;
+    }
+
+    /**
+     * Get availability status for every day in a given month.
+     * Returns a JSON-ready array of days with status: 'available' | 'booked' | 'buffer'.
+     *
+     * @param  string  $yearMonth  Format: 'YYYY-MM'
+     * @param  iterable<array|object>|null  $existingBookings
+     * @return list<array{date: string, day: int, status: string}>
+     */
+    public function getMonthAvailability(
+        Item|int|string $item,
+        string $yearMonth,
+        ?iterable $existingBookings = null
+    ): array {
+        if (! preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $yearMonth)) {
+            throw new InvalidArgumentException("Format bulan tidak valid: {$yearMonth}. Gunakan format YYYY-MM.");
+        }
+
+        $resolvedItem = $item instanceof Item ? $item : Item::find($item);
+
+        $bufferBefore = $resolvedItem?->buffer_before ?? 0;
+        $bufferAfter = $resolvedItem?->buffer_after ?? 0;
+
+        $startOfMonth = Carbon::parse($yearMonth.'-01', 'Asia/Jakarta')->startOfDay();
+        $daysInMonth = $startOfMonth->daysInMonth;
+        $endOfMonth = (clone $startOfMonth)->endOfMonth()->startOfDay();
+
+        // Effective query boundary to find any booking whose effective range intersects the month
+        $queryStart = (clone $startOfMonth)->subDays(max(30, $bufferAfter + 1));
+        $queryEnd = (clone $endOfMonth)->addDays(max(30, $bufferBefore + 1));
+
+        $bookings = $existingBookings;
+
+        if ($bookings === null && static::$bookingsResolver !== null && $resolvedItem) {
+            $resolver = static::$bookingsResolver;
+            $bookings = $resolver($resolvedItem, $queryStart, $queryEnd);
+        }
+
+        if ($bookings === null && $resolvedItem && Schema::hasTable('bookings')) {
+            $bookings = DB::table('bookings')
+                ->where('item_id', $resolvedItem->id)
+                ->whereIn('status', self::LOCKING_STATUSES)
+                ->where('start_date', '<=', $queryEnd->toDateString())
+                ->where('end_date', '>=', $queryStart->toDateString())
+                ->get();
+        }
+
+        // Map dates to statuses: 'booked' takes precedence over 'buffer'
+        $bookedDates = [];
+        $bufferDates = [];
+
+        if ($bookings !== null) {
+            foreach ($bookings as $booking) {
+                $status = is_array($booking)
+                    ? ($booking['status'] ?? 'approved')
+                    : ($booking->status ?? 'approved');
+
+                if (! $this->isStatusLocking($status)) {
+                    continue;
+                }
+
+                $rawStart = is_array($booking) ? $booking['start_date'] : $booking->start_date;
+                $rawEnd = is_array($booking) ? $booking['end_date'] : $booking->end_date;
+
+                $bookingBufferBefore = is_array($booking)
+                    ? ($booking['buffer_before'] ?? $bufferBefore)
+                    : ($booking->buffer_before ?? $bufferBefore);
+
+                $bookingBufferAfter = is_array($booking)
+                    ? ($booking['buffer_after'] ?? $bufferAfter)
+                    : ($booking->buffer_after ?? $bufferAfter);
+
+                $bookingStart = $this->parseDate($rawStart);
+                $bookingEnd = $this->parseDate($rawEnd);
+
+                // 1. Mark core rental days as 'booked'
+                $current = clone $bookingStart;
+                while ($current->lte($bookingEnd)) {
+                    $dateStr = $current->toDateString();
+                    $bookedDates[$dateStr] = true;
+                    $current->addDay();
+                }
+
+                // 2. Mark buffer_before days as 'buffer'
+                if ($bookingBufferBefore > 0) {
+                    $bufStart = (clone $bookingStart)->subDays($bookingBufferBefore);
+                    $bufCurrent = clone $bufStart;
+                    while ($bufCurrent->lt($bookingStart)) {
+                        $dateStr = $bufCurrent->toDateString();
+                        $bufferDates[$dateStr] = true;
+                        $bufCurrent->addDay();
+                    }
+                }
+
+                // 3. Mark buffer_after days as 'buffer'
+                if ($bookingBufferAfter > 0) {
+                    $bufEnd = (clone $bookingEnd)->addDays($bookingBufferAfter);
+                    $bufCurrent = (clone $bookingEnd)->addDay();
+                    while ($bufCurrent->lte($bufEnd)) {
+                        $dateStr = $bufCurrent->toDateString();
+                        $bufferDates[$dateStr] = true;
+                        $bufCurrent->addDay();
+                    }
+                }
+            }
+        }
+
+        // Build result array for every day of the month
+        $result = [];
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = sprintf('%s-%02d', $yearMonth, $day);
+
+            if (isset($bookedDates[$date])) {
+                $dayStatus = 'booked';
+            } elseif (isset($bufferDates[$date])) {
+                $dayStatus = 'buffer';
+            } else {
+                $dayStatus = 'available';
+            }
+
+            $result[] = [
+                'date' => $date,
+                'day' => $day,
+                'status' => $dayStatus,
+            ];
+        }
+
+        return $result;
     }
 
     /**

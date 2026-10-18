@@ -105,7 +105,7 @@
   - **Estimasi:** M
   - **Story:** US-01 (BR-01)
 
-- [ ] **T-12** | Endpoint API kalender ketersediaan (JSON)
+- [x] **T-12** | Endpoint API kalender ketersediaan (JSON)
   - **Tujuan:** Frontend kalender mendapatkan data slot tersedia/terpesan per bulan.
   - **Dependensi:** T-11
   - **Kriteria Selesai:** `GET /api/items/{id}/availability?month=2026-10` mengembalikan JSON array hari dengan status `available | booked | buffer`.
