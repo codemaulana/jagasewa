@@ -178,7 +178,7 @@
 
 ## Milestone 5 — Unggah Dokumen Aman + Auto-Delete
 
-- [ ] **T-18** | Migrasi & model `identity_documents` (consent & metadata retensi)
+- [x] **T-18** | Migrasi & model `identity_documents` (consent & metadata retensi)
   - **Tujuan:** Tabel menyimpan path storage privat, metadata retensi, dan bukti persetujuan (consent) UU PDP; tidak menyimpan file langsung di DB.
   - **Dependensi:** T-14
   - **Kriteria Selesai:** Kolom `consent_given` (bool), `consent_at` (timestamp), `consent_version` (string), `delete_scheduled_at`, `deleted_at`; FK ke `bookings`.

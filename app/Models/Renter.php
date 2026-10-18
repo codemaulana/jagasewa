@@ -170,4 +170,12 @@ class Renter extends Model
     {
         return $this->hasMany(Booking::class);
     }
+
+    /**
+     * Get identity documents uploaded by the renter.
+     */
+    public function identityDocuments(): HasMany
+    {
+        return $this->hasMany(IdentityDocument::class);
+    }
 }

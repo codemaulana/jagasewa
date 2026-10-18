@@ -201,6 +201,13 @@ class BookingModelTest extends TestCase
     {
         $this->assertTrue(Schema::hasTable('bookings'));
 
+        // Rollback identity_documents first (FK dependent)
+        if (Schema::hasTable('identity_documents')) {
+            $this->artisan('migrate:rollback', [
+                '--path' => 'database/migrations/2026_10_18_000007_create_identity_documents_table.php',
+            ])->assertSuccessful();
+        }
+
         $this->artisan('migrate:rollback', [
             '--path' => 'database/migrations/2026_10_18_000006_create_bookings_table.php',
         ])->assertSuccessful();
@@ -210,6 +217,10 @@ class BookingModelTest extends TestCase
         // Re-run for subsequent tests
         $this->artisan('migrate', [
             '--path' => 'database/migrations/2026_10_18_000006_create_bookings_table.php',
+        ])->assertSuccessful();
+
+        $this->artisan('migrate', [
+            '--path' => 'database/migrations/2026_10_18_000007_create_identity_documents_table.php',
         ])->assertSuccessful();
     }
 }

@@ -97,7 +97,13 @@ class RenterModelTest extends TestCase
     {
         $this->assertTrue(Schema::hasTable('renters'));
 
-        // Rollback bookings first (FK dependent)
+        // Rollback identity_documents and bookings first (FK dependents)
+        if (Schema::hasTable('identity_documents')) {
+            $this->artisan('migrate:rollback', [
+                '--path' => 'database/migrations/2026_10_18_000007_create_identity_documents_table.php',
+            ])->assertSuccessful();
+        }
+
         $this->artisan('migrate:rollback', [
             '--path' => 'database/migrations/2026_10_18_000006_create_bookings_table.php',
         ])->assertSuccessful();
@@ -115,6 +121,10 @@ class RenterModelTest extends TestCase
 
         $this->artisan('migrate', [
             '--path' => 'database/migrations/2026_10_18_000006_create_bookings_table.php',
+        ])->assertSuccessful();
+
+        $this->artisan('migrate', [
+            '--path' => 'database/migrations/2026_10_18_000007_create_identity_documents_table.php',
         ])->assertSuccessful();
     }
 }

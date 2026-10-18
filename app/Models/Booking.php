@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
 class Booking extends Model
@@ -163,5 +164,13 @@ class Booking extends Model
     public function renter(): BelongsTo
     {
         return $this->belongsTo(Renter::class);
+    }
+
+    /**
+     * Get the identity documents for the booking.
+     */
+    public function identityDocuments(): HasMany
+    {
+        return $this->hasMany(IdentityDocument::class);
     }
 }
