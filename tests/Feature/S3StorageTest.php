@@ -10,6 +10,10 @@ class S3StorageTest extends TestCase
 {
     public function test_s3_upload_read_private_access_and_delete(): void
     {
+        if (empty(config('filesystems.disks.s3.key')) || empty(config('filesystems.disks.s3.secret')) || empty(config('filesystems.disks.s3.bucket'))) {
+            $this->markTestSkipped('S3 credentials are not configured in environment.');
+        }
+
         $disk = Storage::disk('s3');
         $filename = 'test_jagasewa_connection.txt';
         $content = 'jagasewa-s3-test-content';

@@ -22,7 +22,7 @@
   - **Tes:** `Storage::disk('s3')->put('test.txt', 'ok')` berhasil; bucket privat (403 direct URL).
   - **Estimasi:** S
 
-- [ ] **T-03** | Setup GitHub repository + CI (lint + test)
+- [x] **T-03** | Setup GitHub repository + CI (lint + test)
   - **Tujuan:** Repo Git aktif; GitHub Actions jalankan `composer test` + `./vendor/bin/pint` di setiap push.
   - **Dependensi:** T-01
   - **Kriteria Selesai:** PR yang gagal test ditolak oleh CI.
