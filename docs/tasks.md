@@ -222,7 +222,7 @@
   - **Estimasi:** M
   - **Story:** US-11
 
-- [ ] **T-23** | Halaman detail booking + approve/reject action
+- [x] **T-23** | Halaman detail booking + approve/reject action
   - **Tujuan:** Vendor melihat detail booking (termasuk link foto KTP/selfie) dan bisa approve/reject.
   - **Dependensi:** T-22, T-20
   - **Kriteria Selesai:** Approve → status `approved`; reject → status `rejected`; link wa.me ke penyewa tampil setelah approve.

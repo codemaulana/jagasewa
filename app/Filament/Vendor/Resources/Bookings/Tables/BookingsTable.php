@@ -5,6 +5,7 @@ namespace App\Filament\Vendor\Resources\Bookings\Tables;
 use App\Models\Booking;
 use App\Models\Item;
 use Carbon\Carbon;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -105,6 +106,9 @@ class BookingsTable
                 SelectFilter::make('item_id')
                     ->label('Barang')
                     ->options(fn () => Item::forCurrentVendor()->pluck('name', 'id')->toArray()),
+            ])
+            ->recordActions([
+                ViewAction::make(),
             ])
             ->defaultSort('created_at', 'desc');
     }

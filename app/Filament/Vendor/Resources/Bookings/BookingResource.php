@@ -3,10 +3,13 @@
 namespace App\Filament\Vendor\Resources\Bookings;
 
 use App\Filament\Vendor\Resources\Bookings\Pages\ListBookings;
+use App\Filament\Vendor\Resources\Bookings\Pages\ViewBooking;
+use App\Filament\Vendor\Resources\Bookings\Schemas\BookingInfolist;
 use App\Filament\Vendor\Resources\Bookings\Tables\BookingsTable;
 use App\Models\Booking;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,6 +31,11 @@ class BookingResource extends Resource
     public static function canCreate(): bool
     {
         return false;
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return BookingInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -65,6 +73,7 @@ class BookingResource extends Resource
     {
         return [
             'index' => ListBookings::route('/'),
+            'view' => ViewBooking::route('/{record}'),
         ];
     }
 }
