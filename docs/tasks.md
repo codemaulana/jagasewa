@@ -202,7 +202,7 @@
   - **Estimasi:** M
   - **Story:** US-08
 
-- [ ] **T-21** | Job auto-delete dokumen + audit log
+- [x] **T-21** | Job auto-delete dokumen + audit log
   - **Tujuan:** Dokumen dihapus otomatis 7 hari setelah booking `closed` (atau 3 hari setelah `cancelled_*`/`rejected`); dicatat di audit log.
   - **Dependensi:** T-18, T-02
   - **Kriteria Selesai:** File terhapus dari S3; `deleted_at` terisi; `audit_logs` mencatat event tanpa path mentah.

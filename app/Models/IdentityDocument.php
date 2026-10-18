@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -116,5 +117,40 @@ class IdentityDocument extends Model
     public function renter(): BelongsTo
     {
         return $this->belongsTo(Renter::class);
+    }
+
+    /**
+     * Scope query to documents eligible for auto-deletion according to retention policy (BR-05).
+     */
+    public function scopeEligibleForDeletion(Builder $query, ?Carbon $now = null): Builder
+    {
+        $now = $now ?? Carbon::now('Asia/Jakarta');
+        $fallbackDays = (int) config('jagasewa.retention.fallback_days', 90);
+        $closedDays = (int) config('jagasewa.retention.closed_days', 7);
+        $cancelledDays = (int) config('jagasewa.retention.cancelled_days', 3);
+
+        return $query->where(function (Builder $q) use ($now, $fallbackDays, $closedDays, $cancelledDays) {
+            // 1. Explicitly scheduled deletion reached
+            $q->where(function (Builder $sub) use ($now) {
+                $sub->whereNotNull('delete_scheduled_at')
+                    ->where('delete_scheduled_at', '<=', $now);
+            })
+            // 2. Fallback: document uploaded > fallbackDays ago
+                ->orWhere('created_at', '<=', $now->copy()->subDays($fallbackDays))
+            // 3. Booking is closed > closedDays ago
+                ->orWhereHas('booking', function (Builder $sub) use ($now, $closedDays) {
+                    $sub->where('status', Booking::STATUS_CLOSED)
+                        ->where('updated_at', '<=', $now->copy()->subDays($closedDays));
+                })
+            // 4. Booking is cancelled/rejected > cancelledDays ago
+                ->orWhereHas('booking', function (Builder $sub) use ($now, $cancelledDays) {
+                    $sub->whereIn('status', [
+                        Booking::STATUS_REJECTED,
+                        Booking::STATUS_CANCELLED_TIMEOUT,
+                        Booking::STATUS_CANCELLED_RENTER,
+                        Booking::STATUS_CANCELLED_VENDOR,
+                    ])->where('updated_at', '<=', $now->copy()->subDays($cancelledDays));
+                });
+        });
     }
 }

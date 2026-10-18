@@ -45,6 +45,11 @@ class AutoCancelPendingBookingsJob implements ShouldQueue
                 $lockedBooking->lock_version = ($lockedBooking->lock_version ?? 0) + 1;
                 $lockedBooking->save();
 
+                // Reschedule identity documents retention to cancelled retention period (BR-05)
+                $lockedBooking->identityDocuments()->update([
+                    'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays(config('jagasewa.retention.cancelled_days', 3)),
+                ]);
+
                 AuditService::log(
                     'booking_cancelled_timeout',
                     'booking',

@@ -10,3 +10,7 @@ Artisan::command('inspire', function () {
 Schedule::command('booking:auto-cancel-pending')
     ->everyThirtyMinutes()
     ->withoutOverlapping();
+
+Schedule::command('documents:auto-delete')
+    ->dailyAt('02:00')
+    ->withoutOverlapping();
