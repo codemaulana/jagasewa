@@ -41,7 +41,7 @@
   - **Estimasi:** S
   - **Story:** US-06
 
-- [ ] **T-05** | Registrasi & login vendor (Filament Auth)
+- [x] **T-05** | Registrasi & login vendor (Filament Auth)
   - **Tujuan:** Vendor bisa mendaftar dan login; session terikat pada `vendor_id`.
   - **Dependensi:** T-04
   - **Kriteria Selesai:** Login berhasil → redirect ke dashboard; login gagal → pesan error.

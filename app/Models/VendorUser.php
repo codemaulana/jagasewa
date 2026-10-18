@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class VendorUser extends Authenticatable
+class VendorUser extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory, Notifiable;
 
@@ -62,5 +65,25 @@ class VendorUser extends Authenticatable
     public function isOwner(): bool
     {
         return $this->role === 'owner';
+    }
+
+    /**
+     * Determine whether the user can access the given Filament panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($panel->getId() === 'vendor') {
+            return (bool) ($this->vendor?->is_active ?? false);
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the user's name for Filament displays.
+     */
+    public function getFilamentName(): string
+    {
+        return $this->name;
     }
 }
