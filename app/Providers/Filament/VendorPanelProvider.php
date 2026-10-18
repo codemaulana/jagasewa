@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Vendor\Pages\Auth\Register;
+use App\Http\Middleware\EnsureVendorOwnership;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -57,6 +58,7 @@ class VendorPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                EnsureVendorOwnership::class,
             ]);
     }
 }

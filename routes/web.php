@@ -12,3 +12,6 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout.submit');
 });
+
+// Route alias for Filament vendor panel logout action
+Route::post('/vendor/filament-logout', [AuthController::class, 'logout'])->name('filament.vendor.auth.logout');

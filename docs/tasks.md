@@ -77,7 +77,7 @@
   - **Estimasi:** S
   - **Story:** US-07 (SEC-10)
 
-- [ ] **T-09** | CRUD barang di dashboard vendor (Filament Resource)
+- [x] **T-09** | CRUD barang di dashboard vendor (Filament Resource)
   - **Tujuan:** Vendor bisa tambah, edit, nonaktifkan barang lewat UI.
   - **Dependensi:** T-08, T-06
   - **Kriteria Selesai:** Barang tersimpan dengan validasi (harga > 0, deposit ≥ 0, buffer ≥ 0); foto ter-upload ke S3.
