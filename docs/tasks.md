@@ -249,7 +249,7 @@
   - **Tes:** Factory; rollback.
   - **Estimasi:** S
 
-- [ ] **T-26** | Service: normalisasi + HMAC hashing identitas
+- [x] **T-26** | Service: normalisasi + HMAC hashing identitas
   - **Tujuan:** `IdentityHashService` menghasilkan hash deterministik dari input WA/NIK/Instagram.
   - **Dependensi:** T-25
   - **Kriteria Selesai:** Input `08123456789` → hash sama setiap kali; input berbeda → hash berbeda.

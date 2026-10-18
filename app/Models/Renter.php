@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\IdentityHashService;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -98,8 +99,7 @@ class Renter extends Model
         $this->nik_encrypted = $value;
 
         if (! empty($value)) {
-            $normalized = preg_replace('/\D/', '', $value);
-            $this->nik_hash = self::hashValue($normalized);
+            $this->nik_hash = IdentityHashService::hashIdentity(IdentityHashService::TYPE_NIK, $value);
         }
     }
 
@@ -124,15 +124,7 @@ class Renter extends Model
      */
     public static function normalizePhone(string $phone): string
     {
-        $cleaned = preg_replace('/[^\d+]/', '', $phone);
-
-        if (str_starts_with($cleaned, '+62')) {
-            $cleaned = substr($cleaned, 1);
-        } elseif (str_starts_with($cleaned, '08')) {
-            $cleaned = '62'.substr($cleaned, 1);
-        }
-
-        return $cleaned;
+        return IdentityHashService::normalizePhone($phone);
     }
 
     /**
@@ -140,9 +132,7 @@ class Renter extends Model
      */
     public static function hashValue(string $value): string
     {
-        $secret = config('app.blacklist_secret') ?: config('app.key');
-
-        return hash_hmac('sha256', $value, (string) $secret);
+        return IdentityHashService::hashValue($value);
     }
 
     /**
@@ -158,7 +148,7 @@ class Renter extends Model
 
             // Ensure nik_hash exists if nik_encrypted is present
             if (! empty($renter->nik_encrypted) && empty($renter->nik_hash)) {
-                $renter->nik_hash = self::hashValue(preg_replace('/\D/', '', $renter->nik_encrypted));
+                $renter->nik_hash = IdentityHashService::hashIdentity(IdentityHashService::TYPE_NIK, $renter->nik_encrypted);
             }
         });
     }
