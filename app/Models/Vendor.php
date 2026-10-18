@@ -57,6 +57,14 @@ class Vendor extends Model
     }
 
     /**
+     * Get the items belonging to the vendor.
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class);
+    }
+
+    /**
      * The "booted" method of the model.
      */
     protected static function booted(): void

@@ -69,7 +69,7 @@
 
 ## Milestone 2 — Katalog Barang
 
-- [ ] **T-08** | Migrasi & model `items` (dukungan atribut rental cosplay/kamera)
+- [x] **T-08** | Migrasi & model `items` (dukungan atribut rental cosplay/kamera)
   - **Tujuan:** Tabel `items` dengan ULID primary key sesuai ERD; semua kolom uang bertipe integer (price, deposit, fine); kolom buffer; serta metadata barang (ukuran/size, kelengkapan set, instruksi perawatan).
   - **Dependensi:** T-04
   - **Kriteria Selesai:** Migrasi + factory berjalan dengan ULID; `items.vendor_id` FK cascade; kolom uang integer rupiah; kolom atribut barang fleksibel untuk rental cosplay/kamera.

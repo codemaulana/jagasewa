@@ -7,6 +7,7 @@ use App\Models\VendorUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class VendorModelTest extends TestCase
@@ -61,9 +62,12 @@ class VendorModelTest extends TestCase
 
     public function test_migrations_can_be_rolled_back_cleanly(): void
     {
-        // Test rollback of the two new migrations
-        $exitCode = Artisan::call('migrate:rollback', ['--step' => 2]);
+        // Rollback all migrations in reverse dependency order
+        $exitCode = Artisan::call('migrate:reset');
         $this->assertSame(0, $exitCode);
+
+        $this->assertFalse(Schema::hasTable('vendors'));
+        $this->assertFalse(Schema::hasTable('vendor_users'));
 
         // Re-run migration to restore database state for further tests
         $remigrateCode = Artisan::call('migrate');

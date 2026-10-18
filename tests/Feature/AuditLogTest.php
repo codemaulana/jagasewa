@@ -100,11 +100,15 @@ class AuditLogTest extends TestCase
     {
         $this->assertTrue(Schema::hasTable('audit_logs'));
 
-        $this->artisan('migrate:rollback', ['--step' => 1])->assertSuccessful();
+        $this->artisan('migrate:rollback', [
+            '--path' => 'database/migrations/2026_10_18_000003_create_audit_logs_table.php',
+        ])->assertSuccessful();
 
         $this->assertFalse(Schema::hasTable('audit_logs'));
 
         // Re-run migration for subsequent tests
-        $this->artisan('migrate')->assertSuccessful();
+        $this->artisan('migrate', [
+            '--path' => 'database/migrations/2026_10_18_000003_create_audit_logs_table.php',
+        ])->assertSuccessful();
     }
 }
