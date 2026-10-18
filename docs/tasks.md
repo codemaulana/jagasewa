@@ -142,7 +142,7 @@
 > 5. `T-15` (Form booking publik Livewire menggabungkan kalender T-13 + input data + upload KTP T-19 + transaksi atomik `SELECT FOR UPDATE`)
 > 6. `T-16` (Halaman sukses booking publik dengan tombol wa.me)
 
-- [ ] **T-14** | Migrasi & model `renters`, `bookings` (ULID, Enkripsi PII & Concurrency)
+- [x] **T-14** | Migrasi & model `renters`, `bookings` (ULID, Enkripsi PII & Concurrency)
   - **Tujuan:** Tabel sesuai ERD dengan ULID primary key; enkripsi PII penyewa + kolom blind index hash; kolom pencegah double-submit & race condition.
   - **Dependensi:** T-04, T-26
   - **Kriteria Selesai:** Migrasi + factory berjalan dengan ULID; `bookings` memiliki kolom `idempotency_key` (unique nullable), `lock_version` (int default 1), `pending_expires_at`, dan `reference_code` (unique); `renters` menggunakan Laravel `encrypted` cast untuk NIK/WA/alamat serta menyimpan kolom `phone_hash` dan `nik_hash` (HMAC-SHA256) untuk pencarian cepat; relasi Eloquent lengkap.

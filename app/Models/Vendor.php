@@ -65,6 +65,14 @@ class Vendor extends Model
     }
 
     /**
+     * Get the bookings belonging to the vendor.
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    /**
      * The "booted" method of the model.
      */
     protected static function booted(): void

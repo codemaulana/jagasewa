@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | JagaSewa Blacklist Secret
+    |--------------------------------------------------------------------------
+    |
+    | Secret key used for HMAC-SHA256 blind indexing of renter PII (WA, NIK).
+    |
+    */
+    'blacklist_secret' => env('BLACKLIST_SECRET'),
+
 ];
