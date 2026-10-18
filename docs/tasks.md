@@ -15,7 +15,7 @@
   - **Tes:** `php artisan test` tidak ada error; Filament route exists.
   - **Estimasi:** M
 
-- [ ] **T-02** | Konfigurasi environment & koneksi database
+- [x] **T-02** | Konfigurasi environment & koneksi database
   - **Tujuan:** `.env` dikonfigurasi untuk DB (MySQL/PostgreSQL), S3 storage, timezone.
   - **Dependensi:** T-01
   - **Kriteria Selesai:** `php artisan migrate` berhasil; `APP_TIMEZONE=Asia/Jakarta`; storage S3 terhubung.
