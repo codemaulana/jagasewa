@@ -49,13 +49,13 @@
   - **Estimasi:** M
   - **Story:** US-06
 
-- [ ] **T-06** | Middleware isolasi vendor + test otomatis
-  - **Tujuan:** Setiap request vendor hanya bisa mengakses resource milik vendor sendiri.
+- [ ] **T-06** | Middleware isolasi vendor, migrasi `audit_logs` + test otomatis
+  - **Tujuan:** Setiap request vendor hanya bisa mengakses resource milik vendor sendiri (HTTP 404 jika cross-vendor); struktur tabel dan service `audit_logs` siap mencatat log keamanan tanpa PII.
   - **Dependensi:** T-05
-  - **Kriteria Selesai:** Request vendor A ke resource vendor B → HTTP 404.
-  - **Tes:** `VendorIsolationTest`: vendor A request item vendor B → 404; own item → 200.
+  - **Kriteria Selesai:** Middleware `EnsureVendorOwnership` aktif; migrasi `audit_logs` berjalan; request vendor A ke resource vendor B → HTTP 404 (bukan 403); pencatatan audit log berfungsi tanpa menyimpan PII.
+  - **Tes:** `VendorIsolationTest`: vendor A request item vendor B → 404; own item → 200; `AuditLogTest`: catat event & verifikasi tanpa PII.
   - **Estimasi:** M
-  - **Story:** US-13 (BR-06)
+  - **Story:** US-13 (BR-06, SEC-08, SEC-09, SEC-46..49)
 
 - [ ] **T-07** | Admin panel: kelola vendor (list, activate, deactivate)
   - **Tujuan:** Admin bisa menonaktifkan vendor; vendor dinonaktifkan tidak bisa login.
@@ -69,13 +69,13 @@
 
 ## Milestone 2 — Katalog Barang
 
-- [ ] **T-08** | Migrasi & model `items`
-  - **Tujuan:** Tabel `items` sesuai ERD; semua kolom integer uang (price, deposit, fine).
+- [ ] **T-08** | Migrasi & model `items` (dukungan atribut rental cosplay/kamera)
+  - **Tujuan:** Tabel `items` dengan ULID primary key sesuai ERD; semua kolom uang bertipe integer (price, deposit, fine); kolom buffer; serta metadata barang (ukuran/size, kelengkapan set, instruksi perawatan).
   - **Dependensi:** T-04
-  - **Kriteria Selesai:** Migrasi + factory berjalan; `items.vendor_id` FK.
-  - **Tes:** Unit test: factory; rollback bersih.
+  - **Kriteria Selesai:** Migrasi + factory berjalan dengan ULID; `items.vendor_id` FK cascade; kolom uang integer rupiah; kolom atribut barang fleksibel untuk rental cosplay/kamera.
+  - **Tes:** Unit test: factory; rollback bersih; validasi tipe integer & ULID.
   - **Estimasi:** S
-  - **Story:** US-07
+  - **Story:** US-07 (SEC-10)
 
 - [ ] **T-09** | CRUD barang di dashboard vendor (Filament Resource)
   - **Tujuan:** Vendor bisa tambah, edit, nonaktifkan barang lewat UI.
@@ -124,12 +124,13 @@
 
 ## Milestone 4 — Halaman Booking Publik
 
-- [ ] **T-14** | Migrasi & model `renters`, `bookings`
-  - **Tujuan:** Tabel sesuai ERD; `bookings.vendor_id`, `item_id`, `renter_id` FK; status enum terdefinisi.
+- [ ] **T-14** | Migrasi & model `renters`, `bookings` (ULID)
+  - **Tujuan:** Tabel sesuai ERD dengan ULID primary key; `bookings.vendor_id`, `item_id`, `renter_id` FK; status enum terdefinisi; nomor referensi unik.
   - **Dependensi:** T-04
-  - **Kriteria Selesai:** Migrasi + factory; constraint status; `pending_expires_at` diisi saat insert.
-  - **Tes:** Factory; rollback.
+  - **Kriteria Selesai:** Migrasi + factory; constraint status; `pending_expires_at` diisi saat insert; ULID konsisten (bukan sequential ID).
+  - **Tes:** Factory; rollback; constraint uniqueness reference_code.
   - **Estimasi:** S
+  - **Story:** US-02 (SEC-10)
 
 - [ ] **T-15** | Form booking publik (Livewire) + validasi
   - **Tujuan:** Penyewa mengisi form; sistem memvalidasi dan membuat booking dengan `SELECT FOR UPDATE`.
@@ -159,20 +160,21 @@
 
 ## Milestone 5 — Unggah Dokumen Aman + Auto-Delete
 
-- [ ] **T-18** | Migrasi & model `identity_documents`
-  - **Tujuan:** Tabel menyimpan path + metadata retensi; tidak menyimpan file.
+- [ ] **T-18** | Migrasi & model `identity_documents` (consent & metadata retensi)
+  - **Tujuan:** Tabel menyimpan path storage privat, metadata retensi, dan bukti persetujuan (consent) UU PDP; tidak menyimpan file langsung di DB.
   - **Dependensi:** T-14
-  - **Kriteria Selesai:** Kolom `delete_scheduled_at`, `deleted_at`; FK ke `bookings`.
-  - **Tes:** Factory; rollback.
+  - **Kriteria Selesai:** Kolom `consent_given` (bool), `consent_at` (timestamp), `consent_version` (string), `delete_scheduled_at`, `deleted_at`; FK ke `bookings`.
+  - **Tes:** Factory; rollback bersih.
   - **Estimasi:** S
+  - **Story:** US-03 (BR-05, SEC-26)
 
-- [ ] **T-19** | Upload KTP + selfie ke S3 privat
-  - **Tujuan:** File diunggah ke bucket privat; nama file di-UUID; tipe MIME & magic bytes divalidasi.
+- [ ] **T-19** | Upload KTP + selfie ke S3 privat (re-encode & strip EXIF)
+  - **Tujuan:** File diunggah ke bucket privat; nama file di-UUID; validasi MIME & magic bytes PHP; re-encode gambar via GD dan hapus metadata EXIF (GPS/device).
   - **Dependensi:** T-18, T-02
-  - **Kriteria Selesai:** File tersimpan di S3; URL langsung → 403; MIME exe/pdf → tolak; > 5MB → tolak.
-  - **Tes:** Feature test: upload JPG valid; upload exe → 422; upload 6MB → 422; direct URL → 403.
+  - **Kriteria Selesai:** File tersimpan di S3 privat; URL langsung → 403; MIME exe/pdf → tolak; > 5MB → tolak; EXIF terhapus; gambar di-re-encode.
+  - **Tes:** Feature test: upload JPG valid (EXIF stripped); upload exe → 422; upload > 5MB → 422; direct URL → 403.
   - **Estimasi:** M
-  - **Story:** US-03
+  - **Story:** US-03 (SEC-28, SEC-29, SEC-30)
 
 - [ ] **T-20** | Signed URL sementara untuk akses foto (vendor)
   - **Tujuan:** Vendor bisa melihat foto KTP/selfie via URL bertanda tangan yang expire dalam 60 menit.
@@ -327,16 +329,94 @@
 
 ---
 
+## Milestone 11 — Keamanan Lanjutan (MVP)
+
+- [ ] **T-37** | Rate limiting semua endpoint kritis
+  - **Tujuan:** Konfigurasi Laravel throttle middleware untuk login, booking publik, upload dokumen, dan cek blacklist sesuai tabel SEC-11..SEC-14 di security.md.
+  - **Dependensi:** T-02 (cache), T-05, T-15, T-19
+  - **Kriteria Selesai:** Setiap endpoint kritis mengembalikan HTTP 429 + Retry-After jika melebihi batas; TrustProxies dikonfigurasi dengan Cloudflare IP ranges.
+  - **Tes:** TC-21 (login brute force), TC-22 (booking flood), TC-23 (upload limit).
+  - **Estimasi:** M
+  - **SEC:** SEC-11..SEC-14
+
+- [ ] **T-38** | Header keamanan HTTP + middleware CSRF
+  - **Tujuan:** Pasang semua header keamanan (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) di Nginx atau middleware Laravel; verifikasi CSRF aktif untuk semua state-changing request.
+  - **Dependensi:** T-34
+  - **Kriteria Selesai:** Semua header keamanan hadir di HTTP response; CSRF test lulus.
+  - **Tes:** TC-39 (CSRF test); curl header check di CI.
+  - **Estimasi:** S
+  - **SEC:** SEC-32, SEC-33, SEC-37, SEC-38
+
+- [ ] **T-39** | Validasi konsistensi ID publik ULID & anti-enumerasi
+  - **Tujuan:** Memastikan semua model publik menggunakan ULID; tidak ada auto-increment sequential ID yang bocor di URL atau JSON API.
+  - **Dependensi:** T-04, T-08, T-14
+  - **Kriteria Selesai:** Route parameter menggunakan ULID; integer sequential ID tidak pernah tampil di publik; percobaan enumerasi gagal.
+  - **Tes:** IDOR-10 dari authorization-matrix.md.
+  - **Estimasi:** S
+  - **SEC:** SEC-10
+
+- [ ] **T-40** | Hardening VPS: firewall Cloudflare IP only + SSH + Nginx
+  - **Tujuan:** VPS hanya menerima koneksi HTTP/HTTPS dari IP Cloudflare; port SSH diubah / restricted; root login nonaktif; server_tokens off.
+  - **Dependensi:** T-34
+  - **Kriteria Selesai:** Firewall UFW aktif; akses non-Cloudflare → connection refused; SSH root → denied.
+  - **Tes:** Manual test koneksi direct IP vs Cloudflare IP.
+  - **Estimasi:** M
+  - **SEC:** SEC-15, SEC-16, SEC-17
+
+---
+
+## Milestone 12 — Billing Langganan (Fase 1.5)
+
+- [ ] **T-41** | [Fase 1.5] Migrasi tabel billing: `subscriptions`, `subscription_events`, `manual_activations`
+  - **Tujuan:** Skema DB billing sesuai billing.md seksi 2; kolom state machine siap.
+  - **Dependensi:** T-04
+  - **Kriteria Selesai:** Migrasi berjalan; factory; rollback bersih; kolom `gateway_event_id` UNIQUE.
+  - **Tes:** Factory test; rollback; unique constraint test.
+  - **Estimasi:** S
+
+- [ ] **T-42** | [Fase 1.5] Webhook handler Xendit + verifikasi signature
+  - **Tujuan:** Endpoint `POST /webhooks/xendit` memverifikasi signature, idempoten, dan menjalankan state machine langganan.
+  - **Dependensi:** T-41
+  - **Kriteria Selesai:** Langkah seksi 6 billing.md diimplementasi; test BLT-01..BLT-09 lulus.
+  - **Tes:** TC-26..TC-30 dari testing-strategy.md.
+  - **Estimasi:** L
+  - **SEC:** SEC-22, SEC-23, SEC-24, SEC-25
+
+- [ ] **T-43** | [Fase 1.5] Entitlement check server-side untuk fitur Premium
+  - **Tujuan:** Middleware/service mengecek status subscription aktif setiap request ke fitur berbayar.
+  - **Dependensi:** T-41
+  - **Kriteria Selesai:** Request fitur Premium oleh vendor Free diarahkan ke halaman upgrade; dicek di server setiap request.
+  - **Tes:** Feature test: vendor Free akses fitur Premium → 403/redirect; vendor Premium → 200.
+  - **Estimasi:** M
+  - **SEC:** SEC-25
+
+- [ ] **T-44** | [Fase 1.5] Rekonsiliasi langganan terjadwal
+  - **Tujuan:** Job harian membandingkan status langganan di gateway vs database lokal.
+  - **Dependensi:** T-42
+  - **Kriteria Selesai:** Scheduler harian 03:00 WIB berjalan; ketidaksesuaian memicu alert PIC teknis.
+  - **Tes:** Unit test mock gateway response vs DB.
+  - **Estimasi:** M
+
+---
+
 ## Matriks Referensi Silang
 
-| Task | User Story | Business Rule |
-|------|-----------|--------------|
-| T-11 | US-01 | BR-01 |
-| T-15 | US-02 | BR-01, BR-02 |
-| T-19 | US-03 | — |
-| T-21 | US-03 | BR-05 |
-| T-16, T-33 | US-04, US-12 | — |
-| T-17 | US-08 | BR-02 |
-| T-26, T-28 | US-10 | BR-04 |
-| T-30 | US-09 | BR-03 |
-| T-06 | US-13 | BR-06 |
+| Task | User Story | Business Rule | Security Control |
+|------|-----------|--------------|------------------|
+| T-11 | US-01 | BR-01 | — |
+| T-15 | US-02 | BR-01, BR-02 | SEC-19 |
+| T-18 | US-03 | BR-05 | SEC-26 |
+| T-19 | US-03 | — | SEC-28, SEC-29, SEC-30 |
+| T-20 | US-08 | — | SEC-27 |
+| T-21 | US-03 | BR-05 | SEC-31, SEC-47 |
+| T-16, T-33 | US-04, US-12 | — | — |
+| T-17 | US-08 | BR-02 | — |
+| T-26, T-28 | US-10 | BR-04 | SEC-42 |
+| T-30 | US-09 | BR-03 | — |
+| T-06 | US-13 | BR-06 | SEC-08, SEC-09 |
+| T-37 | — | — | SEC-11..SEC-14 |
+| T-38 | — | — | SEC-32..SEC-39 |
+| T-39 | — | — | SEC-10 |
+| T-40 | — | — | SEC-15..SEC-17 |
+| T-42 | — | — | SEC-22..SEC-25 |
+
