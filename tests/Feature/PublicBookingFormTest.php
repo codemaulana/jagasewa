@@ -9,6 +9,7 @@ use App\Models\Renter;
 use App\Models\Vendor;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -253,5 +254,50 @@ class PublicBookingFormTest extends TestCase
             ->assertSet('endDate', $endDate)
             ->assertSet('totalDays', 4)
             ->assertSet('totalPrice', 800000);
+    }
+
+    public function test_submitting_booking_with_ktp_and_selfie_creates_identity_documents(): void
+    {
+        $vendor = Vendor::factory()->create(['is_active' => true]);
+        $item = Item::factory()->create([
+            'vendor_id' => $vendor->id,
+            'price_per_day' => 150000,
+            'is_active' => true,
+        ]);
+
+        $img = imagecreatetruecolor(300, 200);
+        ob_start();
+        imagejpeg($img);
+        $imgData = ob_get_clean();
+        imagedestroy($img);
+
+        $ktpFile = UploadedFile::fake()->createWithContent('ktp_user.jpg', $imgData);
+        $selfieFile = UploadedFile::fake()->createWithContent('selfie_user.jpg', $imgData);
+
+        Livewire::test(BookingForm::class, ['item' => $item])
+            ->set('name', 'Dewi Lestari')
+            ->set('phone', '081233334444')
+            ->set('address', 'Jl. Braga No. 10, Bandung')
+            ->set('startDate', Carbon::now('Asia/Jakarta')->addDays(3)->toDateString())
+            ->set('endDate', Carbon::now('Asia/Jakarta')->addDays(4)->toDateString())
+            ->set('ktpPhoto', $ktpFile)
+            ->set('selfiePhoto', $selfieFile)
+            ->set('agreePrivacy', true)
+            ->call('submit')
+            ->assertHasNoErrors()
+            ->assertRedirect();
+
+        $booking = Booking::with('identityDocuments')->firstOrFail();
+        $this->assertCount(2, $booking->identityDocuments);
+
+        $ktpDoc = $booking->identityDocuments->where('doc_type', 'ktp')->first();
+        $this->assertNotNull($ktpDoc);
+        $this->assertTrue($ktpDoc->isKtp());
+        Storage::disk('s3')->assertExists($ktpDoc->storage_path);
+
+        $selfieDoc = $booking->identityDocuments->where('doc_type', 'selfie')->first();
+        $this->assertNotNull($selfieDoc);
+        $this->assertTrue($selfieDoc->isSelfie());
+        Storage::disk('s3')->assertExists($selfieDoc->storage_path);
     }
 }

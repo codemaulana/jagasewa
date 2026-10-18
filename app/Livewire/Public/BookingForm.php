@@ -3,13 +3,16 @@
 namespace App\Livewire\Public;
 
 use App\Models\Booking;
+use App\Models\IdentityDocument;
 use App\Models\Item;
 use App\Models\Renter;
 use App\Services\AuditService;
 use App\Services\BookingCalendarService;
+use App\Services\DocumentUploadService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -123,7 +126,7 @@ class BookingForm extends Component
         }
     }
 
-    public function submit(BookingCalendarService $calendarService)
+    public function submit(BookingCalendarService $calendarService, DocumentUploadService $uploadService)
     {
         $this->errorMessage = null;
         $this->validate();
@@ -135,7 +138,7 @@ class BookingForm extends Component
         }
 
         try {
-            $booking = DB::transaction(function () use ($calendarService) {
+            $booking = DB::transaction(function () use ($calendarService, $uploadService) {
                 // 2. Pessimistic Locking: Lock current booking rows for this item to prevent concurrent double-booking
                 Booking::where('item_id', $this->item->id)
                     ->whereIn('status', BookingCalendarService::LOCKING_STATUSES)
@@ -189,7 +192,28 @@ class BookingForm extends Component
                     'lock_version' => 1,
                 ]);
 
-                // 7. Audit log (without PII)
+                // 7. Upload identity documents if provided (KTP & Selfie) with auto-watermark
+                if ($this->ktpPhoto) {
+                    $uploadService->upload(
+                        file: $this->ktpPhoto,
+                        booking: $newBooking,
+                        docType: IdentityDocument::DOC_TYPE_KTP,
+                        consentGiven: true,
+                        consentVersion: 'v1.0'
+                    );
+                }
+
+                if ($this->selfiePhoto) {
+                    $uploadService->upload(
+                        file: $this->selfiePhoto,
+                        booking: $newBooking,
+                        docType: IdentityDocument::DOC_TYPE_SELFIE,
+                        consentGiven: true,
+                        consentVersion: 'v1.0'
+                    );
+                }
+
+                // 8. Audit log (without PII)
                 AuditService::log(
                     'booking_created',
                     'booking',
@@ -207,6 +231,8 @@ class BookingForm extends Component
             });
 
             return redirect()->route('public.booking.success', ['ulid' => $booking->ulid]);
+        } catch (ValidationException $e) {
+            $this->setErrorBag($e->validator->getMessageBag());
         } catch (RuntimeException $e) {
             $this->errorMessage = $e->getMessage();
         }
