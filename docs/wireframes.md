@@ -50,6 +50,41 @@
 
 ---
 
+## Layar 1B — Halaman Toko / Katalog Vendor (`/b/{vendor_slug}`)
+
+```
+┌─────────────────────────────────┐
+│ 🏷️  JagaSewa                    │  ← header
+├─────────────────────────────────┤
+│                                 │
+│ ┌─────────────────────────────┐ │
+│ │ [LOGO]  Studio Akihabara ⭐ │ │  ← banner profil toko
+│ │ Rental Cosplay & Aksesoris  │ │  ← bio singkat vendor
+│ │ 📍 Bandung | 📱 wa.me ready │ │
+│ └─────────────────────────────┘ │
+│                                 │
+│ ─────── KATALOG RENTAL ───────  │
+│                                 │
+│ ┌─────────────────────────────┐ │
+│ │ [FOTO 1]                    │ │
+│ │ **Kostum Raiden Shogun (M)**│ │
+│ │ Rp 175.000 / hari           │ │
+│ │ [ Lihat Detail & Kalender ] │ │  ← link ke /b/{vendor}/{item}
+│ └─────────────────────────────┘ │
+│                                 │
+│ ┌─────────────────────────────┐ │
+│ │ [FOTO 2]                    │ │
+│ │ **Kostum Hu Tao Fullset (L)**│ │
+│ │ Rp 150.000 / hari           │ │
+│ │ [ Lihat Detail & Kalender ] │ │
+│ └─────────────────────────────┘ │
+│                                 │
+│ [ < 1  2  3 > ]                 │  ← pagination sederhana
+└─────────────────────────────────┘
+```
+
+---
+
 ## Layar 2 — Form Booking + Unggah Dokumen
 
 ```

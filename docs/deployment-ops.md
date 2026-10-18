@@ -19,14 +19,41 @@
 
 ## 2. Langkah Deploy
 
-### 2.1 Deployment Manual (awal MVP) [ASUMSI]
+### 2.1 Deployment di Cloud Hosting cPanel (Jagoan Hosting) — Environment Nyata
+
+Karena JagaSewa berjalan di **Cloud Hosting Next Gen cPanel (Jagoan Hosting)** tanpa akses root VPS/Supervisor, alur deploy dan manajemen proses disesuaikan:
 
 ```bash
-# Di server production (sebagai user non-root 'deploy')
+# Di terminal SSH cPanel (sebagai user 'sdncirac' di direktori project)
+cd /home/sdncirac/jagasewa
 git pull origin main
 composer install --no-dev --optimize-autoloader
-npm run build  # jika ada asset build
-php artisan down  # maintenance mode
+php artisan down
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan up
+```
+
+#### Pengganti Supervisor di cPanel (Cron Job):
+Tambahkan entri Cron Job di cPanel (*cPanel > Cron Jobs*):
+```cron
+* * * * * php /home/sdncirac/jagasewa/artisan schedule:run > /dev/null 2>&1
+```
+Cron job ini berjalan setiap menit untuk menjalankan:
+1. `AutoCancelPendingBookingsJob` (setiap 30 menit)
+2. `AutoDeleteDocumentsJob` (harian pukul 02:00 WIB)
+3. Queue Worker: `php artisan queue:work --stop-when-empty` (memproses antrean yang ada lalu berhenti, ramah RAM cPanel)
+
+### 2.2 Deployment di VPS Mandiri (Alternatif / Target Skala Besar) [ASUMSI]
+
+```bash
+# Di server production VPS (sebagai user non-root 'deploy')
+git pull origin main
+composer install --no-dev --optimize-autoloader
+npm run build
+php artisan down
 php artisan migrate --force
 php artisan config:cache
 php artisan route:cache
@@ -99,8 +126,28 @@ sudo supervisorctl restart jagasewa-worker:*
 - **Jangan** gunakan root DB user untuk koneksi aplikasi
 - Buat user terpisah untuk backup (hak `SELECT` saja)
 
-### 4.5 Nginx Hardening
+### 4.5 Web Server Hardening (.htaccess di cPanel / Nginx di VPS)
 
+#### A. Pada Cloud Hosting cPanel (Apache / LiteSpeed):
+Gunakan konfigurasi pada file `public/.htaccess` atau menu cPanel (*Select PHP Version > Options*):
+```apache
+# Sembunyikan versi PHP
+Header always unset X-Powered-By
+Header unset X-Powered-By
+
+# Header Keamanan
+Header always set X-Frame-Options "DENY"
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+# Batas upload diatur via .user.ini atau cPanel PHP Options:
+# upload_max_filesize = 6M
+# post_max_size = 8M
+# expose_php = Off
+```
+
+#### B. Pada VPS Mandiri (Nginx):
 ```nginx
 # Sembunyikan versi server
 server_tokens off;
@@ -113,24 +160,15 @@ client_body_timeout 30s;
 send_timeout 30s;
 ```
 
-Header keamanan (dapat diset di Nginx atau Laravel middleware):
-
-| Header | Nilai |
-|---|---|
-| `X-Frame-Options` | `DENY` |
-| `X-Content-Type-Options` | `nosniff` |
-| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` |
-
 ---
 
 ## 5. Backup
 
 | Data | Frekuensi | Metode | Enkripsi | Lokasi | Retensi |
 |---|---|---|---|---|---|
-| Database | Harian pukul 01:00 WIB | `mysqldump` / `pg_dump` → gzip → upload S3 backup bucket | GPG dengan key terpisah [ASUMSI] | S3 bucket berbeda dari bucket aplikasi | 30 hari [ASUMSI] |
-| File `.env` | Manual setiap ada perubahan | Simpan di secrets manager [ASUMSI] | Provider-managed | Secrets manager | Sesuai kebijakan internal |
-| Storage S3 aplikasi | Otomatis [ASUMSI: S3 versioning aktif] | S3 object versioning | SSE provider | Same provider | 30 hari versioning [ASUMSI] |
+| Database | Harian pukul 01:00 WIB | `mysqldump` → kompresi ZIP berpassword | Password-protected ZIP AES-256 (atau GPG) | S3/Backblaze bucket terpisah dari aplikasi | 30 hari |
+| File `.env` | Manual setiap ada perubahan | Simpan di secrets manager / offline vault | AES-256 | Secrets manager / Vault | Sesuai kebijakan internal |
+| Storage S3 aplikasi | Otomatis | Backblaze B2 lifecycle & versioning | SSE provider | Same provider | 30 hari versioning |
 
 ### Uji Restore Berkala
 

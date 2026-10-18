@@ -93,6 +93,14 @@
   - **Estimasi:** M
   - **Story:** US-01, US-05
 
+- [ ] **T-10B** | Halaman katalog toko vendor publik (`/b/{vendor_slug}`)
+  - **Tujuan:** Penyewa dapat melihat seluruh etalase barang aktif milik vendor tertentu via 1 tautan utama (cocok untuk bio Instagram/X).
+  - **Dependensi:** T-10
+  - **Kriteria Selesai:** Route `GET /b/{vendor_slug}` menampilkan banner profil vendor, daftar item aktif dengan grid responsif, link ke detail masing-masing item (`/b/{vendor_slug}/{item_slug}`); vendor nonaktif → 404; item nonaktif tidak muncul.
+  - **Tes:** Feature test: vendor aktif → 200 dengan daftar item miliknya saja; vendor nonaktif → 404; item nonaktif vendor terfilter keluar.
+  - **Estimasi:** S
+  - **Story:** US-01, US-05
+
 ---
 
 ## Milestone 3 — Smart Buffer Calendar
@@ -124,27 +132,37 @@
 
 ## Milestone 4 — Halaman Booking Publik
 
-- [ ] **T-14** | Migrasi & model `renters`, `bookings` (ULID)
-  - **Tujuan:** Tabel sesuai ERD dengan ULID primary key; `bookings.vendor_id`, `item_id`, `renter_id` FK; status enum terdefinisi; nomor referensi unik.
-  - **Dependensi:** T-04
-  - **Kriteria Selesai:** Migrasi + factory; constraint status; `pending_expires_at` diisi saat insert; ULID konsisten (bukan sequential ID).
-  - **Tes:** Factory; rollback; constraint uniqueness reference_code.
-  - **Estimasi:** S
-  - **Story:** US-02 (SEC-10)
+> [!TIP]
+> **Alur Eksekusi Terintegrasi (Rekomendasi Terbaik):**
+> Agar terhindar dari perombakan kode/tabel di tengah jalan, modul dikerjakan dengan urutan:
+> 1. `T-26` (Service `IdentityHashService` untuk blind index NIK/WA)
+> 2. `T-14` & `T-18` (Migrasi & model `renters`, `bookings`, `identity_documents` dengan ULID, enkripsi PII, `lock_version`, `idempotency_key`)
+> 3. `T-19` (Service upload KTP/selfie aman + auto-watermark)
+> 4. `T-32` (Helper `WaNotificationHelper` terpusat)
+> 5. `T-15` (Form booking publik Livewire menggabungkan kalender T-13 + input data + upload KTP T-19 + transaksi atomik `SELECT FOR UPDATE`)
+> 6. `T-16` (Halaman sukses booking publik dengan tombol wa.me)
 
-- [ ] **T-15** | Form booking publik (Livewire) + validasi
-  - **Tujuan:** Penyewa mengisi form; sistem memvalidasi dan membuat booking dengan `SELECT FOR UPDATE`.
-  - **Dependensi:** T-11, T-13, T-14
-  - **Kriteria Selesai:** Submit valid → booking `pending` terbuat, nomor referensi tampil. Submit tanggal bentrok → error. Submit tanpa consent → disabled.
-  - **Tes:** Feature test: booking valid; booking bentrok; booking tanpa consent checkbox.
+- [ ] **T-14** | Migrasi & model `renters`, `bookings` (ULID, Enkripsi PII & Concurrency)
+  - **Tujuan:** Tabel sesuai ERD dengan ULID primary key; enkripsi PII penyewa + kolom blind index hash; kolom pencegah double-submit & race condition.
+  - **Dependensi:** T-04, T-26
+  - **Kriteria Selesai:** Migrasi + factory berjalan dengan ULID; `bookings` memiliki kolom `idempotency_key` (unique nullable), `lock_version` (int default 1), `pending_expires_at`, dan `reference_code` (unique); `renters` menggunakan Laravel `encrypted` cast untuk NIK/WA/alamat serta menyimpan kolom `phone_hash` dan `nik_hash` (HMAC-SHA256) untuk pencarian cepat; relasi Eloquent lengkap.
+  - **Tes:** Factory; rollback bersih; constraint uniqueness `reference_code` & `idempotency_key`; verifikasi data PII tersimpan terenkripsi di DB.
+  - **Estimasi:** M
+  - **Story:** US-02 (SEC-10, SEC-20, SEC-21, SEC-26)
+
+- [ ] **T-15** | Form booking publik (Livewire) + validasi + integrasi dokumen identitas
+  - **Tujuan:** Penyewa mengisi form booking lengkap (identitas, tanggal sewa, catatan, upload KTP & selfie terverifikasi) dalam satu alur UI; sistem memvalidasi dan membuat booking dalam transaksi atomik dengan `SELECT ... FOR UPDATE` (pessimistic locking) dan `idempotency_key`.
+  - **Dependensi:** T-11, T-13, T-14, T-18, T-19
+  - **Kriteria Selesai:** Submit valid → dokumen terunggah & ter-watermark via T-19, booking `pending` terbuat dengan ULID & nomor referensi unik, idempotency key tersimpan. Submit tanggal bentrok → pesan error spesifik. Submit tanpa centang persetujuan privasi → disabled/ditolak.
+  - **Tes:** Feature test: booking valid lengkap dengan foto KTP/selfie; booking bentrok; booking tanpa consent checkbox; pencegahan double-submit via idempotency_key.
   - **Estimasi:** L
-  - **Story:** US-02, US-04 (BR-01, BR-02)
+  - **Story:** US-02, US-03, US-04 (BR-01, BR-02, SEC-19, SEC-20)
 
-- [ ] **T-16** | Halaman sukses booking + tautan wa.me
-  - **Tujuan:** Setelah booking dibuat, tampilkan nomor referensi dan tombol WA dengan pesan pre-filled.
-  - **Dependensi:** T-15
-  - **Kriteria Selesai:** URL `wa.me/62xxx?text=...` mengandung nomor referensi, nama barang, tanggal sewa.
-  - **Tes:** Unit test: generator URL wa.me dengan berbagai nomor WA (format 08xx, +62xx).
+- [ ] **T-16** | Halaman sukses booking publik dengan tautan wa.me
+  - **Tujuan:** Setelah booking dibuat, tampilkan halaman konfirmasi sukses (`/b/success/{booking_ulid}`) berisi nomor referensi, status pending, dan tombol "Hubungi Vendor via WhatsApp" menggunakan `WaNotificationHelper`.
+  - **Dependensi:** T-15, T-32
+  - **Kriteria Selesai:** Tampilan konfirmasi sesuai wireframe Layar 3; tombol WA menghasilkan URL terenkode valid via `WaNotificationHelper`; akses booking non-existent → 404.
+  - **Tes:** Feature test: halaman sukses render 200; nomor referensi dan nama barang muncul; link wa.me memiliki query text yang benar.
   - **Estimasi:** S
   - **Story:** US-04
 
@@ -286,38 +304,38 @@
 
 ## Milestone 9 — Integrasi wa.me & Notifikasi
 
-- [ ] **T-32** | Helper: generator URL wa.me dengan pesan pre-filled
-  - **Tujuan:** Semua tautan WA di platform menggunakan helper terpusat.
-  - **Dependensi:** T-14
-  - **Kriteria Selesai:** Helper normalisasi nomor WA (08xx → +62xx); URL di-encode; bisa diuji unit.
-  - **Tes:** Unit test: format 08xx, +62xx, 62xx; karakter spesial di pesan di-encode.
+- [ ] **T-32** | Helper generator URL wa.me terpusat (`WaNotificationHelper`)
+  - **Tujuan:** Layanan terpusat untuk memformat nomor telepon (normalisasi 08xx / 62xx → +628xx) dan meng-encode teks pesan WhatsApp untuk penyewa maupun vendor.
+  - **Dependensi:** T-01
+  - **Kriteria Selesai:** Helper `WaNotificationHelper::generateVendorChatUrl($booking)` dan `generateRenterChatUrl($booking)`; URL ter-encode dengan aman; unit test format nomor dan encoding karakter khusus lulus.
+  - **Tes:** Unit test: format 08xx, +62xx, 62xx; karakter spesial dan baris baru di pesan di-encode rapi.
   - **Estimasi:** S
   - **Story:** US-04, US-12
 
-- [ ] **T-33** | Tautan wa.me di halaman sukses booking + halaman detail vendor
-  - **Tujuan:** Penyewa dan vendor bisa menghubungi satu sama lain via WA satu klik.
-  - **Dependensi:** T-32, T-16, T-23
-  - **Kriteria Selesai:** Pesan pre-filled mengandung referensi booking, nama barang, tanggal; link benar di mobile browser.
-  - **Tes:** Feature test: output URL sesuai format; nama barang muncul di pesan.
+- [ ] **T-33** | Tautan wa.me di dashboard vendor (notifikasi approve/reject)
+  - **Tujuan:** Tombol aksi interaktif di halaman detail booking vendor untuk langsung membuka chat WhatsApp ke penyewa saat pesanan disetujui atau ditolak.
+  - **Dependensi:** T-32, T-23
+  - **Kriteria Selesai:** Tombol "Chat Penyewa via WhatsApp" di Filament Vendor Panel membuka URL wa.me dengan pesan konfirmasi yang sesuai status pesanan (`approved` atau `rejected`).
+  - **Tes:** Feature test: URL chat ke penyewa valid; nomor tujuan sesuai data penyewa; pesan memuat nomor referensi booking.
   - **Estimasi:** S
-  - **Story:** US-04, US-12
+  - **Story:** US-12
 
 ---
 
 ## Milestone 10 — Deploy, Backup & Pemantauan Error
 
-- [ ] **T-34** | Konfigurasi server produksi (PHP, Nginx/Caddy, Supervisor)
-  - **Tujuan:** Server siap menjalankan Laravel dengan queue worker dan scheduler.
+- [ ] **T-34** | Konfigurasi environment produksi cPanel (Addon Domain, SSL, & Cron Job)
+  - **Tujuan:** Hosting Jagoan Hosting (Cloud Hosting cPanel) siap menjalankan aplikasi Laravel, scheduler, dan queue worker via Cron Job cPanel.
   - **Dependensi:** T-01
-  - **Kriteria Selesai:** `php artisan queue:work` berjalan via Supervisor; Nginx melayani traffic HTTPS; `APP_DEBUG=false`.
-  - **Tes:** Cek status Supervisor; curl HTTPS → 200.
+  - **Kriteria Selesai:** Document root mengarah ke `/jagasewa/public`; HTTPS aktif; Cron Job cPanel `* * * * * php /home/sdncirac/jagasewa/artisan schedule:run > /dev/null 2>&1` berjalan untuk mengeksekusi auto-cancel booking, auto-delete dokumen, dan queue worker (`queue:work --stop-when-empty`); upload limit & hide PHP version via `.htaccess`; `APP_DEBUG=false`.
+  - **Tes:** Cek log eksekusi cron; curl HTTPS domain publik → 200.
   - **Estimasi:** M
 
-- [ ] **T-35** | Backup otomatis database harian + uji restore
-  - **Tujuan:** Backup database berjalan setiap hari; restore pernah diuji.
+- [ ] **T-35** | Backup otomatis database harian terenkripsi + uji restore
+  - **Tujuan:** Backup database berjalan terjadwal setiap hari dan dienkripsi sebelum dikirim ke remote bucket Backblaze B2; prosedur restore diuji.
   - **Dependensi:** T-34
-  - **Kriteria Selesai:** Backup tersimpan di S3 bucket terpisah; prosedur restore terdokumentasi dan diuji sekali.
-  - **Tes:** Jalankan restore dari backup terbaru ke environment staging; data konsisten.
+  - **Kriteria Selesai:** Backup terenkripsi (password-protected ZIP AES-256) tersimpan di S3/Backblaze bucket backup privat; retensi 30 hari; prosedur restore terdokumentasi dan diuji sekali.
+  - **Tes:** Jalankan restore dari backup terbaru ke environment staging/lokal; verifikasi integritas data konsisten.
   - **Estimasi:** M
 
 - [ ] **T-36** | Error monitoring (Sentry atau setara) + checklist pre-launch security
