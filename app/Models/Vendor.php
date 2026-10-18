@@ -73,6 +73,14 @@ class Vendor extends Model
     }
 
     /**
+     * Get the blacklist entries belonging to the vendor.
+     */
+    public function blacklistEntries(): HasMany
+    {
+        return $this->hasMany(BlacklistEntry::class);
+    }
+
+    /**
      * The "booted" method of the model.
      */
     protected static function booted(): void

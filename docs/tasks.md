@@ -242,7 +242,7 @@
 
 ## Milestone 7 — Blacklist Pribadi
 
-- [ ] **T-25** | Migrasi & model `blacklist_entries`
+- [x] **T-25** | Migrasi & model `blacklist_entries`
   - **Tujuan:** Tabel dengan kolom hash; kolom fase 2 (`scope`, `consent_basis`, `evidence`, `expires_at`) sudah ada tapi nullable.
   - **Dependensi:** T-04
   - **Kriteria Selesai:** Migrasi berjalan; `scope` default `private`.
