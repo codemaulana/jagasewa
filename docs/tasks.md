@@ -166,7 +166,7 @@
   - **Estimasi:** S
   - **Story:** US-04
 
-- [ ] **T-17** | Scheduler: auto-cancel booking pending > 24 jam
+- [x] **T-17** | Scheduler: auto-cancel booking pending > 24 jam
   - **Tujuan:** Job yang berjalan periodik membatalkan booking pending yang kedaluwarsa.
   - **Dependensi:** T-14
   - **Kriteria Selesai:** Job mengubah status `pending` yang melewati `pending_expires_at` → `cancelled_timeout`; kalender dibebaskan.
