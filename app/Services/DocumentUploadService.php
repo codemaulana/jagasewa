@@ -147,7 +147,7 @@ class DocumentUploadService
             'consent_given' => $consentGiven,
             'consent_version' => $consentVersion,
             'consent_at' => Carbon::now('Asia/Jakarta'),
-            'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays(30),
+            'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays(config('jagasewa.retention.closed_days', 7)),
         ]);
     }
 

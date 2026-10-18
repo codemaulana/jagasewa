@@ -74,7 +74,7 @@ flowchart TD
     M --> N{deposit_remaining}
     N -- Positif → Refund --> O[Vendor kembalikan sisa deposit\nlewat transfer manual]
     N -- Negatif → Shortfall --> P[Vendor kirim tagihan shortfall\nvia wa.me ke penyewa]
-    O --> Q[Sistem jadwalkan penghapusan\nfoto KTP/selfie +30 hari]
+    O --> Q[Sistem jadwalkan penghapusan\nfoto KTP/selfie +7 hari]
     P --> Q
     Q --> R([Booking selesai])
 ```

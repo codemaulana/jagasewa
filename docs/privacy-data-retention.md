@@ -12,8 +12,8 @@
 | Nama penyewa | Form booking | Identifikasi booking | Kontrak / persetujuan 🔍 | DB (plaintext) | Tidak | 5 tahun setelah booking `closed` [ASUMSI] |
 | Nomor WhatsApp penyewa | Form booking | Komunikasi, blacklist check | Kontrak / persetujuan 🔍 | DB (hash + encrypted) | HMAC + AES | Hash: permanen; Encrypted: hapus bersamaan nama setelah 5 tahun [ASUMSI] |
 | NIK (hash saja) | Blacklist check | Verifikasi identitas | Kepentingan sah vendor 🔍 | DB (hash only) | HMAC | Sampai entri blacklist dihapus |
-| Foto KTP | Upload saat booking | Verifikasi identitas | Persetujuan eksplisit 🔍 | S3 privat | SSE | Hapus 30 hari setelah booking `closed`/`cancelled` (BR-05) |
-| Foto selfie | Upload saat booking | Verifikasi identitas | Persetujuan eksplisit 🔍 | S3 privat | SSE | Hapus 30 hari setelah booking `closed`/`cancelled` (BR-05) |
+| Foto KTP | Upload saat booking | Verifikasi identitas | Persetujuan eksplisit 🔍 | S3 privat | SSE | Hapus 7 hari setelah booking `closed` atau 3 hari setelah `cancelled_*`/`rejected` (BR-05) |
+| Foto selfie | Upload saat booking | Verifikasi identitas | Persetujuan eksplisit 🔍 | S3 privat | SSE | Hapus 7 hari setelah booking `closed` atau 3 hari setelah `cancelled_*`/`rejected` (BR-05) |
 | Data booking (tanggal, barang, status) | Sistem | Operasional, audit | Kontrak 🔍 | DB | Tidak (non-PII) | 5 tahun [ASUMSI] |
 | Data settlement / denda | Sistem | Bukti keuangan | Kewajiban hukum 🔍 | DB | Tidak | 5 tahun [ASUMSI] |
 | Audit logs | Sistem | Keamanan, debugging | Kepentingan sah 🔍 | DB | Tidak | 1 tahun [ASUMSI] |
@@ -37,7 +37,7 @@ flowchart TD
 
 **Teks checkbox yang ditampilkan ke penyewa:**
 
-> *"Saya setuju data KTP dan selfie saya digunakan untuk verifikasi booking ini dan akan dihapus otomatis dalam 30 hari setelah booking selesai."*
+> *"Saya setuju data KTP dan selfie saya digunakan untuk verifikasi booking ini dan akan dihapus otomatis dalam 7 hari setelah booking selesai (atau 3 hari jika dibatalkan)."*
 
 > [!IMPORTANT]
 > Tombol upload harus tetap **disabled** sampai checkbox dicentang. Ini adalah kontrol teknis yang memperkuat persetujuan eksplisit.
@@ -96,8 +96,8 @@ flowchart LR
 
 | Data | Pemicu Penghapusan | Mekanisme | Dicatat Di |
 |---|---|---|---|
-| Foto KTP | 30 hari setelah booking `closed` / `cancelled` | `AutoDeleteDocumentsJob` (scheduler) | `audit_logs` |
-| Foto selfie | 30 hari setelah booking `closed` / `cancelled` | `AutoDeleteDocumentsJob` (scheduler) | `audit_logs` |
+| Foto KTP | 7 hari setelah booking `closed` (atau 3 hari setelah `cancelled_*`/`rejected`) | `AutoDeleteDocumentsJob` (scheduler) | `audit_logs` |
+| Foto selfie | 7 hari setelah booking `closed` (atau 3 hari setelah `cancelled_*`/`rejected`) | `AutoDeleteDocumentsJob` (scheduler) | `audit_logs` |
 | Foto KTP (fallback) | 90 hari setelah upload jika booking tidak pernah `closed` | `AutoDeleteDocumentsJob` | `audit_logs` |
 | WA encrypted (penyewa lama) | 5 tahun setelah booking `closed` [ASUMSI] | Scheduled job | `audit_logs` |
 

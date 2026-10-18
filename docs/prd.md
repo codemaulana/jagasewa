@@ -74,7 +74,7 @@ JagaSewa adalah platform booking berbasis web (mobile-first) untuk pemilik renta
 |----|--------|
 | A-01 | Stack: Laravel + Filament + Livewire, MySQL/PostgreSQL |
 | A-02 | Batas waktu pending booking: 24 jam; lewat batas → otomatis dibatalkan |
-| A-03 | Retensi foto KTP/selfie: 30 hari setelah booking ditutup |
+| A-03 | Retensi foto KTP/selfie: 7 hari setelah booking ditutup (3 hari jika batal/ditolak) |
 | A-04 | Vendor mengelola pengiriman sendiri; JagaSewa tidak mengatur kurir |
 | A-05 | WhatsApp tersedia dan nomor vendor valid; `wa.me` tidak dijamin terkirim |
 | A-06 | Satu akun vendor = satu toko; multi-toko per akun ditunda ke Fase 2 |

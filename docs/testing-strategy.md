@@ -122,7 +122,7 @@
 
 | ID | Kategori | Skenario | Jenis Tes | File Tes | Prioritas | Referensi |
 |---|---|---|---|---|---|---|
-| TC-36 | Retensi Data | `AutoDeleteDocumentsJob` → file > 30 hari setelah booking `closed` dihapus | Unit | `AutoDeleteDocumentsJobTest` | P0 | T-21 |
+| TC-36 | Retensi Data | `AutoDeleteDocumentsJob` → file > 7 hari setelah booking `closed` (atau > 3 hari jika `cancelled_*`/`rejected`) dihapus | Unit | `AutoDeleteDocumentsJobTest` | P0 | T-21 |
 | TC-37 | Retensi Data | `AutoDeleteDocumentsJob` → `audit_log` tidak mengandung path file setelah hapus | Unit | `AutoDeleteDocumentsJobTest` | P0 | T-21 |
 | TC-38 | Retensi Data | Fallback: file > 90 hari setelah upload (booking tidak pernah `closed`) dihapus | Unit | `AutoDeleteDocumentsJobTest` | P1 | T-21 |
 

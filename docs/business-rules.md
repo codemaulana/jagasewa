@@ -137,8 +137,10 @@ identity_hash = HMAC-SHA256(normalized_identity, SERVER_SECRET)
 
 - Foto KTP dan selfie disimpan di object storage **privat** (tidak bisa diakses via URL langsung).
 - Akses menggunakan **signed URL** dengan TTL maksimal 60 menit [ASUMSI].
-- Setelah booking mencapai status `closed` atau `cancelled_*`, sistem menjadwalkan penghapusan otomatis setelah **N hari** (default: `N = 30`, dapat diubah admin).
-- Penghapusan dicatat di `audit_logs` dengan entri: `{ event: "document_deleted", booking_id, timestamp }` tanpa menyebut konten file.
+- Setelah booking mencapai status final:
+  - **Status `closed` (selesai normal):** sistem menjadwalkan penghapusan otomatis setelah **7 hari** (default: `DOC_RETENTION_CLOSED_DAYS=7`).
+  - **Status `cancelled_*` atau `rejected` (batal/ditolak):** sistem menjadwalkan penghapusan otomatis setelah **3 hari** (default: `DOC_RETENTION_CANCELLED_DAYS=3`).
+- Penghapusan dicatat di `audit_logs` dengan entri: `{ event: "document_deleted", booking_id, timestamp }` tanpa menyebut path mentah atau konten file.
 - Jika booking tidak pernah ditutup (edge case), penghapusan dipicu setelah **90 hari** sejak tanggal upload [ASUMSI].
 
 ---

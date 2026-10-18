@@ -147,7 +147,7 @@ Sebagai admin, saya ingin melihat daftar vendor, menonaktifkan akun vendor, dan 
 Sebagai admin, saya ingin mengatur nilai default (batas pending, retensi dokumen), agar operasional platform konsisten.
 
 **Kriteria Penerimaan:**
-- **Given** admin mengubah nilai retensi dokumen dari 30 ke 60 hari, **When** disimpan, **Then** booking baru menggunakan nilai 60 hari; booking lama tidak terpengaruh.
+- **Given** admin mengubah nilai retensi dokumen (misal dari 7 ke 14 hari), **When** disimpan, **Then** booking baru menggunakan nilai 14 hari; booking lama tidak terpengaruh.
 
 ---
 

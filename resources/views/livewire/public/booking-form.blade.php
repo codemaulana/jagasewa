@@ -114,7 +114,7 @@
             <div>
                 <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Verifikasi Identitas</h4>
                 <p class="text-[11px] text-gray-400 mt-0.5">
-                    Data dienkripsi secara aman dan akan dihapus otomatis dalam 30 hari setelah sewa selesai.
+                    Data dienkripsi secara aman dan akan dihapus otomatis dalam 7 hari setelah sewa selesai (atau 3 hari jika dibatalkan).
                 </p>
             </div>
 
@@ -144,7 +144,7 @@
                 <input type="checkbox" wire:model.live="agreePrivacy"
                        class="mt-0.5 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4">
                 <span class="text-[11px] text-gray-600 leading-relaxed">
-                    Saya menyetujui bahwa data identitas dan kontak saya digunakan oleh <strong class="text-gray-800">{{ $item->vendor->name }}</strong> untuk verifikasi booking ini, dan akan dihapus otomatis dalam 30 hari sesuai ketentuan privasi JagaSewa.
+                    Saya menyetujui bahwa data identitas dan kontak saya digunakan oleh <strong class="text-gray-800">{{ $item->vendor->name }}</strong> untuk verifikasi booking ini, dan akan dihapus otomatis dalam 7 hari setelah sewa selesai (atau 3 hari jika dibatalkan) sesuai ketentuan privasi JagaSewa.
                 </span>
             </label>
             @error('agreePrivacy')

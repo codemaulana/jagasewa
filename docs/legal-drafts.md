@@ -238,7 +238,7 @@ Ringkasan dari kebijakan retensi (detail lihat `privacy-data-retention.md`):
 
 | Data | Retensi | Penghapusan |
 |---|---|---|
-| Foto KTP + selfie Penyewa | 30 hari setelah Booking selesai | Otomatis oleh sistem; notifikasi ke Penyewa |
+| Foto KTP + selfie Penyewa | 7 hari setelah Booking selesai (atau 3 hari jika dibatalkan/ditolak) | Otomatis oleh sistem; notifikasi ke Penyewa |
 | Data Booking (metadata) | [ISIAN — tergantung kebutuhan audit] | [ISIAN] |
 | Data akun Vendor (aktif) | Selama akun aktif | Setelah penghentian akun + [ISIAN] masa tenggang |
 | Log sistem | [ISIAN] | Rolling basis [ISIAN] |
@@ -340,7 +340,8 @@ Teks berikut muncul di samping checkbox persetujuan pada halaman upload dokumen 
 ```
 Saya setuju bahwa foto KTP dan selfie saya akan digunakan oleh [Nama Vendor] untuk
 memverifikasi identitas saya dalam booking ini ([kode booking]). Data ini disimpan
-secara aman dan akan dihapus otomatis dalam 30 hari setelah booking selesai.
+secara aman dan akan dihapus otomatis dalam 7 hari setelah booking selesai
+(atau 3 hari jika dibatalkan/ditolak).
 Dengan mencentang kotak ini, saya menyatakan telah membaca dan menyetujui
 [Kebijakan Privasi JagaSewa].
 ```
@@ -378,7 +379,7 @@ Data identitas Anda digunakan **semata-mata** untuk keperluan verifikasi identit
 Foto KTP dan selfie Anda disimpan dalam format terenkripsi pada server aman yang dikelola oleh JagaSewa. Akses ke data Anda dibatasi hanya kepada Vendor yang bersangkutan dan administrator sistem yang berwenang. Seluruh transfer data dilindungi dengan enkripsi HTTPS/TLS.
 
 **Berapa lama data Anda disimpan?**
-Data identitas Anda (foto KTP dan selfie) akan **dihapus secara otomatis dalam 30 (tiga puluh) hari** setelah booking Anda dinyatakan selesai. Anda akan menerima notifikasi setelah penghapusan berhasil dilakukan. Metadata booking (tanggal, item yang disewa, dll.) dapat disimpan lebih lama sesuai kebijakan retensi JagaSewa.
+Data identitas Anda (foto KTP dan selfie) akan **dihapus secara otomatis dalam 7 (tujuh) hari** setelah booking Anda dinyatakan selesai (atau 3 hari jika booking dibatalkan/ditolak). Anda akan menerima notifikasi setelah penghapusan berhasil dilakukan. Metadata booking (tanggal, item yang disewa, dll.) dapat disimpan lebih lama sesuai kebijakan retensi JagaSewa.
 
 **Apa hak Anda?**
 Anda berhak untuk mengakses, mengoreksi, atau meminta penghapusan data Anda sebelum jadwal penghapusan otomatis. Anda juga berhak menarik persetujuan Anda sewaktu-waktu. Untuk menggunakan hak-hak Anda, silakan hubungi kami melalui email di **[ISIAN: privacy@jagasewa.id]** dengan menyertakan kode booking Anda.

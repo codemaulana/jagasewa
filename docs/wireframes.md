@@ -137,7 +137,7 @@
 │ ☐ Saya setuju data identitas    │
 │   saya digunakan untuk          │
 │   verifikasi dan akan dihapus   │
-│   otomatis dalam 30 hari.       │
+│   otomatis dalam 7 hari.        │
 │   [Baca Kebijakan Privasi]      │
 │                                 │
 │ ┌─────────────────────────────┐ │

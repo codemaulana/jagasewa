@@ -43,7 +43,7 @@ class IdentityDocumentFactory extends Factory
             'consent_given' => true,
             'consent_version' => 'v1.0',
             'consent_at' => Carbon::now('Asia/Jakarta'),
-            'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays(30),
+            'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays(config('jagasewa.retention.closed_days', 7)),
         ];
     }
 

@@ -194,7 +194,7 @@ Inti sistem transaksi booking rental. Menggunakan `ulid` sebagai public identifi
 Menyimpan **metadata dan path** ke file foto identitas (bukan file fisik). File ada di object storage privat Backblaze B2 (SEC-26 s.d. SEC-30).
 - `ulid`: ID publik unik per dokumen.
 - `consent_given`, `consent_version`, `consent_at`: bukti persetujuan eksplisit penyewa sesuai UU PDP.
-- `delete_scheduled_at`: tanggal penghapusan dijadwalkan otomatis 30 hari pasca booking selesai (BR-05).
+- `delete_scheduled_at`: tanggal penghapusan dijadwalkan otomatis 7 hari pasca booking selesai (atau 3 hari jika batal/ditolak) (BR-05).
 - `deleted_at`: timestamp aktual penghapusan fisik dari storage; jika `null` = file masih tersimpan.
 
 ### `blacklist_entries`

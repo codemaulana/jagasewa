@@ -222,7 +222,7 @@
 - Nama asli file dari user TIDAK digunakan sebagai path storage
 
 ### SEC-31 — Retensi & Auto-Delete | P0 | MVP
-- Hapus otomatis 30 hari setelah booking `closed` atau `cancelled_*` (BR-05)
+- Hapus otomatis 7 hari setelah booking `closed` atau 3 hari setelah `cancelled_*`/`rejected` (BR-05)
 - Fallback: hapus 90 hari setelah upload jika booking tidak pernah ditutup [ASUMSI]
 - Penghapusan dicatat di `audit_logs`: `{ event: "document_deleted", booking_id, timestamp }` — tanpa path mentah
 
@@ -421,7 +421,7 @@ Rujuk runbook detail di `deployment-ops.md` (RB-01 s.d. RB-05).
 | ST-08 | Webhook billing: signature salah → HTTP 401 | Feature | TC-28, SEC-23 |
 | ST-09 | Webhook billing: replay duplikat → HTTP 200 idempoten | Feature | TC-26, SEC-22 |
 | ST-10 | Signed URL expired (> 60 menit) → HTTP 403 | Feature | TC-40, SEC-27 |
-| ST-11 | Auto-delete job: file > 30 hari setelah closed dihapus | Unit | TC-36, SEC-31 |
+| ST-11 | Auto-delete job: file > 7 hari setelah closed / 3 hari setelah cancelled dihapus | Unit | TC-36, SEC-31 |
 | ST-12 | CSRF: POST tanpa token → HTTP 419 | Feature | TC-39, SEC-32 |
 | ST-13 | XSS: output di Blade di-escape otomatis | Unit | SEC-33 |
 | ST-14 | Enumerasi booking by sequential ID gagal (ULID digunakan) | Feature | IDOR-10, SEC-10 |

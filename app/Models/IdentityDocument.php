@@ -81,7 +81,7 @@ class IdentityDocument extends Model
             }
 
             if (empty($doc->delete_scheduled_at)) {
-                $doc->delete_scheduled_at = Carbon::now('Asia/Jakarta')->addDays(30);
+                $doc->delete_scheduled_at = Carbon::now('Asia/Jakarta')->addDays(config('jagasewa.retention.closed_days', 7));
             }
         });
     }
