@@ -93,7 +93,7 @@
   - **Estimasi:** M
   - **Story:** US-01, US-05
 
-- [ ] **T-10B** | Halaman katalog toko vendor publik (`/b/{vendor_slug}`)
+- [x] **T-10B** | Halaman katalog toko vendor publik (`/b/{vendor_slug}`)
   - **Tujuan:** Penyewa dapat melihat seluruh etalase barang aktif milik vendor tertentu via 1 tautan utama (cocok untuk bio Instagram/X).
   - **Dependensi:** T-10
   - **Kriteria Selesai:** Route `GET /b/{vendor_slug}` menampilkan banner profil vendor, daftar item aktif dengan grid responsif, link ke detail masing-masing item (`/b/{vendor_slug}/{item_slug}`); vendor nonaktif → 404; item nonaktif tidak muncul.
