@@ -23,6 +23,7 @@ class VendorItemCrudTest extends TestCase
     {
         parent::setUp();
         Filament::setCurrentPanel(Filament::getPanel('vendor'));
+        Storage::fake('s3');
     }
 
     public function test_unauthenticated_user_cannot_access_vendor_items(): void

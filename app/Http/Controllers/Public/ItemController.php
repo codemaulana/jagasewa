@@ -29,15 +29,27 @@ class ItemController extends Controller
 
         // Generate temporary signed URLs for photos (TTL 60 minutes)
         $photoSignedUrls = [];
-        $diskName = config('filesystems.disks.s3.key') || app()->environment('testing') ? 's3' : 'public';
-        $disk = Storage::disk($diskName);
+        $hasS3Config = ! empty(config('filesystems.disks.s3.bucket')) && ! empty(config('filesystems.disks.s3.key'));
+        $diskName = $hasS3Config || app()->environment('testing') ? 's3' : 'public';
 
         if (! empty($item->photo_paths) && is_array($item->photo_paths)) {
-            foreach ($item->photo_paths as $path) {
-                try {
-                    $photoSignedUrls[] = $disk->temporaryUrl($path, now()->addMinutes(60));
-                } catch (Throwable) {
-                    $photoSignedUrls[] = $disk->url($path);
+            try {
+                $disk = Storage::disk($diskName);
+                foreach ($item->photo_paths as $path) {
+                    try {
+                        $photoSignedUrls[] = $disk->temporaryUrl($path, now()->addMinutes(60));
+                    } catch (Throwable) {
+                        try {
+                            $photoSignedUrls[] = $disk->url($path);
+                        } catch (Throwable) {
+                            $photoSignedUrls[] = Storage::disk('public')->url($path);
+                        }
+                    }
+                }
+            } catch (Throwable) {
+                $fallbackDisk = Storage::disk('public');
+                foreach ($item->photo_paths as $path) {
+                    $photoSignedUrls[] = $fallbackDisk->url($path);
                 }
             }
         }

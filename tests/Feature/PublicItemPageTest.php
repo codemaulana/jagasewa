@@ -12,6 +12,12 @@ class PublicItemPageTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Storage::fake('s3');
+    }
+
     public function test_public_user_can_view_active_item_page(): void
     {
         $vendor = Vendor::factory()->create([
