@@ -8,7 +8,7 @@
 
 ## Milestone 0 — Setup Proyek
 
-- [ ] **T-01** | Inisialisasi proyek Laravel + Filament + Livewire
+- [x] **T-01** | Inisialisasi proyek Laravel + Filament + Livewire
   - **Tujuan:** Scaffold proyek baru dengan semua dependensi utama terpasang.
   - **Dependensi:** —
   - **Kriteria Selesai:** `php artisan serve` berjalan; Filament panel dapat diakses di `/admin`.

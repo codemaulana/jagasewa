@@ -8,8 +8,8 @@
 JagaSewa adalah platform booking berbasis web (mobile-first) untuk rental barang (kostum, kamera, kebaya, dll.) yang dipasarkan via Instagram/X. Penyewa memesan tanpa login; vendor mengelola lewat dashboard. Notifikasi via `wa.me`. Tanpa payment gateway, tanpa chat internal.
 
 ## Stack
-- **Backend:** Laravel 11, PHP 8.3
-- **Admin/Vendor UI:** Filament v3 + Livewire v3
+- **Backend:** Laravel 13, PHP 8.4
+- **Admin/Vendor UI:** Filament v5 + Livewire v4
 - **Database:** MySQL 8 atau PostgreSQL 16 (pilih saat setup)
 - **Storage:** S3-compatible (bucket **privat**)
 - **Queue:** Database driver (upgrade ke Redis jika perlu di Fase 2)
