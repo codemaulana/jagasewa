@@ -14,6 +14,9 @@ Route::get('/b/{vendor_slug}', [ItemController::class, 'catalog'])->name('public
 // Public Item Catalog Route
 Route::get('/b/{vendor_slug}/{item_slug}', [ItemController::class, 'show'])->name('public.items.show');
 
+// Public Booking Success Route
+Route::get('/b/success/{ulid}', [ItemController::class, 'bookingSuccess'])->name('public.booking.success');
+
 Route::prefix('vendor')->name('vendor.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');

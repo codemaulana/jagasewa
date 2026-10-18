@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use App\Models\Item;
 use App\Models\Vendor;
 use Illuminate\Contracts\View\View;
@@ -98,5 +99,19 @@ class ItemController extends Controller
         } catch (Throwable) {
             return Storage::disk('public')->url($path);
         }
+    }
+
+    /**
+     * Display the public booking success page.
+     */
+    public function bookingSuccess(string $ulid): View
+    {
+        $booking = Booking::with(['item', 'vendor', 'renter'])
+            ->where('ulid', $ulid)
+            ->firstOrFail();
+
+        return view('public.bookings.success', [
+            'booking' => $booking,
+        ]);
     }
 }

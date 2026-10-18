@@ -150,7 +150,7 @@
   - **Estimasi:** M
   - **Story:** US-02 (SEC-10, SEC-20, SEC-21, SEC-26)
 
-- [ ] **T-15** | Form booking publik (Livewire) + validasi + integrasi dokumen identitas
+- [x] **T-15** | Form booking publik (Livewire) + validasi + integrasi dokumen identitas
   - **Tujuan:** Penyewa mengisi form booking lengkap (identitas, tanggal sewa, catatan, upload KTP & selfie terverifikasi) dalam satu alur UI; sistem memvalidasi dan membuat booking dalam transaksi atomik dengan `SELECT ... FOR UPDATE` (pessimistic locking) dan `idempotency_key`.
   - **Dependensi:** T-11, T-13, T-14, T-18, T-19
   - **Kriteria Selesai:** Submit valid → dokumen terunggah & ter-watermark via T-19, booking `pending` terbuat dengan ULID & nomor referensi unik, idempotency key tersimpan. Submit tanggal bentrok → pesan error spesifik. Submit tanpa centang persetujuan privasi → disabled/ditolak.

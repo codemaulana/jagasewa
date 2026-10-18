@@ -182,6 +182,11 @@
         <!-- Interactive Smart Buffer Calendar -->
         <livewire:item-availability-calendar :item="$item" />
 
+        <!-- Public Booking Form Section -->
+        <div id="booking-section">
+            <livewire:public.booking-form :item="$item" />
+        </div>
+
         <!-- Deskripsi Barang -->
         @if($item->description)
             <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-2">
