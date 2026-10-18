@@ -230,7 +230,7 @@
   - **Estimasi:** M
   - **Story:** US-08
 
-- [ ] **T-24** | Transisi status: active, returned (manual vendor)
+- [x] **T-24** | Transisi status: active, returned (manual vendor)
   - **Tujuan:** Vendor bisa mengubah status booking ke `active` (barang dikirim) dan `returned` (barang kembali).
   - **Dependensi:** T-23
   - **Kriteria Selesai:** Tombol "Tandai Aktif" dan "Tandai Dikembalikan" sesuai BR-02; transisi tidak valid (contoh: pending → returned) ditolak.

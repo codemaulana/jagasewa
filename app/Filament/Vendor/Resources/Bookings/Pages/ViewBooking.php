@@ -90,6 +90,46 @@ class ViewBooking extends ViewRecord
                     $notification->send();
                 }),
 
+            Action::make('activate')
+                ->label('Tandai Barang Diserahkan (Aktifkan)')
+                ->icon(Heroicon::OutlinedTruck)
+                ->color('primary')
+                ->requiresConfirmation()
+                ->modalHeading('Tandai Barang Diserahkan / Aktif')
+                ->modalDescription('Apakah barang rental telah diserahkan atau dikirimkan ke penyewa? Status booking akan berubah menjadi Sedang Disewa (Aktif).')
+                ->modalSubmitActionLabel('Ya, Tandai Aktif')
+                ->visible(fn (Booking $record): bool => $record->status === Booking::STATUS_APPROVED)
+                ->action(function (Booking $record, BookingStatusService $statusService) {
+                    $statusService->activate($record);
+                    $record->refresh();
+
+                    Notification::make()
+                        ->title('Booking Telah Aktif')
+                        ->body('Barang berhasil ditandai telah diserahkan dan masa sewa sedang berjalan.')
+                        ->success()
+                        ->send();
+                }),
+
+            Action::make('mark_returned')
+                ->label('Tandai Barang Dikembalikan')
+                ->icon(Heroicon::OutlinedArrowPath)
+                ->color('purple')
+                ->requiresConfirmation()
+                ->modalHeading('Tandai Barang Telah Dikembalikan')
+                ->modalDescription('Apakah barang rental telah diterima kembali dari penyewa? Status akan berubah menjadi Dikembalikan dan siap untuk proses settlement.')
+                ->modalSubmitActionLabel('Ya, Barang Diterima')
+                ->visible(fn (Booking $record): bool => $record->status === Booking::STATUS_ACTIVE)
+                ->action(function (Booking $record, BookingStatusService $statusService) {
+                    $statusService->markReturned($record);
+                    $record->refresh();
+
+                    Notification::make()
+                        ->title('Barang Telah Dikembalikan')
+                        ->body('Status booking berhasil diperbarui menjadi Dikembalikan. Silakan periksa kondisi barang untuk proses settlement.')
+                        ->success()
+                        ->send();
+                }),
+
             Action::make('contact_wa')
                 ->label('Hubungi Penyewa via WA')
                 ->icon(Heroicon::OutlinedChatBubbleLeftRight)

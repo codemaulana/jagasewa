@@ -73,6 +73,18 @@ class BookingInfolist
                                     ->dateTime('d M Y H:i')
                                     ->placeholder('-')
                                     ->visible(fn (Booking $record): bool => ! empty($record->approved_at)),
+
+                                TextEntry::make('activated_at')
+                                    ->label('Diserahkan / Aktif Pada')
+                                    ->dateTime('d M Y H:i')
+                                    ->placeholder('-')
+                                    ->visible(fn (Booking $record): bool => ! empty($record->activated_at)),
+
+                                TextEntry::make('returned_at')
+                                    ->label('Dikembalikan Pada')
+                                    ->dateTime('d M Y H:i')
+                                    ->placeholder('-')
+                                    ->visible(fn (Booking $record): bool => ! empty($record->returned_at)),
                             ]),
                     ]),
 
