@@ -11,6 +11,7 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
+    @livewireStyles
 </head>
 <body class="bg-gray-50 text-gray-900 antialiased pb-28">
 
@@ -156,19 +157,19 @@
             </div>
         @endif
 
-        <!-- Smart Buffer Calendar Preview Card -->
+        <!-- Ketentuan Jeda Otomatis (Smart Buffer) -->
         <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-3">
             <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
-                <span>📅</span> Ketentuan Jadwal & Buffer Kalender
+                <span>🛡️</span> Ketentuan Jeda Otomatis (Smart Buffer)
             </h3>
             <p class="text-xs text-gray-600 leading-relaxed">
-                Untuk memastikan barang tiba dalam kondisi prima dan bersih, vendor menerapkan jeda jadwal otomatis:
+                Untuk memastikan barang tiba dalam kondisi prima dan bersih, vendor menerapkan jeda jadwal otomatis di kalender:
             </p>
             <div class="grid grid-cols-2 gap-3 pt-1">
                 <div class="border border-gray-100 rounded-2xl p-3 bg-gray-50/50">
                     <span class="text-[11px] text-gray-500 font-medium block">Jeda Sebelum Sewa</span>
                     <span class="text-sm font-bold text-gray-800">{{ $item->buffer_before }} Hari</span>
-                    <p class="text-[10px] text-gray-400 mt-0.5">Persiapan & laundry kostum</p>
+                    <p class="text-[10px] text-gray-400 mt-0.5">Persiapan & laundry</p>
                 </div>
                 <div class="border border-gray-100 rounded-2xl p-3 bg-gray-50/50">
                     <span class="text-[11px] text-gray-500 font-medium block">Jeda Sesudah Sewa</span>
@@ -177,6 +178,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- Interactive Smart Buffer Calendar -->
+        <livewire:item-availability-calendar :item="$item" />
 
         <!-- Deskripsi Barang -->
         @if($item->description)
@@ -224,5 +228,6 @@
             });
         }
     </script>
+    @livewireScripts
 </body>
 </html>

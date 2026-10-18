@@ -112,7 +112,7 @@
   - **Tes:** Feature test dengan berbagai skenario overlap; response time < 200ms.
   - **Estimasi:** M
 
-- [ ] **T-13** | Komponen Livewire kalender di halaman publik
+- [x] **T-13** | Komponen Livewire kalender di halaman publik
   - **Tujuan:** Kalender interaktif menampilkan slot dengan warna; penyewa bisa klik tanggal.
   - **Dependensi:** T-12, T-10
   - **Kriteria Selesai:** Navigasi bulan berfungsi; warna sesuai status; klik tanggal tersedia → pra-isi form booking.
