@@ -56,6 +56,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'mayar' => [
+        'api_url' => env('MAYAR_API_URL', 'https://api.mayar.id/hl/v1'),
         'api_key' => env('MAYAR_API_KEY'),
         'webhook_secret' => env('MAYAR_WEBHOOK_SECRET', 'test-mayar-webhook-secret'),
     ],

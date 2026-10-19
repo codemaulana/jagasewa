@@ -57,6 +57,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'webhooks/*',
         ]);
 
+        // Unauthenticated guests redirect to vendor login
+        $middleware->redirectTo(
+            guests: '/vendor/login',
+        );
+
         $middleware->alias([
             'vendor.ownership' => EnsureVendorOwnership::class,
             'vendor.pro' => EnsureProSubscription::class,

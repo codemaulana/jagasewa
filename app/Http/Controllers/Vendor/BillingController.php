@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Vendor;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Item;
+use App\Models\Subscription;
 use App\Services\Billing\EntitlementService;
+use App\Services\Billing\MayarPaymentService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -111,5 +114,37 @@ class BillingController extends Controller
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    /**
+     * Initiate checkout for Pro subscription tier via Mayar.id (Pilihan A).
+     */
+    public function checkout(Request $request, MayarPaymentService $paymentService): RedirectResponse
+    {
+        $request->validate([
+            'cycle' => ['required', 'string', 'in:monthly,quarterly,annually'],
+        ]);
+
+        $vendor = auth('vendor')->user()?->vendor;
+
+        if (! $vendor) {
+            abort(403);
+        }
+
+        $cycle = $request->input('cycle');
+
+        /** @var Subscription $subscription */
+        $subscription = Subscription::create([
+            'vendor_id' => $vendor->id,
+            'plan' => Subscription::PLAN_PRO,
+            'status' => Subscription::STATUS_PENDING_PAYMENT,
+            'billing_cycle' => $cycle,
+            'current_period_start' => now('Asia/Jakarta'),
+        ]);
+
+        $user = auth('vendor')->user();
+        $result = $paymentService->createPaymentLink($subscription, $user);
+
+        return redirect()->away($result['payment_url']);
     }
 }

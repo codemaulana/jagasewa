@@ -62,6 +62,11 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
         ->middleware('auth:vendor')
         ->name('billing.index');
 
+    // Vendor Billing Checkout Initiation via Mayar (Pilihan A)
+    Route::post('/billing/checkout', [BillingController::class, 'checkout'])
+        ->middleware('auth:vendor')
+        ->name('billing.checkout');
+
     // Pro-Only Feature: Export CSV Report (T-43 / SEC-25)
     Route::get('/reports/export', [BillingController::class, 'exportReports'])
         ->middleware(['auth:vendor', 'vendor.pro'])

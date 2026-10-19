@@ -96,9 +96,13 @@
                             <li>✓ Export laporan Excel/CSV</li>
                         </ul>
                     </div>
-                    <button class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition">
-                        Pilih Bulanan
-                    </button>
+                    <form method="POST" action="{{ route('vendor.billing.checkout') }}">
+                        @csrf
+                        <input type="hidden" name="cycle" value="monthly">
+                        <button type="submit" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition cursor-pointer">
+                            Pilih Bulanan (Rp 15.000)
+                        </button>
+                    </form>
                 </div>
 
                 <!-- Quarterly Plan (Popular) -->
@@ -117,9 +121,13 @@
                             <li>✓ Pembayaran via QRIS / E-Wallet</li>
                         </ul>
                     </div>
-                    <button class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition">
-                        Pilih 3 Bulan
-                    </button>
+                    <form method="POST" action="{{ route('vendor.billing.checkout') }}">
+                        @csrf
+                        <input type="hidden" name="cycle" value="quarterly">
+                        <button type="submit" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition cursor-pointer">
+                            Pilih 3 Bulan (Rp 39.000)
+                        </button>
+                    </form>
                 </div>
 
                 <!-- Annual Plan -->
@@ -137,9 +145,13 @@
                             <li>✓ WhatsApp Admin support langsung</li>
                         </ul>
                     </div>
-                    <button class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition">
-                        Pilih 1 Tahun
-                    </button>
+                    <form method="POST" action="{{ route('vendor.billing.checkout') }}">
+                        @csrf
+                        <input type="hidden" name="cycle" value="annually">
+                        <button type="submit" class="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm transition cursor-pointer">
+                            Pilih 1 Tahun (Rp 129.000)
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
