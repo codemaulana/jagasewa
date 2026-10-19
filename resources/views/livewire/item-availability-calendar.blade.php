@@ -76,15 +76,15 @@
                 <button type="button"
                         wire:click="selectDate('{{ $date }}')"
                         @disabled($status !== 'available')
-                        class="aspect-square rounded-lg text-xs font-medium flex flex-col items-center justify-center transition relative
+                        class="aspect-square rounded-lg text-xs font-medium flex flex-col items-center justify-center transition relative min-h-[38px]
                             @if($isSelected)
-                                bg-primary-600 text-white font-semibold ring-2 ring-primary-600
+                                bg-[#111111] text-white font-semibold ring-2 ring-[#111111]
                             @elseif($status === 'booked')
                                 badge-status-danger border text-[var(--color-status-danger-text)] cursor-not-allowed line-through
                             @elseif($status === 'buffer')
                                 bg-buffer-stripes border border-neutral-200 text-neutral-400 cursor-not-allowed
                             @else
-                                bg-white hover:bg-primary-50 text-neutral-800 border border-neutral-200 hover:border-primary-600 cursor-pointer active:scale-95
+                                bg-white hover:bg-neutral-100 text-neutral-900 border border-neutral-200 hover:border-neutral-900 cursor-pointer active:scale-95
                             @endif"
                         title="{{ $status === 'booked' ? 'Terpesan' : ($status === 'buffer' ? 'Masa Jeda (Buffer)' : 'Tersedia') }}">
                     <span>{{ sprintf('%02d', $dayNum) }}</span>

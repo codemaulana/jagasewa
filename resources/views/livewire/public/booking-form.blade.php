@@ -28,7 +28,7 @@
             <div>
                 <label for="name" class="block text-xs font-medium text-neutral-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
                 <input type="text" id="name" wire:model="name" placeholder="Nama lengkap sesuai KTP"
-                       class="w-full text-xs px-3.5 h-10 rounded-xl border @error('name') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition">
+                       class="w-full text-xs px-3.5 h-11 rounded-xl border @error('name') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition">
                 @error('name')
                     <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
                 @enderror
@@ -37,8 +37,8 @@
             <div>
                 <label for="phone" class="block text-xs font-medium text-neutral-700 mb-1">Nomor WhatsApp <span class="text-red-500">*</span></label>
                 <input type="text" id="phone" wire:model="phone" placeholder="Contoh: 081234567890"
-                       class="w-full text-xs px-3.5 h-10 rounded-xl border @error('phone') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition">
-                <p class="text-[11px] text-neutral-400 mt-0.5">Digunakan vendor untuk konfirmasi pesanan via WhatsApp.</p>
+                       class="w-full text-xs px-3.5 h-11 rounded-xl border @error('phone') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition">
+                <p class="text-[11px] text-neutral-500 mt-0.5">Digunakan vendor untuk konfirmasi pesanan via WhatsApp.</p>
                 @error('phone')
                     <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
                 @enderror
@@ -47,7 +47,7 @@
             <div>
                 <label for="address" class="block text-xs font-medium text-neutral-700 mb-1">Alamat domisili atau pengiriman <span class="text-red-500">*</span></label>
                 <textarea id="address" wire:model="address" rows="2" placeholder="Alamat lengkap pengiriman barang sewa"
-                          class="w-full text-xs p-3 rounded-xl border @error('address') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition"></textarea>
+                          class="w-full text-xs p-3 rounded-xl border @error('address') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition"></textarea>
                 @error('address')
                     <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
                 @enderror
@@ -65,7 +65,7 @@
                 <div>
                     <label for="startDate" class="block text-xs font-medium text-neutral-700 mb-1">Tanggal mulai <span class="text-red-500">*</span></label>
                     <input type="date" id="startDate" wire:model.live="startDate"
-                           class="w-full text-xs px-3 h-10 rounded-xl border @error('startDate') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition">
+                           class="w-full text-xs px-3 h-11 rounded-xl border @error('startDate') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition">
                     @error('startDate')
                         <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -73,7 +73,7 @@
                 <div>
                     <label for="endDate" class="block text-xs font-medium text-neutral-700 mb-1">Tanggal selesai <span class="text-red-500">*</span></label>
                     <input type="date" id="endDate" wire:model.live="endDate"
-                           class="w-full text-xs px-3 h-10 rounded-xl border @error('endDate') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition">
+                           class="w-full text-xs px-3 h-11 rounded-xl border @error('endDate') border-red-300 bg-red-50/20 @else border-neutral-300 bg-white @enderror focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition">
                     @error('endDate')
                         <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -105,7 +105,7 @@
         <div class="space-y-2 pt-3 border-t border-neutral-100">
             <label for="renterNotes" class="block text-xs font-medium text-neutral-700">Catatan untuk vendor (opsional)</label>
             <textarea id="renterNotes" wire:model="renterNotes" rows="2" placeholder="Catatan ukuran, kelengkapan, atau waktu penyerahan"
-                      class="w-full text-xs p-3 rounded-xl border border-neutral-300 bg-white focus:outline-none focus:border-primary-600 focus:ring-1 focus:ring-primary-600 transition"></textarea>
+                      class="w-full text-xs p-3 rounded-xl border border-neutral-300 bg-white focus:outline-none focus:border-neutral-900 focus:ring-1 focus:ring-neutral-900 transition"></textarea>
             @error('renterNotes')
                 <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
             @enderror
@@ -115,7 +115,7 @@
         <div class="space-y-3 pt-3 border-t border-neutral-100">
             <div>
                 <h4 class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Verifikasi Identitas</h4>
-                <p class="text-[11px] text-neutral-400 mt-0.5">
+                <p class="text-[11px] text-neutral-500 mt-0.5">
                     Data dienkripsi dan dihapus otomatis 30 hari setelah sewa selesai sesuai ketentuan privasi.
                 </p>
             </div>
@@ -124,7 +124,7 @@
                 <div class="bg-neutral-50 p-3 rounded-xl border border-neutral-200">
                     <label class="block text-xs font-medium text-neutral-700 mb-1.5">Foto KTP atau identitas resmi</label>
                     <input type="file" wire:model="ktpPhoto" accept="image/*"
-                           class="w-full text-[11px] text-neutral-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-neutral-300 file:text-xs file:font-medium file:bg-white file:text-neutral-800 hover:file:bg-neutral-50">
+                           class="w-full text-[11px] text-neutral-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-neutral-200 file:text-xs file:font-medium file:bg-white file:text-neutral-800 hover:file:bg-neutral-100 cursor-pointer">
                     @error('ktpPhoto')
                         <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -132,7 +132,7 @@
                 <div class="bg-neutral-50 p-3 rounded-xl border border-neutral-200">
                     <label class="block text-xs font-medium text-neutral-700 mb-1.5">Foto selfie dengan identitas</label>
                     <input type="file" wire:model="selfiePhoto" accept="image/*"
-                           class="w-full text-[11px] text-neutral-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-neutral-300 file:text-xs file:font-medium file:bg-white file:text-neutral-800 hover:file:bg-neutral-50">
+                           class="w-full text-[11px] text-neutral-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border file:border-neutral-200 file:text-xs file:font-medium file:bg-white file:text-neutral-800 hover:file:bg-neutral-100 cursor-pointer">
                     @error('selfiePhoto')
                         <p class="text-[11px] text-red-600 mt-1 font-medium">{{ $message }}</p>
                     @enderror
@@ -142,9 +142,9 @@
 
         <!-- 5. CHECKBOX PERSETUJUAN PRIVASI -->
         <div class="pt-3 border-t border-neutral-100">
-            <label class="flex items-start gap-2.5 cursor-pointer">
+            <label class="flex items-start gap-2.5 cursor-pointer min-h-[44px]">
                 <input type="checkbox" wire:model.live="agreePrivacy"
-                       class="mt-0.5 rounded border-neutral-300 text-primary-600 focus:ring-primary-600 w-4 h-4">
+                       class="mt-0.5 rounded border-neutral-300 text-neutral-900 focus:ring-neutral-900 w-4 h-4">
                 <span class="text-[11px] text-neutral-600 leading-relaxed">
                     Saya menyetujui data identitas dan kontak ini digunakan oleh <strong class="text-neutral-900 font-semibold">{{ $item->vendor->name }}</strong> untuk verifikasi booking, dan dihapus otomatis sesuai jadwal retensi privasi JagaSewa.
                 </span>
@@ -159,8 +159,8 @@
             <button type="submit" 
                     wire:loading.attr="disabled"
                     @disabled(! $agreePrivacy)
-                    class="w-full h-11 px-4 rounded-xl font-semibold text-sm shadow-xs transition duration-150 flex items-center justify-center gap-2
-                           @if($agreePrivacy) bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white @else bg-neutral-200 text-neutral-400 cursor-not-allowed @endif">
+                    class="w-full h-11 px-4 rounded-full font-semibold text-sm shadow-xs transition duration-150 flex items-center justify-center gap-2
+                           @if($agreePrivacy) bg-[#111111] hover:bg-[#262626] active:bg-black text-white @else bg-neutral-200 text-neutral-400 cursor-not-allowed @endif">
                 <span wire:loading.remove>Kirim permohonan sewa</span>
                 <span wire:loading class="flex items-center gap-2">
                     <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
