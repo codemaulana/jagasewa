@@ -312,7 +312,7 @@
   - **Estimasi:** S
   - **Story:** US-04, US-12
 
-- [ ] **T-33** | Tautan wa.me di dashboard vendor (notifikasi approve/reject)
+- [x] **T-33** | Tautan wa.me di dashboard vendor (notifikasi approve/reject)
   - **Tujuan:** Tombol aksi interaktif di halaman detail booking vendor untuk langsung membuka chat WhatsApp ke penyewa saat pesanan disetujui atau ditolak.
   - **Dependensi:** T-32, T-23
   - **Kriteria Selesai:** Tombol "Chat Penyewa via WhatsApp" di Filament Vendor Panel membuka URL wa.me dengan pesan konfirmasi yang sesuai status pesanan (`approved` atau `rejected`).

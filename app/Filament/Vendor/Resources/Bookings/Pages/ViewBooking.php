@@ -263,10 +263,19 @@ class ViewBooking extends ViewRecord
                 ->color('success')
                 ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl(
                     $record,
-                    $record->status === Booking::STATUS_CLOSED ? 'settled' : 'approved'
+                    match ($record->status) {
+                        Booking::STATUS_CLOSED => 'settled',
+                        Booking::STATUS_REJECTED => 'rejected',
+                        default => 'approved',
+                    }
                 ))
                 ->openUrlInNewTab()
-                ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE, Booking::STATUS_CLOSED])),
+                ->visible(fn (Booking $record): bool => in_array($record->status, [
+                    Booking::STATUS_APPROVED,
+                    Booking::STATUS_ACTIVE,
+                    Booking::STATUS_CLOSED,
+                    Booking::STATUS_REJECTED,
+                ])),
         ];
     }
 }
