@@ -100,6 +100,75 @@ class ErrorMonitoringService
     }
 
     /**
+     * Capture and report an informational message or alert to monitoring services.
+     *
+     * @param  array<string, mixed>  $context
+     * @return array{event_id: string, sentry_sent: bool, webhook_sent: bool, error: string|null}
+     */
+    public function captureMessage(string $message, array $context = [], string $level = 'info'): array
+    {
+        $enabled = config('services.monitoring.enabled', true);
+        $eventId = str_replace('-', '', Str::uuid()->toString());
+
+        if (! $enabled) {
+            return [
+                'event_id' => $eventId,
+                'sentry_sent' => false,
+                'webhook_sent' => false,
+                'error' => 'Monitoring disabled by config',
+            ];
+        }
+
+        $sentryDsn = config('services.monitoring.sentry_dsn');
+        $webhookUrl = config('services.monitoring.webhook_url');
+
+        $sanitizedMessage = $this->sanitizeString($message);
+        $sanitizedContext = $this->sanitizeContext($context);
+
+        $eventData = [
+            'event_id' => $eventId,
+            'timestamp' => now()->toIso8601ZuluString(),
+            'platform' => 'php',
+            'level' => $level,
+            'logger' => 'jagasewa.alert_monitor',
+            'environment' => config('app.env', 'production'),
+            'release' => '1.0.0',
+            'message' => [
+                'formatted' => $sanitizedMessage,
+            ],
+            'tags' => [
+                'app' => 'JagaSewa',
+                'environment' => config('app.env', 'production'),
+            ],
+            'extra' => $sanitizedContext,
+        ];
+
+        $sentrySent = false;
+        if (! empty($sentryDsn)) {
+            $sentrySent = $this->sendToSentry($sentryDsn, $eventData);
+        }
+
+        $webhookSent = false;
+        if (! empty($webhookUrl)) {
+            $webhookSent = $this->sendToWebhook($webhookUrl, $eventData, new \Exception($sanitizedMessage));
+        }
+
+        $logMethod = in_array($level, ['error', 'warning', 'info'], true) ? $level : 'info';
+        Log::$logMethod("[Event ID: {$eventId}] Message captured by ErrorMonitoring: ".$sanitizedMessage, [
+            'level' => $level,
+            'sentry_sent' => $sentrySent,
+            'webhook_sent' => $webhookSent,
+        ]);
+
+        return [
+            'event_id' => $eventId,
+            'sentry_sent' => $sentrySent,
+            'webhook_sent' => $webhookSent,
+            'error' => null,
+        ];
+    }
+
+    /**
      * Dispatch event to Sentry Store REST API without heavy SDK dependency.
      */
     protected function sendToSentry(string $dsn, array $eventData): bool

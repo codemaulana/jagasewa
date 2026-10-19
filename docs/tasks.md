@@ -408,7 +408,7 @@
   - **Estimasi:** M
   - **SEC:** SEC-25
 
-- [ ] **T-44** | [Fase 1.5] Rekonsiliasi langganan terjadwal
+- [x] **T-44** | [Fase 1.5] Rekonsiliasi langganan terjadwal
   - **Tujuan:** Job harian membandingkan status langganan di gateway vs database lokal.
   - **Dependensi:** T-42
   - **Kriteria Selesai:** Scheduler harian 03:00 WIB berjalan; ketidaksesuaian memicu alert PIC teknis.
