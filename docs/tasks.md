@@ -331,7 +331,7 @@
   - **Tes:** Cek log eksekusi cron; curl HTTPS domain publik → 200.
   - **Estimasi:** M
 
-- [ ] **T-35** | Backup otomatis database harian terenkripsi + uji restore
+- [x] **T-35** | Backup otomatis database harian terenkripsi + uji restore
   - **Tujuan:** Backup database berjalan terjadwal setiap hari dan dienkripsi sebelum dikirim ke remote bucket Backblaze B2; prosedur restore diuji.
   - **Dependensi:** T-34
   - **Kriteria Selesai:** Backup terenkripsi (password-protected ZIP AES-256) tersimpan di S3/Backblaze bucket backup privat; retensi 30 hari; prosedur restore terdokumentasi dan diuji sekali.

@@ -15,6 +15,12 @@ Schedule::command('documents:auto-delete')
     ->dailyAt('02:00')
     ->withoutOverlapping();
 
+// Daily encrypted database backup (T-35)
+Schedule::command('backup:database')
+    ->dailyAt('01:00')
+    ->timezone('Asia/Jakarta')
+    ->withoutOverlapping();
+
 // Queue worker for shared hosting (cPanel friendly: runs pending jobs then terminates cleanly)
 Schedule::command('queue:work --stop-when-empty --tries=3 --max-time=50')
     ->everyMinute()
