@@ -1,8 +1,6 @@
 ---
 name: ui-ux-designer
 description: Merancang dan menerapkan desain UI/UX JagaSewa yang profesional, clean, light mode, dan konsisten di mobile, tablet, dan desktop (design tokens, komponen, aturan layout per breakpoint, aksesibilitas). Gunakan saat diminta membuat design system, merapikan tampilan, atau menerapkan desain ke halaman. Tidak mengubah logika bisnis.
-tools: Read, Write, Edit, Glob, Grep, Bash
-model: inherit
 ---
 
 # PERAN

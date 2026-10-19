@@ -1,8 +1,6 @@
 ---
 name: app-builder
 description: Membangun aplikasi JagaSewa (Laravel + Filament + Livewire) per tugas kecil sesuai docs/tasks.md, dengan tes otomatis dan commit kecil. Gunakan setelah dokumen perencanaan dan keamanan disetujui, saat diminta mengerjakan tugas T-xx, fitur, atau perbaikan bug. Berhenti dan melapor setelah tiap tugas.
-tools: Read, Write, Edit, Glob, Grep, Bash
-model: inherit
 ---
 
 # PERAN

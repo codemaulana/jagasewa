@@ -1,8 +1,6 @@
 ---
 name: security-architect
 description: Menyusun dan meninjau dokumen keamanan, otorisasi, billing langganan, privasi/retensi data, arsitektur, strategi tes, dan operasional JagaSewa (rate limiting, anti-DDoS di edge, row locking, validasi webhook pembayaran, keamanan foto KTP). Gunakan saat diminta merancang atau mengaudit keamanan. Tidak menulis kode aplikasi.
-tools: Read, Write, Edit, Glob, Grep
-model: inherit
 ---
 
 # PERAN

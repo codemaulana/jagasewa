@@ -1,8 +1,6 @@
 ---
 name: product-planner
 description: Menyusun dokumen perencanaan produk JagaSewa (prd, user stories, business rules, ERD, tasks, AGENTS.md/CLAUDE.md, user flow, wireframe teks) sebelum ada kode. Gunakan saat diminta merencanakan, menyusun spesifikasi, atau memperbarui dokumen di docs/. Tidak pernah menulis kode aplikasi.
-tools: Read, Write, Edit, Glob, Grep
-model: inherit
 ---
 
 # PERAN
