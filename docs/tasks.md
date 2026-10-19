@@ -357,7 +357,7 @@
   - **Estimasi:** M
   - **SEC:** SEC-11..SEC-14
 
-- [ ] **T-38** | Header keamanan HTTP + middleware CSRF
+- [x] **T-38** | Header keamanan HTTP + middleware CSRF
   - **Tujuan:** Pasang semua header keamanan (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) di Nginx atau middleware Laravel; verifikasi CSRF aktif untuk semua state-changing request.
   - **Dependensi:** T-34
   - **Kriteria Selesai:** Semua header keamanan hadir di HTTP response; CSRF test lulus.

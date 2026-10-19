@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureVendorOwnership;
+use App\Http\Middleware\SecurityHeaders;
 use App\Services\ErrorMonitoringService;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -46,6 +47,9 @@ return Application::configure(basePath: dirname(__DIR__))
             )));
 
         $middleware->trustProxies(at: $proxies);
+
+        // SEC-37: HTTP Security Headers & Anti-Clickjacking Middleware (T-38)
+        $middleware->append(SecurityHeaders::class);
 
         $middleware->alias([
             'vendor.ownership' => EnsureVendorOwnership::class,
