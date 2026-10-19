@@ -15,7 +15,7 @@
         <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 text-neutral-900 font-bold text-base tracking-tight">
-                    <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-8 w-auto object-contain">
+                    <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-9 w-auto object-contain">
                 </a>
             </div>
             <div class="flex items-center gap-3">
