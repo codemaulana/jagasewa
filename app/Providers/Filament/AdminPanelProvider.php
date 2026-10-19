@@ -28,6 +28,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandName('JagaSewa')
+            ->brandLogo(fn () => asset('jagasewa_logo1.png'))
+            ->brandLogoHeight('2rem')
+            ->favicon(fn () => asset('jagasewa_logo3.png'))
             ->login()
             ->colors([
                 'primary' => Color::Zinc,

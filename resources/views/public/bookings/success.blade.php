@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Permintaan Sewa Terkirim — {{ $booking->reference_code }} | JagaSewa</title>
+    <link rel="icon" type="image/png" href="{{ asset('jagasewa_logo3.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     @include('public.partials.design-tokens')
 </head>
@@ -14,10 +15,7 @@
         <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <a href="{{ route('public.vendor.catalog', ['vendor_slug' => $booking->vendor->slug]) }}" class="flex items-center gap-2 text-neutral-900 font-bold text-base tracking-tight hover:text-neutral-700 transition">
-                    <svg class="w-5 h-5 text-neutral-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                    </svg>
-                    <span>JagaSewa</span>
+                    <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-7 w-auto object-contain">
                 </a>
                 <span class="text-[11px] font-medium bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-full border border-neutral-200">Konfirmasi</span>
             </div>

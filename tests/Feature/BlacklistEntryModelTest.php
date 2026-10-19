@@ -8,7 +8,6 @@ use App\Models\VendorUser;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
@@ -125,11 +124,15 @@ class BlacklistEntryModelTest extends TestCase
     {
         $this->assertTrue(Schema::hasTable('blacklist_entries'));
 
-        Artisan::call('migrate:rollback', ['--step' => 1]);
+        $this->artisan('migrate:rollback', [
+            '--path' => 'database/migrations/2026_10_19_000008_create_blacklist_entries_table.php',
+        ])->assertSuccessful();
 
         $this->assertFalse(Schema::hasTable('blacklist_entries'));
 
-        Artisan::call('migrate');
+        $this->artisan('migrate', [
+            '--path' => 'database/migrations/2026_10_19_000008_create_blacklist_entries_table.php',
+        ])->assertSuccessful();
 
         $this->assertTrue(Schema::hasTable('blacklist_entries'));
     }

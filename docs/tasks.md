@@ -277,7 +277,7 @@
 
 ## Milestone 8 — Kalkulator Denda & Deposit
 
-- [ ] **T-29** | Migrasi & model `settlements`, `damage_items`
+- [x] **T-29** | Migrasi & model `settlements`, `damage_items`
   - **Tujuan:** Tabel settlement satu-ke-satu dengan booking; `damage_items` one-to-many dengan settlement.
   - **Dependensi:** T-14
   - **Kriteria Selesai:** Migrasi + factory; constraint FK.

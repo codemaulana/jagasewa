@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Booking extends Model
@@ -172,5 +173,13 @@ class Booking extends Model
     public function identityDocuments(): HasMany
     {
         return $this->hasMany(IdentityDocument::class);
+    }
+
+    /**
+     * Get the settlement for the booking.
+     */
+    public function settlement(): HasOne
+    {
+        return $this->hasOne(Settlement::class);
     }
 }

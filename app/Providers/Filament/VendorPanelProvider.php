@@ -29,6 +29,10 @@ class VendorPanelProvider extends PanelProvider
         return $panel
             ->id('vendor')
             ->path('vendor')
+            ->brandName('JagaSewa')
+            ->brandLogo(fn () => asset('jagasewa_logo1.png'))
+            ->brandLogoHeight('2rem')
+            ->favicon(fn () => asset('jagasewa_logo3.png'))
             ->authGuard('vendor')
             ->authPasswordBroker('vendor_users')
             ->login()
