@@ -6,37 +6,63 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
 
-    /* Primary Palette (Trust Emerald) */
-    --color-primary-50:  #ecfdf5;
-    --color-primary-100: #d1fae5;
-    --color-primary-200: #a7f3d0;
-    --color-primary-300: #6ee7b7;
-    --color-primary-400: #34d399;
-    --color-primary-500: #10b981;
-    --color-primary-600: #059669;
-    --color-primary-700: #047857;
-    --color-primary-800: #065f46;
-    --color-primary-900: #064e3b;
-    --color-primary-950: #022c22;
+    /* Primary Palette (Solid Black CTA #111111) */
+    --color-primary-50:  #f7f7f7;
+    --color-primary-100: #e5e5e5;
+    --color-primary-200: #cccccc;
+    --color-primary-300: #999999;
+    --color-primary-400: #555555;
+    --color-primary-500: #262626;
+    --color-primary-600: #111111;
+    --color-primary-700: #0a0a0a;
+    --color-primary-800: #050505;
+    --color-primary-900: #000000;
+    --color-primary-950: #000000;
 
-    /* Neutral Scale (Slate Gray) */
+    /* Single Brand Accent: Lime (#86F04C) - Dark text only */
+    --color-accent-lime:      #86F04C;
+    --color-accent-lime-text: #0A0A0A;
+    --color-accent-lime-glow: #D9F5C8;
+
+    /* Neutral Scale: Warm Neutral (Latar #F2F2F0, Permukaan #FFFFFF, Border #E5E5E3) */
     --color-neutral-0:   #ffffff;
-    --color-neutral-50:  #f8fafc;
-    --color-neutral-100: #f1f5f9;
-    --color-neutral-200: #e2e8f0;
-    --color-neutral-300: #cbd5e1;
-    --color-neutral-400: #94a3b8;
-    --color-neutral-500: #64748b;
-    --color-neutral-600: #475569;
-    --color-neutral-700: #334155;
-    --color-neutral-800: #1e293b;
-    --color-neutral-900: #0f172a;
-    --color-neutral-950: #020617;
+    --color-neutral-50:  #F2F2F0;
+    --color-neutral-100: #EBEBE8;
+    --color-neutral-200: #E5E5E3;
+    --color-neutral-300: #D4D4D0;
+    --color-neutral-400: #A3A39E;
+    --color-neutral-500: #5C5C5C;
+    --color-neutral-600: #404040;
+    --color-neutral-700: #262626;
+    --color-neutral-800: #171717;
+    --color-neutral-900: #0A0A0A;
+    --color-neutral-950: #050505;
 
-    /* Semantics */
+    /* 5 Semantic Status Tokens (Strictly for state - never lime) */
+    --color-status-neutral-bg:     #F2F2F0;
+    --color-status-neutral-text:   #5C5C5C;
+    --color-status-neutral-border: #E5E5E3;
+
+    --color-status-info-bg:        #F0F9FF;
+    --color-status-info-text:      #0369A1;
+    --color-status-info-border:    #BAE6FD;
+
+    --color-status-success-bg:     #F0FDF4;
+    --color-status-success-text:   #166534;
+    --color-status-success-border: #BBF7D0;
+
+    --color-status-warning-bg:     #FFFBEB;
+    --color-status-warning-text:   #92400E;
+    --color-status-warning-border: #FDE68A;
+
+    --color-status-danger-bg:      #FEF2F2;
+    --color-status-danger-text:    #991B1B;
+    --color-status-danger-border:  #FECACA;
+
+    /* Semantics Aliases */
     --color-success-50:  #f0fdf4;
     --color-success-100: #dcfce7;
     --color-success-500: #22c55e;
@@ -61,71 +87,71 @@
     --color-info-600:    #0284c7;
     --color-info-700:    #0369a1;
 
-    --color-buffer-bg:     #f1f5f9;
-    --color-buffer-border: #cbd5e1;
-    --color-buffer-text:   #475569;
+    --color-buffer-bg:     #F2F2F0;
+    --color-buffer-border: #E5E5E3;
+    --color-buffer-text:   #5C5C5C;
 
-    --color-brand-whatsapp: #25d366;
-    --color-brand-whatsapp-hover: #20ba5a;
+    --color-brand-whatsapp: #25D366;
+    --color-brand-whatsapp-hover: #20BA5A;
 }
 
 :root {
-    --color-primary-50:  #ecfdf5;
-    --color-primary-100: #d1fae5;
-    --color-primary-200: #a7f3d0;
-    --color-primary-300: #6ee7b7;
-    --color-primary-400: #34d399;
-    --color-primary-500: #10b981;
-    --color-primary-600: #059669;
-    --color-primary-700: #047857;
-    --color-primary-800: #065f46;
-    --color-primary-900: #064e3b;
-    --color-primary-950: #022c22;
+    --color-primary-50:  #f7f7f7;
+    --color-primary-100: #e5e5e5;
+    --color-primary-200: #cccccc;
+    --color-primary-300: #999999;
+    --color-primary-400: #555555;
+    --color-primary-500: #262626;
+    --color-primary-600: #111111;
+    --color-primary-700: #0a0a0a;
+    --color-primary-800: #050505;
+    --color-primary-900: #000000;
+    --color-primary-950: #000000;
+
+    --color-accent-lime:      #86F04C;
+    --color-accent-lime-text: #0A0A0A;
+    --color-accent-lime-glow: #D9F5C8;
 
     --color-neutral-0:   #ffffff;
-    --color-neutral-50:  #f8fafc;
-    --color-neutral-100: #f1f5f9;
-    --color-neutral-200: #e2e8f0;
-    --color-neutral-300: #cbd5e1;
-    --color-neutral-400: #94a3b8;
-    --color-neutral-500: #64748b;
-    --color-neutral-600: #475569;
-    --color-neutral-700: #334155;
-    --color-neutral-800: #1e293b;
-    --color-neutral-900: #0f172a;
-    --color-neutral-950: #020617;
+    --color-neutral-50:  #F2F2F0;
+    --color-neutral-100: #EBEBE8;
+    --color-neutral-200: #E5E5E3;
+    --color-neutral-300: #D4D4D0;
+    --color-neutral-400: #A3A39E;
+    --color-neutral-500: #5C5C5C;
+    --color-neutral-600: #404040;
+    --color-neutral-700: #262626;
+    --color-neutral-800: #171717;
+    --color-neutral-900: #0A0A0A;
+    --color-neutral-950: #050505;
 
-    --color-success-50:  #f0fdf4;
-    --color-success-100: #dcfce7;
-    --color-success-500: #22c55e;
-    --color-success-600: #16a34a;
-    --color-success-700: #15803d;
+    --color-status-neutral-bg:     #F2F2F0;
+    --color-status-neutral-text:   #5C5C5C;
+    --color-status-neutral-border: #E5E5E3;
 
-    --color-warning-50:  #fffbeb;
-    --color-warning-100: #fef3c7;
-    --color-warning-500: #f59e0b;
-    --color-warning-600: #d97706;
-    --color-warning-700: #b45309;
+    --color-status-info-bg:        #F0F9FF;
+    --color-status-info-text:      #0369A1;
+    --color-status-info-border:    #BAE6FD;
 
-    --color-danger-50:   #fef2f2;
-    --color-danger-100:  #fee2e2;
-    --color-danger-500:  #ef4444;
-    --color-danger-600:  #dc2626;
-    --color-danger-700:  #b91c1c;
+    --color-status-success-bg:     #F0FDF4;
+    --color-status-success-text:   #166534;
+    --color-status-success-border: #BBF7D0;
 
-    --color-info-50:     #f0f9ff;
-    --color-info-100:    #e0f2fe;
-    --color-info-500:    #0ea5e9;
-    --color-info-600:    #0284c7;
-    --color-info-700:    #0369a1;
+    --color-status-warning-bg:     #FFFBEB;
+    --color-status-warning-text:   #92400E;
+    --color-status-warning-border: #FDE68A;
 
-    --color-buffer-bg:     #f1f5f9;
-    --color-buffer-border: #cbd5e1;
-    --color-buffer-text:   #475569;
+    --color-status-danger-bg:      #FEF2F2;
+    --color-status-danger-text:    #991B1B;
+    --color-status-danger-border:  #FECACA;
 
-    --color-brand-whatsapp: #25d366;
-    --color-brand-whatsapp-hover: #20ba5a;
+    --color-buffer-bg:     #F2F2F0;
+    --color-buffer-border: #E5E5E3;
+    --color-buffer-text:   #5C5C5C;
 
-    --font-family-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --color-brand-whatsapp: #25D366;
+    --color-brand-whatsapp-hover: #20BA5A;
+
+    --font-family-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --touch-target-min: 44px;
 }

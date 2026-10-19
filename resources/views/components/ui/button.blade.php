@@ -1,15 +1,17 @@
 @props([
-    'variant' => 'primary', // primary, secondary, ghost, danger, whatsapp
+    'variant' => 'primary', // primary, secondary, ghost, danger, whatsapp, accent
     'size' => 'md', // sm, md, lg
     'type' => 'button',
     'loading' => false,
     'disabled' => false,
     'fullWidth' => false,
     'href' => null,
+    'pill' => false,
 ])
 
 @php
-    $baseStyles = 'inline-flex items-center justify-center font-medium rounded-xl transition duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.98] select-none';
+    $radiusClass = $pill ? 'rounded-full' : 'rounded-xl';
+    $baseStyles = "inline-flex items-center justify-center font-medium {$radiusClass} transition duration-150 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 active:scale-[0.98] select-none";
 
     $sizeStyles = match($size) {
         'sm' => 'h-9 px-3 text-xs gap-1.5',
@@ -18,11 +20,12 @@
     };
 
     $variantStyles = match($variant) {
-        'secondary' => 'bg-white hover:bg-neutral-50 active:bg-neutral-100 text-neutral-800 border border-neutral-300 hover:border-neutral-400 focus-visible:outline-primary-600',
-        'ghost' => 'bg-transparent hover:bg-neutral-100 active:bg-neutral-200 text-neutral-600 hover:text-neutral-900 focus-visible:outline-primary-600',
+        'secondary' => 'bg-white hover:bg-neutral-50 active:bg-neutral-100 text-neutral-800 border border-neutral-200 hover:border-neutral-300 focus-visible:outline-[#111111]',
+        'ghost' => 'bg-transparent hover:bg-neutral-100 active:bg-neutral-200 text-neutral-600 hover:text-neutral-900 focus-visible:outline-[#111111]',
         'danger' => 'bg-status-danger-bg hover:bg-red-600 text-status-danger-text hover:text-white border border-status-danger-border hover:border-transparent active:bg-red-700 focus-visible:outline-red-600',
         'whatsapp' => 'bg-[#25D366] hover:bg-[#20ba5a] active:bg-[#1da851] text-white shadow-xs focus-visible:outline-[#25D366]',
-        default => 'bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white shadow-xs focus-visible:outline-primary-600',
+        'accent' => 'bg-[#86F04C] hover:bg-[#77dc3e] active:bg-[#68c633] text-[#0A0A0A] font-semibold shadow-xs focus-visible:outline-[#0A0A0A]',
+        default => 'bg-[#111111] hover:bg-[#262626] active:bg-black text-white shadow-xs focus-visible:outline-[#111111]',
     };
 
     $disabledStyles = ($disabled || $loading) ? 'opacity-50 cursor-not-allowed pointer-events-none' : '';

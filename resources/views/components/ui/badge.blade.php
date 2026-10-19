@@ -66,6 +66,11 @@
             'variant' => 'badge-status-neutral',
             'dot' => 'bg-[var(--color-status-neutral-text)]',
         ],
+        'accent' => [
+            'label' => 'Unggulan',
+            'variant' => 'badge-accent-lime font-medium border border-transparent',
+            'dot' => 'bg-[#0A0A0A]',
+        ],
     ];
 
     $config = $configs[$status] ?? (
@@ -74,7 +79,7 @@
             : [
                 'label' => ucfirst($status),
                 'variant' => 'badge-status-neutral',
-                'dot' => 'bg-slate-400',
+                'dot' => 'bg-[var(--color-status-neutral-text)]',
             ]
     );
 

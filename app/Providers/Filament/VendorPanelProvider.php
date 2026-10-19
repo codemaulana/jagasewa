@@ -34,9 +34,9 @@ class VendorPanelProvider extends PanelProvider
             ->login()
             ->registration(Register::class)
             ->colors([
-                'primary' => Color::Emerald,
+                'primary' => Color::Zinc,
             ])
-            ->font('Plus Jakarta Sans')
+            ->font('Inter Tight')
             ->defaultThemeMode(ThemeMode::Light)
             ->discoverResources(in: app_path('Filament/Vendor/Resources'), for: 'App\Filament\Vendor\Resources')
             ->discoverPages(in: app_path('Filament/Vendor/Pages'), for: 'App\Filament\Vendor\Pages')
