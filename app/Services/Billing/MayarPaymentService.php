@@ -44,47 +44,45 @@ class MayarPaymentService
             'redirectUrl' => $redirectUrl,
             'expiredAt' => now('Asia/Jakarta')->addHours(24)->toIso8601String(),
             'extraData' => [
-                'subscription_ulid' => $subscription->ulid,
-                'vendor_id' => $subscription->vendor_id,
-                'billing_cycle' => $subscription->billing_cycle,
+                'subscription_ulid' => (string) $subscription->ulid,
+                'vendor_id' => (string) $subscription->vendor_id,
+                'billing_cycle' => (string) $subscription->billing_cycle,
             ],
         ];
 
         // If Mayar API Key is configured, perform live HTTP API request
         if (! empty($apiKey)) {
-            try {
-                $response = Http::withToken($apiKey)
-                    ->acceptJson()
-                    ->timeout(15)
-                    ->post("{$apiUrl}/payment/create", $payload);
+            $response = Http::withToken($apiKey)
+                ->acceptJson()
+                ->timeout(15)
+                ->post("{$apiUrl}/payment/create", $payload);
 
-                if ($response->successful()) {
-                    $json = $response->json();
-                    $data = $json['data'] ?? [];
-                    $invoiceId = (string) ($data['id'] ?? $data['payment_id'] ?? Str::ulid());
-                    $paymentUrl = (string) ($data['link'] ?? $data['url'] ?? $redirectUrl);
+            if ($response->successful()) {
+                $json = $response->json();
+                $data = $json['data'] ?? [];
+                $invoiceId = (string) ($data['id'] ?? $data['payment_id'] ?? Str::ulid());
+                $paymentUrl = (string) ($data['link'] ?? $data['url'] ?? $redirectUrl);
 
-                    $subscription->update([
-                        'gateway_subscription_id' => $invoiceId,
-                    ]);
-
-                    return [
-                        'payment_url' => $paymentUrl,
-                        'invoice_id' => $invoiceId,
-                        'is_mock' => false,
-                    ];
-                }
-
-                Log::error('Mayar API invoice creation failed', [
-                    'status' => $response->status(),
-                    'body' => $response->body(),
+                $subscription->update([
+                    'gateway_subscription_id' => $invoiceId,
                 ]);
 
-                $this->errorMonitoring->captureException(new Exception('Mayar API error: '.$response->body()));
-            } catch (Exception $e) {
-                Log::error('Mayar API connection error: '.$e->getMessage());
-                $this->errorMonitoring->captureException($e);
+                return [
+                    'payment_url' => $paymentUrl,
+                    'invoice_id' => $invoiceId,
+                    'is_mock' => false,
+                ];
             }
+
+            $errorMsg = $response->json('messages') ?? $response->body();
+            Log::error('Mayar API invoice creation failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+
+            $this->errorMonitoring->captureException(new Exception('Mayar API error: '.(is_array($errorMsg) ? json_encode($errorMsg) : $errorMsg)));
+
+            throw new Exception('Gagal membuat tagihan pembayaran Mayar: '.(is_array($errorMsg) ? json_encode($errorMsg) : $errorMsg));
         }
 
         // Fallback / Mock Sandbox Mode for local development & testing

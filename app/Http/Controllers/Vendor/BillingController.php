@@ -143,8 +143,15 @@ class BillingController extends Controller
         ]);
 
         $user = auth('vendor')->user();
-        $result = $paymentService->createPaymentLink($subscription, $user);
 
-        return redirect()->away($result['payment_url']);
+        try {
+            $result = $paymentService->createPaymentLink($subscription, $user);
+
+            return redirect()->away($result['payment_url']);
+        } catch (\Exception $e) {
+            $subscription->delete();
+
+            return redirect()->route('vendor.billing.index')->with('error', $e->getMessage());
+        }
     }
 }
