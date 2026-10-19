@@ -16,13 +16,11 @@ class ItemAvailabilityController extends Controller
      */
     public function __invoke(
         Request $request,
-        string $id,
+        string $ulid,
         BookingCalendarService $calendarService
     ): JsonResponse {
-        // Resolve item by public ULID or internal ID
-        $item = Item::where('ulid', $id)
-            ->orWhere('id', $id)
-            ->first();
+        // Resolve item strictly by public ULID (SEC-10 / Anti-enumeration)
+        $item = Item::where('ulid', $ulid)->first();
 
         // 404 if item does not exist, is inactive, or vendor is inactive
         if (! $item || ! $item->is_active || ! $item->vendor || ! $item->vendor->is_active) {

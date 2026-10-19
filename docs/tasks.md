@@ -365,7 +365,7 @@
   - **Estimasi:** S
   - **SEC:** SEC-32, SEC-33, SEC-37, SEC-38
 
-- [ ] **T-39** | Validasi konsistensi ID publik ULID & anti-enumerasi
+- [x] **T-39** | Validasi konsistensi ID publik ULID & anti-enumerasi
   - **Tujuan:** Memastikan semua model publik menggunakan ULID; tidak ada auto-increment sequential ID yang bocor di URL atau JSON API.
   - **Dependensi:** T-04, T-08, T-14
   - **Kriteria Selesai:** Route parameter menggunakan ULID; integer sequential ID tidak pernah tampil di publik; percobaan enumerasi gagal.

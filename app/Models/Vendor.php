@@ -36,6 +36,14 @@ class Vendor extends Model
     }
 
     /**
+     * Get the route key for the model (ULID for public safety, avoiding sequential IDs).
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'ulid';
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

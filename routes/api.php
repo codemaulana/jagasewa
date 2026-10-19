@@ -14,5 +14,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/items/{id}/availability', ItemAvailabilityController::class)
+Route::get('/items/{ulid}/availability', ItemAvailabilityController::class)
     ->name('api.items.availability');

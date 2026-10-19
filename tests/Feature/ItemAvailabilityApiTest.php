@@ -205,7 +205,7 @@ class ItemAvailabilityApiTest extends TestCase
         $this->assertEquals('available', $statusByDate['2026-10-12']);
     }
 
-    public function test_can_query_by_numeric_id_as_well_as_ulid(): void
+    public function test_querying_by_numeric_id_returns_404_to_prevent_enumeration(): void
     {
         $vendor = Vendor::factory()->create(['is_active' => true]);
         $item = Item::factory()->create([
@@ -213,11 +213,11 @@ class ItemAvailabilityApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        // Via internal ID
+        // Via internal numeric ID -> MUST return 404 to prevent enumeration (SEC-10)
         $responseId = $this->getJson("/api/items/{$item->id}/availability?month=2026-10");
-        $responseId->assertStatus(200);
+        $responseId->assertStatus(404);
 
-        // Via public ULID
+        // Via public ULID -> 200 OK
         $responseUlid = $this->getJson("/api/items/{$item->ulid}/availability?month=2026-10");
         $responseUlid->assertStatus(200);
     }
