@@ -304,7 +304,7 @@
 
 ## Milestone 9 — Integrasi wa.me & Notifikasi
 
-- [ ] **T-32** | Helper generator URL wa.me terpusat (`WaNotificationHelper`)
+- [x] **T-32** | Helper generator URL wa.me terpusat (`WaNotificationHelper`)
   - **Tujuan:** Layanan terpusat untuk memformat nomor telepon (normalisasi 08xx / 62xx → +628xx) dan meng-encode teks pesan WhatsApp untuk penyewa maupun vendor.
   - **Dependensi:** T-01
   - **Kriteria Selesai:** Helper `WaNotificationHelper::generateVendorChatUrl($booking)` dan `generateRenterChatUrl($booking)`; URL ter-encode dengan aman; unit test format nomor dan encoding karakter khusus lulus.

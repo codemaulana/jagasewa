@@ -292,12 +292,15 @@ class BookingInfolist
                         TextEntry::make('wa_link')
                             ->label('Tautan Chat Langsung (wa.me)')
                             ->state(fn () => 'Buka Obrolan WhatsApp dengan Penyewa')
-                            ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl($record, 'approved'))
+                            ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl(
+                                $record,
+                                $record->status === Booking::STATUS_CLOSED ? 'settled' : 'approved'
+                            ))
                             ->openUrlInNewTab()
                             ->badge()
                             ->color('success'),
                     ])
-                    ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE])),
+                    ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE, Booking::STATUS_CLOSED])),
 
                 Section::make('Hasil Penyelesaian Sewa & Denda (Settlement)')
                     ->icon(Heroicon::OutlinedReceiptPercent)

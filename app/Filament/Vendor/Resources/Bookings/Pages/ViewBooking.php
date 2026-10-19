@@ -239,20 +239,34 @@ class ViewBooking extends ViewRecord
                             ? 'Kekurangan bayar yang ditagihkan ke penyewa: Rp '.number_format($calcResult->shortfall, 0, ',', '.')
                             : 'Uang jaminan habis pas (Rp 0).');
 
-                    Notification::make()
+                    $notification = Notification::make()
                         ->title('Penyelesaian Sewa Berhasil')
                         ->body("Pesanan telah ditutup (closed). {$outcomeMsg}")
-                        ->success()
-                        ->send();
+                        ->success();
+
+                    $waUrl = WaNotificationHelper::generateRenterChatUrl($record, 'settled');
+                    if ($waUrl) {
+                        $notification->actions([
+                            Action::make('chat_wa_settled')
+                                ->label('Kirim Info ke Penyewa via WA')
+                                ->url($waUrl, shouldOpenInNewTab: true)
+                                ->button(),
+                        ]);
+                    }
+
+                    $notification->send();
                 }),
 
             Action::make('contact_wa')
                 ->label('Hubungi Penyewa via WA')
                 ->icon(Heroicon::OutlinedChatBubbleLeftRight)
                 ->color('success')
-                ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl($record, 'approved'))
+                ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl(
+                    $record,
+                    $record->status === Booking::STATUS_CLOSED ? 'settled' : 'approved'
+                ))
                 ->openUrlInNewTab()
-                ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE])),
+                ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE, Booking::STATUS_CLOSED])),
         ];
     }
 }
