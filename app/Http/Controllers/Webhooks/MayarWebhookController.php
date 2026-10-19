@@ -15,11 +15,13 @@ class MayarWebhookController extends Controller
      */
     public function handle(Request $request, MayarWebhookHandler $handler): JsonResponse
     {
-        // 1. Verify signature (SEC-23 / BLT-08)
+        // 1. Verify signature or token (SEC-23 / BLT-08)
         $signature = $request->header('x-mayar-signature')
             ?? $request->header('x-signature')
             ?? $request->header('x-mayar-token')
-            ?? $request->bearerToken();
+            ?? $request->bearerToken()
+            ?? $request->header('authorization')
+            ?? $request->query('token');
 
         $rawBody = $request->getContent();
 

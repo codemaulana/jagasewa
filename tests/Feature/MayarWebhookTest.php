@@ -151,6 +151,28 @@ class MayarWebhookTest extends TestCase
     }
 
     /**
+     * Dashboard "Testing URL" ping from Mayar is acknowledged with 200 OK
+     */
+    public function test_mayar_dashboard_testing_url_ping_is_acknowledged(): void
+    {
+        $response = $this->withHeaders([
+            'x-mayar-token' => $this->webhookSecret,
+        ])->postJson(route('webhooks.mayar'), [
+            'event' => 'test',
+            'type' => 'Testing URL',
+            'data' => [
+                'message' => 'Testing webhook URL from Mayar dashboard',
+            ],
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'status' => 'success',
+                'message' => 'Mayar webhook test ping acknowledged',
+            ]);
+    }
+
+    /**
      * BLT-01 / TC-26: Webhook ganda (replay) -> HTTP 200 idempoten
      */
     public function test_blt_01_duplicate_mayar_webhook_replay_is_idempotent(): void

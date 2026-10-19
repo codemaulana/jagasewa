@@ -63,6 +63,21 @@ class MayarWebhookHandler
         $amount = (int) ($data['amount'] ?? $data['total_amount'] ?? $payload['amount'] ?? 0);
         $currency = strtoupper((string) ($data['currency'] ?? $payload['currency'] ?? 'IDR'));
 
+        // Handle Mayar "Testing URL" ping from dashboard
+        $isTestPing = empty($externalId)
+            || str_contains(strtolower($event), 'test')
+            || (isset($payload['type']) && str_contains(strtolower((string) $payload['type']), 'test'));
+
+        if ($isTestPing && empty($externalId)) {
+            Log::info('Mayar webhook test ping acknowledged successfully.', ['payload' => $payload]);
+
+            return [
+                'status' => 'success',
+                'message' => 'Mayar webhook test ping acknowledged',
+                'code' => 200,
+            ];
+        }
+
         if (empty($gatewayEventId) || empty($externalId)) {
             return [
                 'status' => 'error',
