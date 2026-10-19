@@ -324,7 +324,7 @@
 
 ## Milestone 10 — Deploy, Backup & Pemantauan Error
 
-- [ ] **T-34** | Konfigurasi environment produksi cPanel (Addon Domain, SSL, & Cron Job)
+- [x] **T-34** | Konfigurasi environment produksi cPanel (Addon Domain, SSL, & Cron Job)
   - **Tujuan:** Hosting Jagoan Hosting (Cloud Hosting cPanel) siap menjalankan aplikasi Laravel, scheduler, dan queue worker via Cron Job cPanel.
   - **Dependensi:** T-01
   - **Kriteria Selesai:** Document root mengarah ke `/jagasewa/public`; HTTPS aktif; Cron Job cPanel `* * * * * php /home/sdncirac/jagasewa/artisan schedule:run > /dev/null 2>&1` berjalan untuk mengeksekusi auto-cancel booking, auto-delete dokumen, dan queue worker (`queue:work --stop-when-empty`); upload limit & hide PHP version via `.htaccess`; `APP_DEBUG=false`.
