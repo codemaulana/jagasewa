@@ -5,21 +5,23 @@
 
 ---
 
-## 1. Paket & Batas Fitur
+## 1. Paket & Batas Fitur (Model Freemium Opsi B)
 
 > [!IMPORTANT]
 > Entitlement **harus dicek di server setiap request**, tidak boleh diambil dari session atau cookie.
 
-| Fitur | Free | Premium |
-|---|---|---|
-| Jumlah item aktif | 3 [ASUMSI] | Tidak terbatas [ASUMSI] |
-| Smart Buffer Calendar | ✅ | ✅ |
-| Form booking publik | ✅ | ✅ |
-| Blacklist pribadi | 10 entri [ASUMSI] | Tidak terbatas [ASUMSI] |
-| Export data booking | ❌ | ✅ [ASUMSI] |
-| Branding kustom (logo) | ❌ | ✅ [ASUMSI] |
-| Prioritas support | Email | WhatsApp [ASUMSI] |
-| **Harga** | **Rp 0/bulan** [ASUMSI, belum final] | **Rp 99.000/bulan** [ASUMSI, belum final] |
+| Fitur | 🟢 Free (Mulai Rental) | 💎 Pro (Tumbuh & Aman) | Dampak bagi Vendor |
+|---|---|---|---|
+| **Jumlah item aktif** | **Maksimal 5 item** | **Unlimited (Tanpa Batas)** | **Hook Upgrade:** Cukup untuk 5 barang terlaris. Saat barang ke-6 ditambah, upgrade ke Pro terjadi secara alami. |
+| **Smart Buffer Calendar** | ✅ Otomatis (jeda cuci/kirim) | ✅ Otomatis (jeda cuci/kirim) | Mencegah jadwal bentrok tanpa biaya. Kunci retensi vendor. |
+| **Form booking publik & KYC KTP** | ✅ Lengkap (watermark + signed URL) | ✅ Lengkap (watermark + signed URL) | Perlindungan aset dari risiko penipuan/barang dibawa kabur. |
+| **Branding Toko (Katalog Web)** | Terdapat watermark *"Powered by JagaSewa"* | **White-label (Bersih tanpa watermark)** | **Gengsi Brand:** Tampilan katalog terlihat seperti website resmi & eksklusif milik vendor sendiri. |
+| **Kustomisasi Pesan WhatsApp** | Template chat standar sistem | **Bebas kustom template WhatsApp** | **Hemat Waktu:** Bisa masukkan nomor rekening toko, alamat pengembalian, aturan denda, dan sapaan khas brand. |
+| **Blacklist Pribadi & Catatan Risiko** | Maksimal 5 entri | **Unlimited entri + Catatan riwayat risiko penyewa** | Catatan internal untuk menandai penyewa bermasalah/pernah merusak barang. |
+| **Jumlah Foto per Barang** | Maksimal 2 foto | **Maksimal 6–8 foto per barang** | Vendor kostum/kamera bisa memamerkan printilan wig, aksesoris, sepatu, atau bodi & lensa. |
+| **Ekspor Data & Laporan** | ❌ (Hanya ringkasan visual dashboard) | **✅ Download laporan Excel / CSV** | Sekali klik untuk rekap omzet sewa, deposit, dan denda bulanan untuk pembukuan. |
+| **Prioritas Support** | Komunitas / Email | WhatsApp Admin langsung | Bantuan cepat jika ada kendala operasional. |
+| **Pilihan Harga Langganan** | **Rp 0 / selamanya** | **• Bulanan:** **Rp 15.000 / bulan**<br>**• 3 Bulan (Hemat):** **Rp 39.000 / 3 bln** *(Rp 13.000/bln)*<br>**• 1 Tahun (Super Hemat):** **Rp 129.000 / thn** *(Rp 10.750/bln)* | Harga mikro impulsif (seharga segelas es teh/gorengan). 1x sewa barang sudah menutup biaya langganan sebulan penuh. |
 
 ---
 
@@ -202,11 +204,11 @@ stateDiagram-v2
 | Kebijakan | Detail |
 |---|---|
 | **Grace period** | 7 hari setelah status `past_due` sebelum otomatis downgrade ke `free`. [ASUMSI] |
-| **Downgrade item aktif** | Jumlah item aktif dikurangi ke batas paket Free. Item kelebihan di-*disable* (tidak dihapus dari DB). Vendor dapat mengaktifkan kembali setelah upgrade. |
+| **Downgrade item aktif** | Jumlah item aktif dikurangi ke batas paket Free (maksimal 5 item). Item kelebihan di-*disable* otomatis (tidak dihapus dari DB). Vendor dapat mengaktifkannya kembali setelah upgrade ke Pro. |
 | **Notifikasi** | Notifikasi WA dikirim ke vendor **3 hari sebelum** `current_period_end` expired. [ASUMSI] |
 
 > [!IMPORTANT]
-> Downgrade **tidak menghapus data** vendor. Hanya menonaktifkan akses fitur Premium dan membatasi jumlah item aktif.
+> Downgrade **tidak menghapus data** vendor. Hanya menonaktifkan akses fitur Pro dan membatasi jumlah item aktif ke maksimal 5 item.
 
 ---
 
@@ -231,7 +233,7 @@ subscription.status == 'active'
 |---|---|
 | **Jangan cache di session/cookie** | Entitlement tidak boleh disimpan di sisi klien. |
 | **Cache Redis (opsional)** | Boleh cache hasil cek entitlement di Redis dengan TTL maksimal **5 menit**. [ASUMSI] Setelah TTL, query ulang ke DB. |
-| **Setiap request** | Setiap endpoint/fitur yang memerlukan Premium harus menjalankan cek ini, bukan hanya saat login. |
+| **Setiap request** | Setiap endpoint/fitur yang memerlukan Pro/Premium harus menjalankan cek ini, bukan hanya saat login. |
 | **Downgrade efektif segera** | Begitu status berubah (oleh webhook atau job), entitlement berubah pada cek berikutnya (max 5 menit delay jika Redis aktif). |
 
 ---
@@ -243,12 +245,12 @@ subscription.status == 'active'
 | BLT-01 | Webhook ganda (replay) | Xendit mengirim event yang sama dua kali dengan `gateway_event_id` sama | Handler menerima webhook ke-2 → cek `subscription_events` | Duplikat dideteksi → return HTTP 200 tanpa proses ulang; status tidak berubah |
 | BLT-02 | Webhook terlambat | Webhook `invoice.paid` diterima 2 jam setelah payment, order belum expired | Handler memproses webhook | Status berhasil diubah ke `active`; event dicatat dengan `processed_at` aktual |
 | BLT-03 | Webhook tidak berurutan | `invoice.paid` diterima sebelum order dibuat di sisi JagaSewa | Handler mencari order → tidak ditemukan atau status tidak kompatibel | State machine menolak transisi tidak valid; return HTTP 200 dengan log error; alert admin |
-| BLT-04 | Nominal tidak cocok | Transfer Rp 50.000; seharusnya Rp 99.000 | Handler memvalidasi `amount` vs order di DB | Validasi gagal → ROLLBACK; alert admin; status tetap `pending_payment` |
+| BLT-04 | Nominal tidak cocok | Transfer Rp 10.000; seharusnya Rp 15.000 | Handler memvalidasi `amount` vs order di DB | Validasi gagal → ROLLBACK; alert admin; status tetap `pending_payment` |
 | BLT-05 | Replay attack (signature sama) | Attacker mengirim ulang webhook valid yang sudah diproses | Handler verifikasi signature (lolos) → cek `gateway_event_id` | Idempotency check mendeteksi duplikat → return HTTP 200; tidak ada perubahan status |
 | BLT-06 | Race condition redirect vs webhook | Browser redirect datang sebelum webhook Xendit | Redirect endpoint dipanggil; webhook belum sampai | Redirect **tidak** mengubah status subscription; status hanya berubah saat webhook diproses |
 | BLT-07 | Order expired, webhook terlambat | Vendor tidak bayar dalam 24 jam → status `expired`; webhook `invoice.paid` datang setelah expired | Handler menerima webhook → cek status order | State machine menolak transisi dari `expired` → `active`; return HTTP 200; alert admin untuk investigasi manual |
 | BLT-08 | Signature webhook salah | Request ke `/webhooks/xendit` dengan header signature yang tidak valid | Handler memverifikasi signature | Signature gagal → HTTP **401**; payload tidak diproses; event dicatat di log keamanan |
-| BLT-09 | Pembayaran sebagian | Vendor transfer Rp 50.000 dari total Rp 99.000; gateway mengirim webhook partial | Handler memvalidasi nominal | Nominal tidak cocok → ROLLBACK; return error; admin dinotifikasi; refund manual oleh admin [ASUMSI] |
+| BLT-09 | Pembayaran sebagian | Vendor transfer Rp 10.000 dari total Rp 15.000; gateway mengirim webhook partial | Handler memvalidasi nominal | Nominal tidak cocok → ROLLBACK; return error; admin dinotifikasi; refund manual oleh admin [ASUMSI] |
 
 ---
 
