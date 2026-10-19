@@ -25,6 +25,16 @@ class MayarWebhookController extends Controller
 
         $rawBody = $request->getContent();
 
+        // Acknowledge Mayar dashboard test ping directly (no state change, completely safe)
+        if ($request->input('event') === 'testing' || $request->input('type') === 'Testing URL') {
+            Log::info('Mayar webhook testing URL ping acknowledged.');
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Mayar webhook test ping acknowledged',
+            ], 200);
+        }
+
         if (! $handler->verifySignature($signature, $rawBody)) {
             Log::warning('Mayar webhook rejected: Invalid signature or token', [
                 'ip' => $request->ip(),
