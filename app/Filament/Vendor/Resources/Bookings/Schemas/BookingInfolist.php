@@ -3,14 +3,17 @@
 namespace App\Filament\Vendor\Resources\Bookings\Schemas;
 
 use App\Helpers\WaNotificationHelper;
+use App\Models\BlacklistEntry;
 use App\Models\Booking;
 use App\Models\IdentityDocument;
+use App\Services\BlacklistService;
 use App\Services\IdentityDocumentService;
 use Carbon\Carbon;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 
 class BookingInfolist
 {
@@ -18,6 +21,35 @@ class BookingInfolist
     {
         return $schema
             ->components([
+                Section::make('Peringatan: Penyewa Terdaftar di Blacklist')
+                    ->icon(Heroicon::OutlinedExclamationTriangle)
+                    ->schema([
+                        TextEntry::make('blacklist_warning_detail')
+                            ->label('Catatan Blacklist Vendor Anda')
+                            ->state(function (Booking $record): string {
+                                $matches = app(BlacklistService::class)->getMatchesForBooking($record);
+                                if ($matches->isEmpty()) {
+                                    return '-';
+                                }
+
+                                return $matches->map(function (BlacklistEntry $match) {
+                                    $typeName = match ($match->identity_type) {
+                                        BlacklistEntry::TYPE_WA => 'Nomor WhatsApp',
+                                        BlacklistEntry::TYPE_NIK => 'NIK KTP',
+                                        BlacklistEntry::TYPE_INSTAGRAM => 'Instagram',
+                                        default => strtoupper($match->identity_type),
+                                    };
+                                    $date = $match->created_at ? $match->created_at->format('d M Y') : '-';
+
+                                    return "[{$typeName}] {$match->reason} (Dicatat: {$date})";
+                                })->implode("\n");
+                            })
+                            ->color('danger')
+                            ->weight('bold')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn (Booking $record): bool => app(BlacklistService::class)->isBookingBlacklisted($record)),
+
                 Section::make('Ringkasan Permohonan Sewa')
                     ->schema([
                         Grid::make(3)
@@ -131,7 +163,7 @@ class BookingInfolist
 
                 Section::make('Data Identitas & Kontak Penyewa')
                     ->schema([
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 TextEntry::make('renter.name')
                                     ->label('Nama Lengkap')
@@ -140,6 +172,20 @@ class BookingInfolist
                                 TextEntry::make('renter.phone')
                                     ->label('Nomor WhatsApp')
                                     ->copyable(),
+
+                                TextEntry::make('blacklist_status')
+                                    ->label('Status Blacklist')
+                                    ->badge()
+                                    ->state(function (Booking $record): string {
+                                        return app(BlacklistService::class)->isBookingBlacklisted($record)
+                                            ? 'Terdaftar di Blacklist'
+                                            : 'Bersih (Bebas Blacklist)';
+                                    })
+                                    ->color(function (Booking $record): string {
+                                        return app(BlacklistService::class)->isBookingBlacklisted($record)
+                                            ? 'danger'
+                                            : 'success';
+                                    }),
                             ]),
 
                         TextEntry::make('renter.address')

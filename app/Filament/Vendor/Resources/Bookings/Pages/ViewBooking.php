@@ -5,6 +5,7 @@ namespace App\Filament\Vendor\Resources\Bookings\Pages;
 use App\Filament\Vendor\Resources\Bookings\BookingResource;
 use App\Helpers\WaNotificationHelper;
 use App\Models\Booking;
+use App\Services\BlacklistService;
 use App\Services\BookingStatusService;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Textarea;
@@ -16,6 +17,20 @@ class ViewBooking extends ViewRecord
 {
     protected static string $resource = BookingResource::class;
 
+    public function mount(int|string $record): void
+    {
+        parent::mount($record);
+
+        if (app(BlacklistService::class)->isBookingBlacklisted($this->record)) {
+            Notification::make()
+                ->title('Peringatan: Penyewa Terdaftar di Blacklist')
+                ->body('Identitas penyewa ini cocok dengan catatan blacklist Anda. Harap periksa riwayat dan rincian sebelum menyetujui permohonan booking.')
+                ->danger()
+                ->persistent()
+                ->send();
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -25,7 +40,17 @@ class ViewBooking extends ViewRecord
                 ->color('success')
                 ->requiresConfirmation()
                 ->modalHeading('Setujui Permohonan Booking')
-                ->modalDescription('Apakah Anda yakin ingin menyetujui booking ini? Status akan berubah menjadi Disetujui.')
+                ->modalDescription(function (Booking $record): string {
+                    $matches = app(BlacklistService::class)->getMatchesForBooking($record);
+                    if ($matches->isNotEmpty()) {
+                        $reasons = $matches->pluck('reason')->filter()->implode(', ');
+                        $reasonSuffix = $reasons ? " (Alasan blacklist: {$reasons})" : '';
+
+                        return "PERINGATAN: Penyewa ini terdaftar dalam daftar hitam (blacklist) Anda{$reasonSuffix}. Apakah Anda tetap yakin ingin menyetujui booking ini?";
+                    }
+
+                    return 'Apakah Anda yakin ingin menyetujui booking ini? Status akan berubah menjadi Disetujui.';
+                })
                 ->modalSubmitActionLabel('Ya, Setujui')
                 ->visible(fn (Booking $record): bool => $record->status === Booking::STATUS_PENDING)
                 ->action(function (Booking $record, BookingStatusService $statusService) {

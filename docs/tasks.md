@@ -265,7 +265,7 @@
   - **Estimasi:** M
   - **Story:** US-10
 
-- [ ] **T-28** | Pencocokan blacklist saat vendor review booking
+- [x] **T-28** | Pencocokan blacklist saat vendor review booking
   - **Tujuan:** Saat vendor membuka detail booking, sistem menampilkan peringatan jika penyewa ada di blacklist vendor.
   - **Dependensi:** T-27, T-23
   - **Kriteria Selesai:** Penyewa di blacklist → peringatan muncul; penyewa bersih → tidak ada peringatan; blacklist vendor lain tidak mempengaruhi.
