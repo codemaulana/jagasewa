@@ -298,6 +298,62 @@ class BookingInfolist
                             ->color('success'),
                     ])
                     ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE])),
+
+                Section::make('Hasil Penyelesaian Sewa & Denda (Settlement)')
+                    ->icon(Heroicon::OutlinedReceiptPercent)
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                TextEntry::make('settlement.actual_return_date')
+                                    ->label('Tanggal Kembali Aktual')
+                                    ->date('d M Y'),
+
+                                TextEntry::make('settlement.late_days')
+                                    ->label('Keterlambatan')
+                                    ->formatStateUsing(fn ($state) => "{$state} hari"),
+
+                                TextEntry::make('settlement.late_fine')
+                                    ->label('Denda Keterlambatan')
+                                    ->formatStateUsing(fn ($state) => 'Rp '.number_format((int) $state, 0, ',', '.')),
+                            ]),
+
+                        Grid::make(3)
+                            ->schema([
+                                TextEntry::make('settlement.damage_deduction')
+                                    ->label('Potongan Kerusakan')
+                                    ->formatStateUsing(fn ($state) => 'Rp '.number_format((int) $state, 0, ',', '.')),
+
+                                TextEntry::make('settlement.total_deduction')
+                                    ->label('Total Potongan')
+                                    ->weight('bold')
+                                    ->formatStateUsing(fn ($state) => 'Rp '.number_format((int) $state, 0, ',', '.')),
+
+                                TextEntry::make('settlement.deposit_status')
+                                    ->label('Status Uang Jaminan (Deposit)')
+                                    ->badge()
+                                    ->state(function (Booking $record): string {
+                                        $s = $record->settlement;
+                                        if (! $s) {
+                                            return '-';
+                                        }
+
+                                        return $s->deposit_remaining >= 0
+                                            ? 'Pengembalian: Rp '.number_format($s->refund_amount, 0, ',', '.')
+                                            : 'Kekurangan: -Rp '.number_format($s->shortfall_amount, 0, ',', '.');
+                                    })
+                                    ->color(function (Booking $record): string {
+                                        $s = $record->settlement;
+
+                                        return ($s && $s->deposit_remaining < 0) ? 'danger' : 'success';
+                                    }),
+                            ]),
+
+                        TextEntry::make('settlement.damage_notes')
+                            ->label('Catatan Kondisi Barang')
+                            ->placeholder('Tidak ada catatan khusus.')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn (Booking $record): bool => $record->status === Booking::STATUS_CLOSED && $record->settlement()->exists()),
             ]);
     }
 }

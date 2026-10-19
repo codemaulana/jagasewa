@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Models\Settlement;
 use Carbon\Carbon;
 use DomainException;
 use Illuminate\Support\Facades\DB;
@@ -155,6 +156,79 @@ class BookingStatusService
             );
 
             return $lockedBooking;
+        });
+    }
+
+    /**
+     * Complete booking with settlement and damage items, closing the booking (BR-02, BR-03).
+     * Allowed only from 'returned' status.
+     *
+     * @param  array<string, mixed>  $settlementData
+     * @param  iterable<mixed>  $damageItems
+     */
+    public function closeWithSettlement(Booking $booking, array $settlementData, iterable $damageItems = []): Settlement
+    {
+        return DB::transaction(function () use ($booking, $settlementData, $damageItems) {
+            $lockedBooking = Booking::where('id', $booking->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            if ($lockedBooking->status !== Booking::STATUS_RETURNED) {
+                throw new DomainException("Booking dengan status '{$lockedBooking->status}' tidak dapat diselesaikan. Status harus 'returned'.");
+            }
+
+            $now = Carbon::now('Asia/Jakarta');
+            $lockedBooking->status = Booking::STATUS_CLOSED;
+            $lockedBooking->closed_at = $now;
+            $lockedBooking->fine_amount = (int) ($settlementData['total_deduction'] ?? 0);
+            $lockedBooking->lock_version = ($lockedBooking->lock_version ?? 0) + 1;
+            $lockedBooking->save();
+
+            // Create settlement record
+            $settlement = Settlement::create(array_merge($settlementData, [
+                'booking_id' => $lockedBooking->id,
+                'vendor_id' => $lockedBooking->vendor_id,
+            ]));
+
+            // Create individual damage items
+            foreach ($damageItems as $item) {
+                $description = is_array($item) ? ($item['description'] ?? null) : ($item->description ?? null);
+                $amount = is_array($item) ? ($item['repair_cost'] ?? ($item['amount'] ?? 0)) : ($item->repair_cost ?? ($item->amount ?? 0));
+                $photoPath = is_array($item) ? ($item['photo_path'] ?? null) : ($item->photo_path ?? null);
+
+                if (! empty($description) || $amount > 0) {
+                    $settlement->damageItems()->create([
+                        'description' => $description ?? 'Kerusakan barang',
+                        'repair_cost' => max(0, (int) $amount),
+                        'photo_path' => $photoPath,
+                    ]);
+                }
+            }
+
+            // Schedule identity documents auto-delete after retention period (BR-05)
+            $closedDays = (int) config('jagasewa.retention.closed_days', 7);
+            $lockedBooking->identityDocuments()->update([
+                'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays($closedDays),
+            ]);
+
+            AuditService::log(
+                'booking_closed',
+                'booking',
+                (string) $lockedBooking->id,
+                [
+                    'reference_code' => $lockedBooking->reference_code,
+                    'settlement_ulid' => $settlement->ulid,
+                    'late_days' => $settlement->late_days,
+                    'late_fine' => $settlement->late_fine,
+                    'damage_deduction' => $settlement->damage_deduction,
+                    'total_deduction' => $settlement->total_deduction,
+                    'deposit_remaining' => $settlement->deposit_remaining,
+                    'closed_at' => $now->toIso8601String(),
+                ],
+                $lockedBooking->vendor_id
+            );
+
+            return $settlement;
         });
     }
 }

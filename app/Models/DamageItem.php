@@ -60,4 +60,20 @@ class DamageItem extends Model
     {
         return $this->belongsTo(Settlement::class);
     }
+
+    /**
+     * Alias for repair_cost.
+     */
+    public function getAmountAttribute(): int
+    {
+        return (int) $this->repair_cost;
+    }
+
+    /**
+     * Set amount alias for repair_cost.
+     */
+    public function setAmountAttribute(int|float|string $value): void
+    {
+        $this->attributes['repair_cost'] = max(0, (int) $value);
+    }
 }

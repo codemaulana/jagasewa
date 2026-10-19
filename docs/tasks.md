@@ -292,7 +292,7 @@
   - **Estimasi:** S
   - **Story:** US-09 (BR-03)
 
-- [ ] **T-31** | Form penyelesaian sewa (Livewire + kalkulasi real-time)
+- [x] **T-31** | Form penyelesaian sewa (Livewire + kalkulasi real-time)
   - **Tujuan:** Vendor mengisi form; kalkulasi denda muncul real-time sebelum submit.
   - **Dependensi:** T-30, T-24
   - **Kriteria Selesai:** Ubah tanggal kembali → ringkasan langsung update; submit → settlement tersimpan; status booking → `closed`.
