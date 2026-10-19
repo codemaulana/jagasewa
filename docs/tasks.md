@@ -284,7 +284,7 @@
   - **Tes:** Factory; rollback.
   - **Estimasi:** S
 
-- [ ] **T-30** | Service: `FineCalculatorService`
+- [x] **T-30** | Service: `FineCalculatorService`
   - **Tujuan:** Menghitung denda berdasarkan rumus BR-03 dengan bilangan bulat rupiah.
   - **Dependensi:** T-29
   - **Kriteria Selesai:** Rumus tepat; tidak ada pembulatan float; hasil sesuai 5 kasus uji DT-01 s.d. DT-05.
