@@ -349,7 +349,7 @@
 
 ## Milestone 11 — Keamanan Lanjutan (MVP)
 
-- [ ] **T-37** | Rate limiting semua endpoint kritis
+- [x] **T-37** | Rate limiting semua endpoint kritis
   - **Tujuan:** Konfigurasi Laravel throttle middleware untuk login, booking publik, upload dokumen, dan cek blacklist sesuai tabel SEC-11..SEC-14 di security.md.
   - **Dependensi:** T-02 (cache), T-05, T-15, T-19
   - **Kriteria Selesai:** Setiap endpoint kritis mengembalikan HTTP 429 + Retry-After jika melebihi batas; TrustProxies dikonfigurasi dengan Cloudflare IP ranges.

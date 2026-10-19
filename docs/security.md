@@ -383,7 +383,7 @@ Rujuk runbook detail di `deployment-ops.md` (RB-01 s.d. RB-05).
 - [x] Bucket S3: tidak ada public-read ACL; SSE aktif
 - [x] HTTPS aktif dengan sertifikat valid; HSTS diaktifkan
 - [x] Firewall VPS: hanya Cloudflare / reverse proxy IP yang bisa akses port 80/443
-- [ ] Rate limiting dikonfigurasi dan diuji (TC-21..TC-23) — *Terjadwal di T-37*
+- [x] Rate limiting dikonfigurasi dan diuji (TC-21..TC-23) [T-37]
 - [x] Test isolasi vendor lulus: HTTP 404 untuk resource vendor lain (IDOR-01..IDOR-14)
 - [x] Upload validation: magic bytes, max size 5MB, UUID rename, EXIF dihapus (TC-31..TC-35)
 - [x] Auto-delete job terdaftar di scheduler dan diuji di staging (TC-36..TC-38)

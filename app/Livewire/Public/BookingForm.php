@@ -9,8 +9,10 @@ use App\Models\Renter;
 use App\Services\AuditService;
 use App\Services\BookingCalendarService;
 use App\Services\DocumentUploadService;
+use App\Services\IdentityHashService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\On;
@@ -130,6 +132,28 @@ class BookingForm extends Component
     {
         $this->errorMessage = null;
         $this->validate();
+
+        // SEC-11: Rate Limiting for Public Bookings: 10/hour per IP, 3/hour per WhatsApp (T-37)
+        $ip = request()->ip();
+        $ipKey = 'rate_limit:booking_public:ip:'.$ip;
+        if (RateLimiter::tooManyAttempts($ipKey, 10)) {
+            $seconds = RateLimiter::availableIn($ipKey);
+            abort(429, 'Terlalu banyak permintaan pemesanan dari IP Anda. Silakan coba lagi nanti.', [
+                'Retry-After' => $seconds,
+            ]);
+        }
+
+        $phoneHash = IdentityHashService::hashIdentity(IdentityHashService::TYPE_WA, $this->phone);
+        $waKey = 'rate_limit:booking_public:wa:'.$phoneHash;
+        if (RateLimiter::tooManyAttempts($waKey, 3)) {
+            $seconds = RateLimiter::availableIn($waKey);
+            abort(429, 'Nomor WhatsApp ini telah mencapai batas pemesanan maksimum (3 kali per jam). Silakan coba lagi nanti.', [
+                'Retry-After' => $seconds,
+            ]);
+        }
+
+        RateLimiter::hit($ipKey, 3600);
+        RateLimiter::hit($waKey, 3600);
 
         // 1. Idempotency Check: if booking with idempotencyKey exists, redirect to success
         $existing = Booking::where('idempotency_key', $this->idempotencyKey)->first();
