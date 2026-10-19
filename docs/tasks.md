@@ -385,7 +385,7 @@
 
 ## Milestone 12 — Billing Langganan (Fase 1.5)
 
-- [ ] **T-41** | [Fase 1.5] Migrasi tabel billing: `subscriptions`, `subscription_events`, `manual_activations`
+- [x] **T-41** | [Fase 1.5] Migrasi tabel billing: `subscriptions`, `subscription_events`, `manual_activations`
   - **Tujuan:** Skema DB billing sesuai billing.md seksi 2; kolom state machine siap.
   - **Dependensi:** T-04
   - **Kriteria Selesai:** Migrasi berjalan; factory; rollback bersih; kolom `gateway_event_id` UNIQUE.

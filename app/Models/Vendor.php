@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Vendor extends Model
 {
@@ -86,6 +87,38 @@ class Vendor extends Model
     public function blacklistEntries(): HasMany
     {
         return $this->hasMany(BlacklistEntry::class);
+    }
+
+    /**
+     * Get the subscriptions belonging to the vendor.
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * Get the current latest subscription of the vendor.
+     */
+    public function currentSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class)->latestOfMany();
+    }
+
+    /**
+     * Get the subscription webhook and transaction events for the vendor.
+     */
+    public function subscriptionEvents(): HasMany
+    {
+        return $this->hasMany(SubscriptionEvent::class);
+    }
+
+    /**
+     * Get the manual subscription activations performed for the vendor.
+     */
+    public function manualActivations(): HasMany
+    {
+        return $this->hasMany(ManualActivation::class);
     }
 
     /**
