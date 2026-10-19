@@ -373,7 +373,7 @@
   - **Estimasi:** S
   - **SEC:** SEC-10
 
-- [ ] **T-40** | Hardening Cloud Hosting cPanel (.htaccess, PHP Options, Cloudflare Proxy)
+- [x] **T-40** | Hardening Cloud Hosting cPanel (.htaccess, PHP Options, Cloudflare Proxy)
   - **Tujuan:** Pengaturan keamanan lingkungan cPanel Jagoan Hosting: konfigurasi `public/.htaccess` untuk batas upload 6M, blokir akses file sensitif (.env/git), hide `X-Powered-By`/`expose_php=Off`, dan proxy DNS Cloudflare.
   - **Dependensi:** T-34
   - **Kriteria Selesai:** File `.htaccess` terkonfigurasi dengan proteksi direktori; cPanel PHP Options `expose_php=Off` & `upload_max_filesize=6M`; domain diarahkan via Cloudflare Proxy (Orange Cloud).

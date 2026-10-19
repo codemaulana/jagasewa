@@ -5,8 +5,15 @@
 
     RewriteEngine On
 
-    # Block access to hidden files and directories (except .well-known for SSL)
-    RewriteRule "(^|/)\.(?!well-known)" - [F]
+    # SEC-38: Block HTTP TRACE and TRACK methods
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK) [NC]
+    RewriteRule .* - [F,L]
+
+    # SEC-40: Block direct access to hidden files/directories (except .well-known for ACME/SSL)
+    RewriteRule "(^|/)\.(?!well-known)" - [F,L]
+
+    # SEC-40: Block direct access to sensitive system/configuration files
+    RewriteRule "(^|/)(composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|\.env.*|artisan|README\.md|web\.config|\.htaccess.*|\.user\.ini)" - [F,L]
 
     # Force HTTPS (supports direct SSL and Cloudflare Proxy)
     RewriteCond %{HTTPS} off
@@ -32,6 +39,20 @@
     RewriteRule ^ index.php [L]
 </IfModule>
 
+# SEC-17: Limit request body to 6MB (6 * 1024 * 1024 = 6291456 bytes) to prevent volumetric payload DoS
+LimitRequestBody 6291456
+
+# Disable directory listing and server signatures
+Options -Indexes -MultiViews
+ServerSignature Off
+
+# PHP Directives for Apache / LiteSpeed (upload limits & hide PHP version)
+<IfModule mod_php.c>
+    php_value upload_max_filesize 6M
+    php_value post_max_size 8M
+    php_flag expose_php Off
+</IfModule>
+
 # Security Headers & Hide PHP version (SEC-37 & Rule 12)
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
@@ -40,6 +61,6 @@
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
     Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.bunny.net; font-src 'self' https://fonts.bunny.net data:; img-src 'self' data: https://*.backblazeb2.com; connect-src 'self'; frame-ancestors 'self';"
     Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always unset X-Powered-By
     Header unset X-Powered-By
 </IfModule>
-
