@@ -5,132 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $item->name }} — {{ $vendor->name }} | JagaSewa</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
+    @include('public.partials.design-tokens')
     @livewireStyles
 </head>
-<body class="bg-gray-50 text-gray-900 antialiased pb-28">
+<body class="bg-neutral-50 text-neutral-900 antialiased pb-28">
 
-    <!-- Top Navigation Header -->
-    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-gray-100">
+    <!-- Header Navigasi Publik -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-sm border-b border-neutral-200">
         <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <span class="text-emerald-600 font-bold text-lg tracking-tight">🏷️ JagaSewa</span>
-                <span class="text-xs bg-emerald-50 text-emerald-700 font-medium px-2 py-0.5 rounded-full border border-emerald-200">Katalog Publik</span>
+                <a href="{{ route('public.vendor.catalog', ['vendor_slug' => $vendor->slug]) }}" class="flex items-center gap-2 text-neutral-900 font-bold text-base tracking-tight hover:text-primary-700 transition">
+                    <svg class="w-5 h-5 text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                    </svg>
+                    <span>JagaSewa</span>
+                </a>
+                <span class="text-[11px] font-medium bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-full border border-neutral-200">Katalog</span>
             </div>
-            <div class="text-xs text-gray-500 font-medium">
-                Rental Terpercaya
-            </div>
+            <a href="{{ route('public.vendor.catalog', ['vendor_slug' => $vendor->slug]) }}" class="text-xs text-neutral-500 hover:text-neutral-900 font-medium transition">
+                Lihat semua barang
+            </a>
         </div>
     </header>
 
     <main class="max-w-xl mx-auto px-4 pt-4 space-y-4">
 
-        <!-- Vendor Header Banner -->
-        <div class="flex items-center justify-between bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
+        <!-- Banner Vendor -->
+        <div class="flex items-center justify-between bg-white p-3.5 rounded-xl border border-neutral-200 shadow-xs">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white font-bold text-base shadow-sm">
+                <div class="w-10 h-10 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 font-bold text-sm flex-shrink-0">
                     {{ strtoupper(substr($vendor->name, 0, 1)) }}
                 </div>
                 <div>
-                    <h2 class="text-sm font-semibold text-gray-900 leading-tight">{{ $vendor->name }}</h2>
-                    <p class="text-xs text-gray-500 flex items-center gap-1">
-                        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Vendor Terverifikasi
+                    <h2 class="text-sm font-semibold text-neutral-900 leading-tight">{{ $vendor->name }}</h2>
+                    <p class="text-xs text-neutral-500 flex items-center gap-1.5 mt-0.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary-600"></span>
+                        Terverifikasi
                     </p>
                 </div>
             </div>
-            <span class="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-lg font-medium">@ {{ $vendor->slug }}</span>
+            <span class="text-xs bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded font-mono text-[11px]">@ {{ $vendor->slug }}</span>
         </div>
 
-        <!-- Gallery / Foto Barang -->
-        <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm">
+        <!-- Galeri Foto Barang -->
+        <div class="bg-white rounded-xl border border-neutral-200 overflow-hidden shadow-xs">
             @if(!empty($photos))
-                <div class="relative aspect-[4/3] bg-gray-100">
+                <div class="relative aspect-[4/3] bg-neutral-100">
                     <img id="main-product-image" src="{{ $photos[0] }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
                     @if(count($photos) > 1)
-                        <div class="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white text-xs px-2.5 py-1 rounded-full font-medium">
-                            <span id="active-photo-index">1</span> / {{ count($photos) }} Foto
+                        <div class="absolute bottom-2.5 right-2.5 bg-neutral-900/80 backdrop-blur-xs text-white text-[11px] px-2 py-0.5 rounded font-medium">
+                            <span id="active-photo-index">1</span> / {{ count($photos) }}
                         </div>
                     @endif
                 </div>
 
                 @if(count($photos) > 1)
-                    <div class="p-3 flex gap-2 overflow-x-auto border-t border-gray-50">
+                    <div class="p-2.5 flex gap-2 overflow-x-auto border-t border-neutral-100">
                         @foreach($photos as $index => $photoUrl)
                             <button type="button" 
                                     onclick="switchPhoto('{{ $photoUrl }}', {{ $index + 1 }})" 
-                                    class="photo-thumb flex-shrink-0 w-16 h-16 rounded-xl overflow-hidden border-2 {{ $index === 0 ? 'border-emerald-500' : 'border-transparent' }} focus:outline-none transition">
-                                <img src="{{ $photoUrl }}" alt="Thumbnail {{ $index + 1 }}" class="w-full h-full object-cover">
+                                    class="photo-thumb flex-shrink-0 w-14 h-14 rounded-lg overflow-hidden border-2 {{ $index === 0 ? 'border-primary-600' : 'border-transparent' }} focus:outline-none transition">
+                                <img src="{{ $photoUrl }}" alt="Foto {{ $index + 1 }}" class="w-full h-full object-cover">
                             </button>
                         @endforeach
                     </div>
                 @endif
             @else
-                <div class="aspect-[4/3] bg-gradient-to-b from-gray-50 to-gray-100 flex flex-col items-center justify-center text-gray-400 p-6 text-center">
-                    <svg class="w-16 h-16 mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                <div class="aspect-[4/3] bg-neutral-100 flex flex-col items-center justify-center text-neutral-400 p-6 text-center">
+                    <svg class="w-10 h-10 mb-2 text-neutral-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                     </svg>
-                    <p class="text-xs font-medium">Foto barang belum diunggah</p>
+                    <p class="text-xs text-neutral-500">Foto barang belum diunggah</p>
                 </div>
             @endif
         </div>
 
-        <!-- Judul & Harga Pokok -->
-        <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+        <!-- Informasi Utama & Biaya -->
+        <div class="bg-white p-4 sm:p-5 rounded-xl border border-neutral-200 shadow-xs space-y-4">
             <div>
                 <div class="flex items-center gap-2 mb-1.5">
                     @if($item->size)
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-neutral-100 text-neutral-800 border border-neutral-200">
                             Ukuran: {{ $item->size }}
                         </span>
                     @endif
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                        ID: {{ substr($item->ulid, 0, 8) }}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono text-neutral-500 bg-neutral-100">
+                        {{ substr($item->ulid, 0, 8) }}
                     </span>
                 </div>
-                <h1 class="text-xl font-bold text-gray-900 leading-snug">{{ $item->name }}</h1>
+                <h1 class="text-lg sm:text-xl font-bold text-neutral-900 leading-snug">{{ $item->name }}</h1>
             </div>
 
-            <!-- Price Card -->
-            <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 flex items-baseline justify-between">
+            <!-- Kartu Tarif Sewa -->
+            <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-3.5 flex items-baseline justify-between">
                 <div>
-                    <span class="text-xs text-emerald-800 font-medium block">Tarif Sewa Harian</span>
-                    <span class="text-2xl font-black text-emerald-700">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</span>
-                    <span class="text-xs text-emerald-600 font-medium"> / hari</span>
+                    <span class="text-xs text-neutral-500 block">Tarif sewa harian</span>
+                    <span class="text-xl sm:text-2xl font-bold text-neutral-900">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</span>
+                    <span class="text-xs text-neutral-500">/ hari</span>
                 </div>
                 <div class="text-right">
-                    <span class="inline-block text-xs bg-emerald-600 text-white font-semibold px-2 py-0.5 rounded-md shadow-xs">Tersedia</span>
+                    <span class="inline-block text-xs font-medium badge-status-success border px-2 py-0.5 rounded">Tersedia</span>
                 </div>
             </div>
 
-            <!-- Deposit & Denda Grid -->
-            <div class="grid grid-cols-2 gap-3 pt-1">
-                <div class="bg-gray-50 border border-gray-100 rounded-2xl p-3">
-                    <span class="text-xs text-gray-500 font-medium block mb-0.5">Uang Jaminan (Deposit)</span>
-                    <span class="text-sm font-bold text-gray-900">
-                        {{ $item->deposit_amount > 0 ? 'Rp ' . number_format($item->deposit_amount, 0, ',', '.') : 'Bebas Deposit' }}
+            <!-- Grid Deposit & Denda -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-3">
+                    <span class="text-xs text-neutral-500 block mb-0.5">Uang jaminan (deposit)</span>
+                    <span class="text-sm font-semibold text-neutral-900">
+                        {{ $item->deposit_amount > 0 ? 'Rp ' . number_format($item->deposit_amount, 0, ',', '.') : 'Tanpa deposit' }}
                     </span>
-                    <p class="text-[10px] text-gray-400 mt-0.5">Dikembalikan penuh jika tidak ada kerusakan</p>
+                    <p class="text-[11px] text-neutral-400 mt-0.5">Dikembalikan jika tidak ada denda</p>
                 </div>
-                <div class="bg-gray-50 border border-gray-100 rounded-2xl p-3">
-                    <span class="text-xs text-gray-500 font-medium block mb-0.5">Denda Telat / Hari</span>
-                    <span class="text-sm font-bold text-rose-600">
+                <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-3">
+                    <span class="text-xs text-neutral-500 block mb-0.5">Denda keterlambatan</span>
+                    <span class="text-sm font-semibold text-neutral-900">
                         Rp {{ number_format($item->fine_per_day, 0, ',', '.') }}
                     </span>
-                    <p class="text-[10px] text-gray-400 mt-0.5">Dikenakan per 24 jam keterlambatan</p>
+                    <p class="text-[11px] text-neutral-400 mt-0.5">Dikenakan per 24 jam</p>
                 </div>
             </div>
         </div>
 
-        <!-- Atribut Rental (Kelengkapan Set & Perawatan) -->
+        <!-- Kelengkapan Set & Petunjuk Perawatan -->
         @if(!empty($item->included_items) || $item->care_instructions)
-            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-4">
-                <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
-                    <span>✨</span> Kelengkapan & Spesifikasi
+            <div class="bg-white p-4 sm:p-5 rounded-xl border border-neutral-200 shadow-xs space-y-3.5">
+                <h3 class="text-sm font-semibold text-neutral-900">
+                    Spesifikasi dan kelengkapan
                 </h3>
 
                 @php
@@ -141,11 +142,11 @@
 
                 @if(!empty($includedList))
                     <div>
-                        <span class="text-xs text-gray-500 font-medium block mb-2">Item yang Didapat (Included Set):</span>
+                        <span class="text-xs text-neutral-500 block mb-2">Komponen yang disertakan:</span>
                         <div class="flex flex-wrap gap-1.5">
                             @foreach($includedList as $included)
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
-                                    ✓ {{ $included }}
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-neutral-100 text-neutral-800 border border-neutral-200">
+                                    {{ $included }}
                                 </span>
                             @endforeach
                         </div>
@@ -153,51 +154,49 @@
                 @endif
 
                 @if($item->care_instructions)
-                    <div class="bg-amber-50/70 border border-amber-200/60 rounded-2xl p-3 text-xs text-amber-900">
-                        <span class="font-bold flex items-center gap-1.5 text-amber-900 mb-1">
-                            <span>⚠️</span> Instruksi Perawatan & Kebersihan:
-                        </span>
-                        <p class="leading-relaxed text-amber-800">{{ $item->care_instructions }}</p>
+                    <div class="badge-status-warning border rounded-xl p-3 text-xs">
+                        <span class="font-semibold block text-[#92400e] mb-0.5">Instruksi perawatan:</span>
+                        <p class="leading-relaxed">{{ $item->care_instructions }}</p>
                     </div>
                 @endif
             </div>
         @endif
 
-        <!-- Ketentuan Jeda Otomatis (Smart Buffer) -->
-        <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-3">
-            <h3 class="text-sm font-bold text-gray-900 flex items-center gap-2">
-                <span>🛡️</span> Ketentuan Jeda Otomatis (Smart Buffer)
+        <!-- Ketentuan Jeda Sewa (Buffer) -->
+        <div class="bg-white p-4 sm:p-5 rounded-xl border border-neutral-200 shadow-xs space-y-2.5">
+            <h3 class="text-sm font-semibold text-neutral-900">
+                Ketentuan jeda sewa (buffer)
             </h3>
-            <p class="text-xs text-gray-600 leading-relaxed">
-                Untuk memastikan barang tiba dalam kondisi prima dan bersih, vendor menerapkan jeda jadwal otomatis di kalender:
+            <p class="text-xs text-neutral-600 leading-relaxed">
+                Jadwal pembersihan dan pengiriman diterapkan otomatis pada kalender:
             </p>
-            <div class="grid grid-cols-2 gap-3 pt-1">
-                <div class="border border-gray-100 rounded-2xl p-3 bg-gray-50/50">
-                    <span class="text-[11px] text-gray-500 font-medium block">Jeda Sebelum Sewa</span>
-                    <span class="text-sm font-bold text-gray-800">{{ $item->buffer_before }} Hari</span>
-                    <p class="text-[10px] text-gray-400 mt-0.5">Persiapan & laundry</p>
+            <div class="grid grid-cols-2 gap-3 pt-0.5">
+                <div class="border border-neutral-200 rounded-xl p-3 bg-neutral-50">
+                    <span class="text-[11px] text-neutral-500 block">Sebelum sewa</span>
+                    <span class="text-sm font-semibold text-neutral-900">{{ $item->buffer_before }} Hari</span>
+                    <p class="text-[10px] text-neutral-400 mt-0.5">Persiapan dan laundry</p>
                 </div>
-                <div class="border border-gray-100 rounded-2xl p-3 bg-gray-50/50">
-                    <span class="text-[11px] text-gray-500 font-medium block">Jeda Sesudah Sewa</span>
-                    <span class="text-sm font-bold text-gray-800">{{ $item->buffer_after }} Hari</span>
-                    <p class="text-[10px] text-gray-400 mt-0.5">Pengiriman balik & cek barang</p>
+                <div class="border border-neutral-200 rounded-xl p-3 bg-neutral-50">
+                    <span class="text-[11px] text-neutral-500 block">Sesudah sewa</span>
+                    <span class="text-sm font-semibold text-neutral-900">{{ $item->buffer_after }} Hari</span>
+                    <p class="text-[10px] text-neutral-400 mt-0.5">Pemeriksaan dan pengiriman</p>
                 </div>
             </div>
         </div>
 
-        <!-- Interactive Smart Buffer Calendar -->
+        <!-- Kalender Ketersediaan -->
         <livewire:item-availability-calendar :item="$item" />
 
-        <!-- Public Booking Form Section -->
+        <!-- Formulir Booking Publik -->
         <div id="booking-section">
             <livewire:public.booking-form :item="$item" />
         </div>
 
         <!-- Deskripsi Barang -->
         @if($item->description)
-            <div class="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm space-y-2">
-                <h3 class="text-sm font-bold text-gray-900">Deskripsi Lengkap</h3>
-                <div class="text-xs text-gray-600 leading-relaxed whitespace-pre-line">
+            <div class="bg-white p-4 sm:p-5 rounded-xl border border-neutral-200 shadow-xs space-y-2">
+                <h3 class="text-sm font-semibold text-neutral-900">Deskripsi</h3>
+                <div class="text-xs text-neutral-600 leading-relaxed whitespace-pre-line">
                     {{ $item->description }}
                 </div>
             </div>
@@ -205,22 +204,22 @@
 
     </main>
 
-    <!-- Bottom Sticky CTA -->
-    <div class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-gray-100 p-4 z-40">
+    <!-- Bottom Sticky CTA Mobile -->
+    <div class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-sm border-t border-neutral-200 p-3.5 z-40">
         <div class="max-w-xl mx-auto flex items-center justify-between gap-4">
             <div>
-                <span class="text-[11px] text-gray-400 block font-medium">Total Tarif Sewa</span>
-                <span class="text-lg font-black text-emerald-700">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</span>
-                <span class="text-xs text-gray-500"> / hari</span>
+                <span class="text-[11px] text-neutral-500 block">Tarif harian</span>
+                <span class="text-base sm:text-lg font-bold text-neutral-900">Rp {{ number_format($item->price_per_day, 0, ',', '.') }}</span>
+                <span class="text-xs text-neutral-500">/ hari</span>
             </div>
             <a href="#booking-section" 
-               class="flex-1 max-w-[200px] text-center bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold py-3 px-5 rounded-2xl shadow-lg shadow-emerald-600/25 transition">
-                Pesan Sekarang
+               class="inline-flex items-center justify-center h-11 px-6 rounded-xl bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-semibold text-sm shadow-xs transition duration-150">
+                Pilih tanggal & sewa
             </a>
         </div>
     </div>
 
-    <!-- Script for photo switching -->
+    <!-- Script Pergantian Foto -->
     <script>
         function switchPhoto(url, index) {
             const mainImg = document.getElementById('main-product-image');
@@ -230,10 +229,10 @@
 
             document.querySelectorAll('.photo-thumb').forEach((thumb, i) => {
                 if (i === index - 1) {
-                    thumb.classList.add('border-emerald-500');
+                    thumb.classList.add('border-primary-600');
                     thumb.classList.remove('border-transparent');
                 } else {
-                    thumb.classList.remove('border-emerald-500');
+                    thumb.classList.remove('border-primary-600');
                     thumb.classList.add('border-transparent');
                 }
             });

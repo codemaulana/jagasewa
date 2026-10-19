@@ -43,15 +43,15 @@ class BookingInfolist
                                         default => ucfirst($state),
                                     })
                                     ->color(fn (string $state): string => match ($state) {
-                                        Booking::STATUS_PENDING => 'warning',
-                                        Booking::STATUS_APPROVED => 'info',
-                                        Booking::STATUS_ACTIVE => 'success',
-                                        Booking::STATUS_RETURNED => 'purple',
-                                        Booking::STATUS_CLOSED => 'gray',
-                                        Booking::STATUS_REJECTED,
+                                        Booking::STATUS_PENDING,
+                                        Booking::STATUS_RETURNED => 'warning',
+                                        Booking::STATUS_APPROVED,
+                                        Booking::STATUS_ACTIVE => 'info',
+                                        Booking::STATUS_CLOSED => 'success',
+                                        Booking::STATUS_REJECTED => 'danger',
                                         Booking::STATUS_CANCELLED_TIMEOUT,
                                         Booking::STATUS_CANCELLED_RENTER,
-                                        Booking::STATUS_CANCELLED_VENDOR => 'danger',
+                                        Booking::STATUS_CANCELLED_VENDOR => 'gray',
                                         default => 'gray',
                                     }),
 
