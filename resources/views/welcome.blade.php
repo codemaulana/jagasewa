@@ -14,17 +14,17 @@
         <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 text-neutral-900 font-bold text-base tracking-tight">
-                    <svg class="w-5 h-5 text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <svg class="w-5 h-5 text-neutral-900 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                     </svg>
                     <span>JagaSewa</span>
                 </a>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ url('/vendor/login') }}" class="text-xs font-medium text-neutral-700 hover:text-neutral-900 px-3 py-2 rounded-xl transition">
+                <a href="{{ url('/vendor/login') }}" class="text-xs font-medium text-neutral-700 hover:text-neutral-900 px-3 py-2 rounded-xl transition min-h-[44px] inline-flex items-center">
                     Masuk Vendor
                 </a>
-                <a href="{{ url('/vendor/register') }}" class="text-xs font-semibold text-white bg-primary-600 hover:bg-primary-700 h-9 px-3.5 rounded-xl transition inline-flex items-center justify-center shadow-xs">
+                <a href="{{ url('/vendor/register') }}" class="text-xs font-semibold text-white bg-[#111111] hover:bg-[#262626] active:bg-black h-10 px-4 rounded-full transition inline-flex items-center justify-center shadow-xs">
                     Daftar Rental
                 </a>
             </div>
@@ -34,7 +34,7 @@
     <!-- Konten Utama Hero -->
     <main class="max-w-3xl mx-auto px-4 py-16 sm:py-24 text-center space-y-8 flex-1 flex flex-col justify-center">
         <div class="space-y-4">
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium badge-status-info border">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#86F04C] text-[#0A0A0A]">
                 Sistem Manajemen Rental Terpadu
             </span>
             <h1 class="text-3xl sm:text-4xl font-bold text-neutral-900 tracking-tight leading-tight">
@@ -47,10 +47,10 @@
 
         <!-- Tombol Aksi -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="{{ url('/vendor/register') }}" class="w-full sm:w-auto h-11 px-6 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold text-sm shadow-xs transition inline-flex items-center justify-center">
+            <a href="{{ url('/vendor/register') }}" class="w-full sm:w-auto h-11 px-6 rounded-full bg-[#111111] hover:bg-[#262626] active:bg-black text-white font-semibold text-sm shadow-xs transition inline-flex items-center justify-center">
                 Mulai Kelola Toko Rental
             </a>
-            <a href="{{ url('/vendor/login') }}" class="w-full sm:w-auto h-11 px-6 rounded-xl bg-white hover:bg-neutral-50 text-neutral-800 border border-neutral-300 font-semibold text-sm transition inline-flex items-center justify-center">
+            <a href="{{ url('/vendor/login') }}" class="w-full sm:w-auto h-11 px-6 rounded-full bg-white hover:bg-neutral-50 active:bg-neutral-100 text-neutral-800 border border-neutral-200 font-semibold text-sm transition inline-flex items-center justify-center">
                 Masuk ke Dashboard
             </a>
         </div>
