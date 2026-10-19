@@ -35,4 +35,19 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Error Monitoring Configuration (T-36)
+    |--------------------------------------------------------------------------
+    |
+    | Supports Sentry DSN (via official Sentry Store REST API) and Webhook
+    | alerts (Discord/Slack/Telegram) without extra heavy packages.
+    |
+    */
+    'monitoring' => [
+        'sentry_dsn' => env('SENTRY_DSN'),
+        'webhook_url' => env('MONITOR_WEBHOOK_URL'),
+        'enabled' => env('MONITOR_ENABLED', true),
+    ],
+
 ];

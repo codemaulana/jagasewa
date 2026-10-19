@@ -338,11 +338,11 @@
   - **Tes:** Jalankan restore dari backup terbaru ke environment staging/lokal; verifikasi integritas data konsisten.
   - **Estimasi:** M
 
-- [ ] **T-36** | Error monitoring (Sentry atau setara) + checklist pre-launch security
+- [x] **T-36** | Error monitoring (Sentry atau setara) + checklist pre-launch security
   - **Tujuan:** Error produksi terdeteksi; semua item checklist di `security.md` lulus.
   - **Dependensi:** T-34
-  - **Kriteria Selesai:** Error terkait di Sentry; semua 16+ item checklist security dicentang.
-  - **Tes:** Trigger error manual → muncul di Sentry dalam 60 detik; checklist diisi dan di-review.
+  - **Kriteria Selesai:** Error terkait di Sentry / Webhook; semua 16+ item checklist security dicentang dan diaudit.
+  - **Tes:** Trigger error manual → muncul di Sentry / Webhook dalam 60 detik; checklist diisi dan di-review.
   - **Estimasi:** M
 
 ---

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureVendorOwnership;
+use App\Services\ErrorMonitoringService;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,5 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->reportable(function (Throwable $e): void {
+            if (app()->bound(ErrorMonitoringService::class)) {
+                app(ErrorMonitoringService::class)->captureException($e);
+            }
+        });
     })->create();
