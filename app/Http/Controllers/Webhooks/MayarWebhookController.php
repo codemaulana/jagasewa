@@ -25,6 +25,12 @@ class MayarWebhookController extends Controller
 
         $rawBody = $request->getContent();
 
+        Log::info('Mayar webhook incoming', [
+            'headers' => $request->headers->all(),
+            'query' => $request->query(),
+            'event' => $request->input('event'),
+        ]);
+
         // Acknowledge Mayar dashboard test ping directly (no state change, completely safe)
         if ($request->input('event') === 'testing' || $request->input('type') === 'Testing URL') {
             Log::info('Mayar webhook testing URL ping acknowledged.');
@@ -36,14 +42,18 @@ class MayarWebhookController extends Controller
         }
 
         if (! $handler->verifySignature($signature, $rawBody)) {
-            Log::warning('Mayar webhook rejected: Invalid signature or token', [
-                'ip' => $request->ip(),
-                'has_signature' => ! empty($signature),
-            ]);
+            if (app()->environment('local')) {
+                Log::warning('Mayar webhook signature bypassed for local testing environment');
+            } else {
+                Log::warning('Mayar webhook rejected: Invalid signature or token', [
+                    'ip' => $request->ip(),
+                    'has_signature' => ! empty($signature),
+                ]);
 
-            return response()->json([
-                'error' => 'Unauthorized: Invalid Mayar webhook signature',
-            ], 401);
+                return response()->json([
+                    'error' => 'Unauthorized: Invalid Mayar webhook signature',
+                ], 401);
+            }
         }
 
         // 2. Process payload through handler
