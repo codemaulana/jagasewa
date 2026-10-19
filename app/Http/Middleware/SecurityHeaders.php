@@ -35,7 +35,7 @@ class SecurityHeaders
         // Rule 12 & SEC-37: Content Security Policy with Backblaze B2 whitelist for images
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
             "font-src 'self' https://fonts.bunny.net data:",
             "img-src 'self' data: https://*.backblazeb2.com",

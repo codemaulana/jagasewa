@@ -15,7 +15,7 @@
         <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <a href="{{ url('/') }}" class="flex items-center gap-2 text-neutral-900 font-bold text-base tracking-tight hover:text-neutral-700 transition">
-                    <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-8 sm:h-9 w-auto object-contain">
+                    <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-8 sm:h-9 w-auto object-contain" style="height: 36px; width: auto; max-width: 160px; object-fit: contain;">
                 </a>
                 <span class="text-[11px] font-medium bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded-full border border-neutral-200">Katalog</span>
             </div>

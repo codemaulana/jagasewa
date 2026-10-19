@@ -60,6 +60,7 @@ class SecurityHeadersAndCsrfTest extends TestCase
         $this->assertNotNull($csp);
         $this->assertStringContainsString("default-src 'self'", $csp);
         $this->assertStringContainsString('https://*.backblazeb2.com', $csp);
+        $this->assertStringContainsString('https://cdn.tailwindcss.com', $csp);
 
         // Hide PHP version
         $this->assertNull($response->headers->get('X-Powered-By'));
