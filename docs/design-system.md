@@ -16,27 +16,29 @@ JagaSewa mengusung prinsip **Clean, Modern SaaS**:
 
 ---
 
-## 2. Usulan Warna Aksen Utama & Alternatif
+## 2. Palet Warna & Karakter Visual
 
-Untuk SaaS booking rental yang melibatkan transaksi barang berharga dan verifikasi dokumen identitas (KTP):
+Berdasarkan spesifikasi desain yang telah diselaraskan (`docs/design-reference.md`):
 
-### 🌟 Rekomendasi Utama: **Trust Emerald (Hijau Zamrud Keamanan)**
-- **Token:** `--color-primary-600: #059669` (Dominan), `--color-primary-500: #10b981`, `--color-primary-700: #047857`
-- **Rasional:** Hijau zamrud memancarkan rasa aman, persetujuan resmi, dan ketenangan finansial. Di Indonesia, hijau memiliki resonansi kedekatan dengan ekosistem WhatsApp (kanal notifikasi utama JagaSewa) dan platform finansial terpercaya. Sangat cocok meredakan resistensi pengguna saat diminta mengunggah foto KTP.
-
-### 🔷 Alternatif 1: **Royal Navy / Corporate Blue (Biru Kepercayaan Otoritatif)**
-- **Token:** `--color-primary-600: #2563eb`, `--color-primary-700: #1d4ed8`
-- **Rasional:** Standar industri SaaS finansial & legal global (mis. Stripe, DocuSign). Memberikan kesan sistem keamanan tinggi, formal, dan reliabilitas tinggi untuk perlindungan aset vendor bernilai jutaan rupiah.
-
-### 🌊 Alternatif 2: **Deep Teal (Teal Samudra Modern)**
-- **Token:** `--color-primary-600: #0891b2`, `--color-primary-700: #0e7490`
-- **Rasional:** Kombinasi stabilitas warna biru dan kesegaran warna hijau. Terkesan modern, estetik, dan luwes untuk pasar rental kreatif (kamera fotografi, kostum cosplay, kebaya wisuda/pernikahan).
+### 🌟 Palet Utama: **Warm Neutral + Solid Black + Single Accent Lime**
+- **Latar Halaman (Background):** `#F2F2F0` (Abu hangat sangat terang, tidak menyilaukan)
+- **Permukaan Kartu (Surface):** `#FFFFFF` dengan border halus 1px `#E5E5E3` dan bayangan lembut
+- **Tombol Utama (Primary CTA):** `#111111` (Hitam pekat solid, teks putih, kontras maksimal 21:1)
+- **Aksen Tunggal (Single Accent):** `#86F04C` (Lime cerah, HANYA untuk background badge/chip sorotan dengan teks gelap `#0A0A0A`. Tidak pernah digunakan untuk teks lime di atas putih, dan TIDAK BOLEH menggantikan warna status sukses)
+- **Teks Utama:** `#0A0A0A` (Hampir hitam, kontras prima)
+- **Teks Sekunder:** `#5C5C5C` (Lolos standar aksesibilitas WCAG AA rasio 5.8:1)
+- **Status Semantik (5 Grup Tetap):**
+  - **Netral (`badge-status-neutral`):** Latar `#F2F2F0`, Teks `#5C5C5C`, Border `#E5E5E3` (cancelled, expired)
+  - **Info (`badge-status-info`):** Latar `#F0F9FF`, Teks `#0369A1`, Border `#BAE6FD` (approved, active)
+  - **Sukses (`badge-status-success`):** Latar `#F0FDF4`, Teks `#166534`, Border `#BBF7D0` (closed, tersedia)
+  - **Peringatan (`badge-status-warning`):** Latar `#FFFBEB`, Teks `#92400E`, Border `#FDE68A` (pending, returned)
+  - **Bahaya (`badge-status-danger`):** Latar `#FEF2F2`, Teks `#991B1B`, Border `#FECACA` (rejected, denda)
 
 ---
 
 ## 3. Design Tokens (CSS Variables)
 
-Semua token dideklarasikan pada `:root` agar dapat diakses oleh Tailwind CSS v4, Blade templates, dan konfigurasi tema Filament v5.
+Semua token dideklarasikan pada `:root` dan disinkronkan di `resources/css/app.css` dan `resources/views/public/partials/design-tokens.blade.php`:
 
 ```css
 :root {
@@ -44,66 +46,63 @@ Semua token dideklarasikan pada `:root` agar dapat diakses oleh Tailwind CSS v4,
      PALET WARNA (COLOR SYSTEM)
      ========================================================================== */
 
-  /* Primary Brand (Trust Emerald - Rekomendasi Utama) */
-  --color-primary-50:  #ecfdf5;
-  --color-primary-100: #d1fae5;
-  --color-primary-200: #a7f3d0;
-  --color-primary-300: #6ee7b7;
-  --color-primary-400: #34d399;
-  --color-primary-500: #10b981;
-  --color-primary-600: #059669; /* Default Primary CTA & Accent */
-  --color-primary-700: #047857; /* Hover / Active State */
-  --color-primary-800: #065f46;
-  --color-primary-900: #064e3b;
-  --color-primary-950: #022c22;
+  /* Primary Action: Solid Black (#111111) */
+  --color-primary-50:  #f7f7f7;
+  --color-primary-100: #e5e5e5;
+  --color-primary-200: #cccccc;
+  --color-primary-300: #999999;
+  --color-primary-400: #555555;
+  --color-primary-500: #262626;
+  --color-primary-600: #111111; /* Default Primary CTA (Solid Black) */
+  --color-primary-700: #0a0a0a;
+  --color-primary-800: #050505;
+  --color-primary-900: #000000;
+  --color-primary-950: #000000;
 
-  /* Neutral Scale (Slate Gray - Dingin, Bersih, Kontras Tinggi) */
+  /* Single Brand Accent: Lime (#86F04C) - Dark Text Only */
+  --color-accent-lime:      #86F04C;
+  --color-accent-lime-text: #0A0A0A;
+  --color-accent-lime-glow: #D9F5C8;
+
+  /* Neutral Scale: Warm Neutral (Latar #F2F2F0, Permukaan #FFFFFF, Border #E5E5E3) */
   --color-neutral-0:   #ffffff;
-  --color-neutral-50:  #f8fafc; /* Background App Light */
-  --color-neutral-100: #f1f5f9; /* Surface Secondary / Card Muted */
-  --color-neutral-200: #e2e8f0; /* Default Border Light */
-  --color-neutral-300: #cbd5e1; /* Hover Border / Inactive Control */
-  --color-neutral-400: #94a3b8; /* Placeholder / Subtle Icon */
-  --color-neutral-500: #64748b; /* Secondary Caption Text */
-  --color-neutral-600: #475569; /* Body Secondary */
-  --color-neutral-700: #334155; /* Body Main */
-  --color-neutral-800: #1e293b; /* Heading Sub */
-  --color-neutral-900: #0f172a; /* Heading Main / High Contrast Text */
-  --color-neutral-950: #020617;
+  --color-neutral-50:  #F2F2F0; /* Latar halaman hangat */
+  --color-neutral-100: #EBEBE8; /* Permukaan sekunder */
+  --color-neutral-200: #E5E5E3; /* Border tipis 1px */
+  --color-neutral-300: #D4D4D0;
+  --color-neutral-400: #A3A39E;
+  --color-neutral-500: #5C5C5C; /* Teks sekunder - lolos WCAG AA 5.8:1 */
+  --color-neutral-600: #404040;
+  --color-neutral-700: #262626;
+  --color-neutral-800: #171717;
+  --color-neutral-900: #0A0A0A; /* Teks judul / teks utama */
+  --color-neutral-950: #050505;
 
-  /* Semantic Colors (WCAG 2.2 AA Contrast Compliant) */
-  /* Success: Konfirmasi, Disetujui, Tersedia */
-  --color-success-50:  #f0fdf4;
-  --color-success-100: #dcfce7;
-  --color-success-500: #22c55e;
-  --color-success-600: #16a34a;
-  --color-success-700: #15803d;
+  /* 5 Semantic Status Tokens (Khusus status & notifikasi - jangan pakai lime) */
+  --color-status-neutral-bg:     #F2F2F0;
+  --color-status-neutral-text:   #5C5C5C;
+  --color-status-neutral-border: #E5E5E3;
 
-  /* Warning: Menunggu Persetujuan, Peringatan Buffer, Informasi Blacklist */
-  --color-warning-50:  #fffbeb;
-  --color-warning-100: #fef3c7;
-  --color-warning-500: #f59e0b;
-  --color-warning-600: #d97706;
-  --color-warning-700: #b45309;
+  --color-status-info-bg:        #F0F9FF;
+  --color-status-info-text:      #0369A1;
+  --color-status-info-border:    #BAE6FD;
 
-  /* Danger: Denda, Keterlambatan, Ditolak, Dibatalkan, Hapus */
-  --color-danger-50:   #fef2f2;
-  --color-danger-100:  #fee2e2;
-  --color-danger-500:  #ef4444;
-  --color-danger-600:  #dc2626;
-  --color-danger-700:  #b91c1c;
+  --color-status-success-bg:     #F0FDF4;
+  --color-status-success-text:   #166534;
+  --color-status-success-border: #BBF7D0;
 
-  /* Info: Panduan, Instruksi Identitas, Detail Pesanan */
-  --color-info-50:     #f0f9ff;
-  --color-info-100:    #e0f2fe;
-  --color-info-500:    #0ea5e9;
-  --color-info-600:    #0284c7;
-  --color-info-700:    #0369a1;
+  --color-status-warning-bg:     #FFFBEB;
+  --color-status-warning-text:   #92400E;
+  --color-status-warning-border: #FDE68A;
+
+  --color-status-danger-bg:      #FEF2F2;
+  --color-status-danger-text:    #991B1B;
+  --color-status-danger-border:  #FECACA;
 
   /* Buffer Calendar Specific */
-  --color-buffer-bg:     #f1f5f9; /* Slate 100 */
-  --color-buffer-border: #cbd5e1; /* Slate 300 */
-  --color-buffer-text:   #475569; /* Slate 600 */
+  --color-buffer-bg:     #F2F2F0;
+  --color-buffer-border: #E5E5E3;
+  --color-buffer-text:   #5C5C5C;
 
   /* WhatsApp Brand Color (Official) */
   --color-brand-whatsapp: #25d366;
@@ -112,7 +111,7 @@ Semua token dideklarasikan pada `:root` agar dapat diakses oleh Tailwind CSS v4,
   /* ==========================================================================
      TIPOGRAFI (TYPOGRAPHY)
      ========================================================================== */
-  --font-family-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --font-family-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
 
   /* Skala Ukuran Font & Line Height Terukur */
@@ -280,16 +279,17 @@ Setiap komponen wajib mengimplementasikan state lengkap:
 
 | Varian | Style Default | Hover / Active | Disabled | Focus-Visible |
 | :--- | :--- | :--- | :--- | :--- |
-| **Primary** | `bg-[var(--color-primary-600)] text-white font-semibold rounded-xl shadow-xs` | `bg-[var(--color-primary-700)] active:scale-[0.98]` | `bg-[var(--color-neutral-200)] text-[var(--color-neutral-400)] shadow-none` | Ring 2px Primary, Offset 2px |
-| **Secondary** | `bg-white border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] rounded-xl font-medium` | `bg-[var(--color-neutral-50)] border-[var(--color-neutral-300)] text-[var(--color-neutral-900)]` | `opacity-50 border-[var(--color-neutral-100)]` | Ring 2px Primary |
-| **Ghost / Tertiary** | `bg-transparent text-[var(--color-neutral-600)] rounded-xl font-medium` | `bg-[var(--color-neutral-100)] text-[var(--color-neutral-900)]` | `opacity-40` | Ring 2px Primary |
+| **Primary (Solid Black)** | `bg-[#111111] text-white font-semibold rounded-full sm:rounded-xl shadow-xs` | `bg-[#262626] active:bg-black active:scale-[0.98]` | `bg-[var(--color-neutral-200)] text-[var(--color-neutral-400)] shadow-none` | Ring 2px Neutral-900, Offset 2px |
+| **Accent (Lime Highlight)**| `bg-[#86F04C] text-[#0A0A0A] font-semibold rounded-full shadow-xs` | `bg-[#77dc3e] active:bg-[#68c633] active:scale-[0.98]` | `opacity-50` | Ring 2px Neutral-900 |
+| **Secondary** | `bg-white border border-[var(--color-neutral-200)] text-[var(--color-neutral-700)] rounded-xl font-medium` | `bg-[var(--color-neutral-50)] border-[var(--color-neutral-300)] text-[var(--color-neutral-900)]` | `opacity-50 border-[var(--color-neutral-100)]` | Ring 2px Neutral-900 |
+| **Ghost / Tertiary** | `bg-transparent text-[var(--color-neutral-600)] rounded-xl font-medium` | `bg-[var(--color-neutral-100)] text-[var(--color-neutral-900)]` | `opacity-40` | Ring 2px Neutral-900 |
 | **Danger** | `bg-[var(--color-danger-50)] border border-[var(--color-danger-200)] text-[var(--color-danger-700)] rounded-xl font-semibold` | `bg-[var(--color-danger-600)] text-white border-transparent` | `opacity-50` | Ring 2px Danger |
-| **WhatsApp Brand** | `bg-[var(--color-brand-whatsapp)] text-white font-bold rounded-xl shadow-sm` | `bg-[var(--color-brand-whatsapp-hover)] shadow-md` | `opacity-50` | Ring 2px WhatsApp |
+| **WhatsApp Brand** | `bg-[var(--color-brand-whatsapp)] text-white font-semibold rounded-full sm:rounded-xl shadow-xs` | `bg-[var(--color-brand-whatsapp-hover)] shadow-sm` | `opacity-50` | Ring 2px WhatsApp |
 
 - **Ukuran:**
-  - `Small (sm)`: Tinggi 36px, teks 13px, padding horizontal 12px
+  - `Small (sm)`: Tinggi 36px, teks 12px, padding horizontal 12px
   - `Medium (md)`: Tinggi 44px (memenuhi target sentuh), teks 14px, padding 16px
-  - `Large (lg)`: Tinggi 52px, teks 16px, padding 20px (CTA utama mobile)
+  - `Large (lg)`: Tinggi 48-52px, teks 14-16px, padding 24px (CTA utama mobile/pill)
 - **Loading State:** Teks disembunyikan atau diapit, spinner SVG inline 16/20px berputar mulus (`animate-spin`), tombol berstatus disabled tanpa perubahan tata letak layout.
 
 ---
@@ -299,17 +299,17 @@ Setiap komponen wajib mengimplementasikan state lengkap:
 - **Input Teks, Angka & Textarea:**
   - Tinggi default: 44px (textarea: auto min 88px)
   - Radius: `var(--radius-xl)` (12px)
-  - Latar: `var(--color-neutral-50)` beralih ke `var(--color-neutral-0)` saat fokus
-  - Border: 1px `var(--color-neutral-200)`, saat fokus: border `var(--color-primary-600)` + ring 3px `var(--color-primary-100)`
-  - State Error: border `var(--color-danger-500)` + ring 3px `var(--color-danger-100)` + ikon seru kecil + teks galat di bawah input (`text-xs text-danger-600`)
+  - Latar: `var(--color-neutral-0)` (putih)
+  - Border: 1px `var(--color-neutral-200)`, saat fokus: border `var(--color-neutral-900)` + ring 1px `var(--color-neutral-900)`
+  - State Error: border `var(--color-danger-500)` + ring 1px `var(--color-danger-500)` + teks galat di bawah input (`text-xs text-danger-600`)
 - **Input Rupiah Otomatis:**
   - Prefix permanen: "Rp" berwarna neutral-500 di dalam kotak input
   - Format angka otomatis ribuan: `150.000` (saat blur/ketik tanpa desimal)
 - **Select / Dropdown:**
   - Ikon chevron bawah rapi, tinggi seragam 44px, opsi dropdown memiliki padding sentuh minimal 40px per baris.
 - **Checkbox & Radio:**
-  - Ukuran: 20×20px (bukan 14px mini), radius 6px (checkbox) atau bundar (radio), aksen warna primary-600.
-  - Label terhubung (`cursor-pointer`) dengan baris teks sejajar.
+  - Ukuran: 16×16px atau 18×18px, radius 4px (checkbox) atau bundar (radio), aksen warna neutral-900.
+  - Label terhubung (`cursor-pointer`) dengan baris teks sejajar, min-height 44px untuk touch area.
 - **Toggle / Switch:**
   - Lebar 44px, tinggi 24px, knob 20px dengan transisi halus 200ms.
 
@@ -320,17 +320,17 @@ Setiap komponen wajib mengimplementasikan state lengkap:
 Dirancang khusus untuk membimbing penyewa mengunggah foto KTP & Selfie secara nyaman dan jelas:
 - **Card Pratinjau Terstruktur:**
   - Rasio kartu KTP 3:2 (sesuai proporsi KTP fisik), area selfie 1:1 atau 3:4.
-  - Border putus-putus (`border-dashed border-2 border-neutral-300`) sebelum diunggah.
+  - Border halus 1px border-neutral-200 dengan latar neutral-50.
   - Tombol aksi jelas: "Buka Kamera / Pilih File" (target sentuh 44px).
   - Indikator panduan kualitas foto:
-    - 💡 *"Pastikan tulisan NIK & Nama terbaca jelas dan tidak buram"*
-    - 💡 *"Hindari pantulan cahaya kilat (flash) langsung pada KTP"*
-    - 💡 *"Foto tidak terpotong di keempat sudutnya"*
+    - *"Pastikan tulisan NIK & Nama terbaca jelas dan tidak buram"*
+    - *"Hindari pantulan cahaya kilat (flash) langsung pada KTP"*
+    - *"Foto tidak terpotong di keempat sudutnya"*
 - **State Setelah Upload:**
   - Thumbnail gambar tampil dengan tombol "Ganti Foto" dan tombol "Hapus" di pojok.
-  - Tanda centang hijau "✓ Foto Siap Digunakan".
+  - Tanda centang "Foto Siap Digunakan".
   - Banner Privasi Terintegrasi:
-    > 🔒 *Data dienkripsi secara aman & dihapus otomatis 30 hari setelah sewa selesai sesuai UU Perlindungan Data Pribadi.*
+    > *Data dienkripsi secara aman & dihapus otomatis 30 hari setelah sewa selesai sesuai UU Perlindungan Data Pribadi.*
 
 ---
 
@@ -346,8 +346,9 @@ Badge status menggunakan maksimal 5 varian semantik baku tanpa emoji dekoratif. 
 | `active` | Sedang disewa | **Info** | `var(--color-status-info-bg)` | `text-[#0369a1] border-[#bae6fd]` |
 | `closed` | Selesai | **Sukses (Success)** | `var(--color-status-success-bg)` | `text-[#166534] border-[#bbf7d0]` |
 | `rejected` | Ditolak | **Bahaya (Danger)** | `var(--color-status-danger-bg)` | `text-[#991b1b] border-[#fecaca]` |
-| `cancelled_*`| Batal (Batas waktu / Renter / Vendor)| **Netral** | `var(--color-status-neutral-bg)` | `text-[#475569] border-[#e2e8f0]` |
-| `expired` | Kedaluwarsa | **Netral** | `var(--color-status-neutral-bg)` | `text-[#475569] border-[#e2e8f0]` |
+| `cancelled_*`| Batal (Batas waktu / Renter / Vendor)| **Netral** | `var(--color-status-neutral-bg)` | `text-[#5c5c5c] border-[#e5e5e3]` |
+| `expired` | Kedaluwarsa | **Netral** | `var(--color-status-neutral-bg)` | `text-[#5c5c5c] border-[#e5e5e3]` |
+| *sorotan* | Unggulan / Jaminan Aman | **Aksen Lime** | `var(--color-accent-lime)` | `text-[#0a0a0a] border-transparent` |
 
 ---
 
@@ -355,7 +356,7 @@ Badge status menggunakan maksimal 5 varian semantik baku tanpa emoji dekoratif. 
 
 - **Rasio Foto:** 4:3 dengan objek `object-cover`.
 - **Badges Melayang di Atas Foto:** Ukuran (misal: "Size: M") dan Status Ketersediaan.
-- **Harga Menonjol:** Huruf tebal 18px (`font-extrabold text-primary-700`) diikuti teks pendukung `/ hari`.
+- **Harga Menonjol:** Huruf tebal 18px (`font-bold text-neutral-900`) diikuti teks pendukung `/ hari`.
 - **Sub-info Transparan:** Deposit ("Bebas Deposit" atau "Dep: Rp 100.000") dan Smart Buffer ("Jeda 2 hari").
 - **Galeri Foto:** Pratinjau foto utama besar dengan baris thumbnail di bawahnya yang aktif saat ditekan. Pada mobile mendukung swipe horizontal alami.
 
@@ -366,20 +367,20 @@ Badge status menggunakan maksimal 5 varian semantik baku tanpa emoji dekoratif. 
 Pola desain khusus JagaSewa yang membedakan tanggal secara multi-modal (Warna + Simbol + Pola):
 
 ```
-+----+  Tersedia: Kotak putih/hijau terang, angka tegas, indikator titik hijau kecil
-| 15 |  [● Tersedia]
++----+  Tersedia: Kotak putih, angka tegas, hover netral terang
+| 15 |  [Tersedia]
 +----+
 
-+----+  Dipesan (Booked): Latar merah muda, teks tercoret garis, titik merah tua
-| 16 |  [✕ Terpesan - Dibatasi booking lain]
++----+  Dipesan (Booked): Latar merah muda, teks tercoret garis
+| 16 |  [Terpesan - Dibatasi booking lain]
 +----+
 
-+----+  Buffer Otomatis: Latar abu-abu garis miring (striped pattern), ikon perisai/jam kecil
-| 17 |  [🛡️ Buffer - Jeda laundry & pengiriman vendor]
++----+  Buffer Otomatis: Latar abu-abu garis miring (striped pattern)
+| 17 |  [Buffer - Jeda laundry & pengiriman vendor]
 +----+
 
-+----+  Menunggu Persetujuan (Pending): Latar kuning garis putus-putus
-| 18 |  [⏳ Menunggu Konfirmasi]
++----+  Terpilih (Selected): Solid hitam #111111, teks putih kontras
+| 18 |  [Rentang Tanggal Sewa]
 +----+
 ```
 
