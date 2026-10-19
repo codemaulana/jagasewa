@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\AuditService;
+use App\Services\Billing\EntitlementService;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -119,6 +120,38 @@ class Vendor extends Model
     public function manualActivations(): HasMany
     {
         return $this->hasMany(ManualActivation::class);
+    }
+
+    /**
+     * Determine if the vendor has active Pro entitlement.
+     */
+    public function isPro(): bool
+    {
+        return app(EntitlementService::class)->isPro($this);
+    }
+
+    /**
+     * Determine if the vendor can add or activate another item.
+     */
+    public function canAddActiveItem(): bool
+    {
+        return app(EntitlementService::class)->canAddActiveItem($this);
+    }
+
+    /**
+     * Determine if the vendor can add another blacklist entry.
+     */
+    public function canAddBlacklistEntry(): bool
+    {
+        return app(EntitlementService::class)->canAddBlacklistEntry($this);
+    }
+
+    /**
+     * Determine if the vendor has white label branding privileges.
+     */
+    public function hasWhiteLabel(): bool
+    {
+        return app(EntitlementService::class)->hasWhiteLabel($this);
     }
 
     /**

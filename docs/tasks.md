@@ -400,7 +400,7 @@
   - **Estimasi:** L
   - **SEC:** SEC-22, SEC-23, SEC-24, SEC-25
 
-- [ ] **T-43** | [Fase 1.5] Entitlement check server-side untuk fitur Premium
+- [x] **T-43** | [Fase 1.5] Entitlement check server-side untuk fitur Premium
   - **Tujuan:** Middleware/service mengecek status subscription aktif setiap request ke fitur berbayar.
   - **Dependensi:** T-41
   - **Kriteria Selesai:** Request fitur Premium oleh vendor Free diarahkan ke halaman upgrade; dicek di server setiap request.

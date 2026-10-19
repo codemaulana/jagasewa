@@ -3,6 +3,7 @@
 use App\Http\Controllers\Public\DocumentUploadController;
 use App\Http\Controllers\Public\ItemController;
 use App\Http\Controllers\Vendor\AuthController;
+use App\Http\Controllers\Vendor\BillingController;
 use App\Http\Controllers\Vendor\BillingReturnController;
 use App\Http\Controllers\Vendor\BlacklistCheckController;
 use App\Http\Controllers\Vendor\IdentityDocumentController;
@@ -55,6 +56,16 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
     Route::get('/billing/finish', [BillingReturnController::class, 'finish'])
         ->middleware('auth:vendor')
         ->name('billing.finish');
+
+    // Vendor Billing & Plans Overview (T-43)
+    Route::get('/billing', [BillingController::class, 'index'])
+        ->middleware('auth:vendor')
+        ->name('billing.index');
+
+    // Pro-Only Feature: Export CSV Report (T-43 / SEC-25)
+    Route::get('/reports/export', [BillingController::class, 'exportReports'])
+        ->middleware(['auth:vendor', 'vendor.pro'])
+        ->name('reports.export');
 });
 
 // Mayar.id Webhook Endpoint (T-42 / SEC-22..SEC-25) - CSRF-exempted

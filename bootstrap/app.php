@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureProSubscription;
 use App\Http\Middleware\EnsureVendorOwnership;
 use App\Http\Middleware\SecurityHeaders;
 use App\Services\ErrorMonitoringService;
@@ -58,6 +59,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'vendor.ownership' => EnsureVendorOwnership::class,
+            'vendor.pro' => EnsureProSubscription::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

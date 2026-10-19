@@ -136,12 +136,14 @@
             </div>
         @endif
 
-        <!-- Footer -->
-        <footer class="pt-6 pb-2 text-center border-t border-neutral-200">
-            <p class="text-[11px] text-neutral-400">
-                Didukung oleh JagaSewa • Platform Penyewaan Aman
-            </p>
-        </footer>
+        <!-- Footer Branding (White-Label for Pro Vendors) -->
+        @if(!$vendor->hasWhiteLabel())
+            <footer class="pt-6 pb-2 text-center border-t border-neutral-200">
+                <p class="text-[11px] text-neutral-400">
+                    Didukung oleh <a href="https://jagasewa.web.id" target="_blank" class="font-medium hover:underline">JagaSewa</a> • Platform Penyewaan Aman
+                </p>
+            </footer>
+        @endif
 
     </main>
 

@@ -5,6 +5,7 @@ namespace App\Filament\Vendor\Resources\BlacklistEntries\Pages;
 use App\Filament\Vendor\Resources\BlacklistEntries\BlacklistEntryResource;
 use App\Models\BlacklistEntry;
 use App\Services\AuditService;
+use App\Services\Billing\EntitlementService;
 use App\Services\IdentityHashService;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Validation\ValidationException;
@@ -15,10 +16,18 @@ class CreateBlacklistEntry extends CreateRecord
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
-        $vendorId = auth('vendor')->user()?->vendor_id ?? session('vendor_id');
+        $vendor = auth('vendor')->user()?->vendor;
+        $vendorId = $vendor?->id ?? session('vendor_id');
 
         if ($vendorId) {
             $data['vendor_id'] = $vendorId;
+        }
+
+        // SEC-25: Enforce Freemium 5 blacklist entries limit on Free tier
+        if ($vendor && ! app(EntitlementService::class)->canAddBlacklistEntry($vendor)) {
+            throw ValidationException::withMessages([
+                'data.identity_value' => 'Batas paket Free tercapai (maksimal 5 entri blacklist). Upgrade ke Pro untuk menambahkan blacklist tanpa batas.',
+            ]);
         }
 
         $type = $data['identity_type'] ?? BlacklistEntry::TYPE_WA;

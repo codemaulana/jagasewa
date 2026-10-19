@@ -278,6 +278,15 @@
             </div>
         </div>
 
+        <!-- Footer Branding (White-Label for Pro Vendors) -->
+        @if(!$item->vendor->hasWhiteLabel())
+            <footer class="pt-6 pb-12 text-center">
+                <p class="text-[11px] text-neutral-400">
+                    Didukung oleh <a href="https://jagasewa.web.id" target="_blank" class="font-medium hover:underline">JagaSewa</a> • Platform Penyewaan Aman
+                </p>
+            </footer>
+        @endif
+
     </main>
 
     <!-- Bottom Sticky CTA Mobile -->
