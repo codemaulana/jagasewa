@@ -51,6 +51,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // SEC-37: HTTP Security Headers & Anti-Clickjacking Middleware (T-38)
         $middleware->append(SecurityHeaders::class);
 
+        // SEC-22: Webhook endpoints excluded from CSRF verification (T-42)
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/*',
+        ]);
+
         $middleware->alias([
             'vendor.ownership' => EnsureVendorOwnership::class,
         ]);

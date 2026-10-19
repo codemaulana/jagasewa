@@ -35,6 +35,24 @@ class Subscription extends Model
 
     public const CYCLE_ANNUALLY = 'annually';
 
+    public const PRICE_MONTHLY = 15000;
+
+    public const PRICE_QUARTERLY = 39000;
+
+    public const PRICE_ANNUALLY = 129000;
+
+    /**
+     * Get standard Pro plan price in integer Rupiah for a given billing cycle.
+     */
+    public static function getPlanPrice(string $cycle): int
+    {
+        return match ($cycle) {
+            self::CYCLE_QUARTERLY => self::PRICE_QUARTERLY,
+            self::CYCLE_ANNUALLY => self::PRICE_ANNUALLY,
+            default => self::PRICE_MONTHLY,
+        };
+    }
+
     /**
      * The attributes that are mass assignable.
      *

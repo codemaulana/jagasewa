@@ -50,4 +50,14 @@ return [
         'enabled' => env('MONITOR_ENABLED', true),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Xendit Payment Gateway Configuration (T-42)
+    |--------------------------------------------------------------------------
+    */
+    'xendit' => [
+        'callback_token' => env('XENDIT_CALLBACK_TOKEN', 'test-xendit-callback-token'),
+        'secret_key' => env('XENDIT_SECRET_KEY'),
+    ],
+
 ];

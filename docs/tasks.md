@@ -392,7 +392,7 @@
   - **Tes:** Factory test; rollback; unique constraint test.
   - **Estimasi:** S
 
-- [ ] **T-42** | [Fase 1.5] Webhook handler Xendit + verifikasi signature
+- [x] **T-42** | [Fase 1.5] Webhook handler Xendit + verifikasi signature
   - **Tujuan:** Endpoint `POST /webhooks/xendit` memverifikasi signature, idempoten, dan menjalankan state machine langganan.
   - **Dependensi:** T-41
   - **Kriteria Selesai:** Langkah seksi 6 billing.md diimplementasi; test BLT-01..BLT-09 lulus.

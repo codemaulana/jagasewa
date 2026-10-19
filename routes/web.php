@@ -3,8 +3,10 @@
 use App\Http\Controllers\Public\DocumentUploadController;
 use App\Http\Controllers\Public\ItemController;
 use App\Http\Controllers\Vendor\AuthController;
+use App\Http\Controllers\Vendor\BillingReturnController;
 use App\Http\Controllers\Vendor\BlacklistCheckController;
 use App\Http\Controllers\Vendor\IdentityDocumentController;
+use App\Http\Controllers\Webhooks\XenditWebhookController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,7 +49,16 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
     Route::get('/identity-documents/{ulid}/secure-view', [IdentityDocumentController::class, 'secureView'])
         ->middleware('signed')
         ->name('identity-documents.secure-view');
+
+    // Vendor Billing Checkout Return (BLT-06 / SEC-22)
+    Route::get('/billing/finish', [BillingReturnController::class, 'finish'])
+        ->middleware('auth:vendor')
+        ->name('billing.finish');
 });
+
+// Xendit Webhook Endpoint (T-42 / SEC-22..SEC-25) - CSRF-exempted
+Route::post('/webhooks/xendit', [XenditWebhookController::class, 'handle'])
+    ->name('webhooks.xendit');
 
 // Route alias for Filament vendor panel logout action
 Route::post('/vendor/filament-logout', [AuthController::class, 'logout'])->name('filament.vendor.auth.logout');
