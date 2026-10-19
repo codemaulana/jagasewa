@@ -1,59 +1,282 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 👘 JagaSewa
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="public/jagasewa_logo1.png" width="280" alt="JagaSewa Logo">
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>Platform Booking & Manajemen Rental Barang (Kostum, Kamera, Kebaya) Mobile-First</strong>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  <a href="#persyaratan-sistem">Persyaratan</a> •
+  <a href="#panduan-instalasi">Instalasi</a> •
+  <a href="#cara-menjalankan">Cara Menjalankan</a> •
+  <a href="#akun-demo--rute-aplikasi">Akun Demo</a> •
+  <a href="#pengujian">Testing</a> •
+  <a href="#dokumentasi-proyek">Dokumentasi</a>
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📌 Tentang JagaSewa
 
-## Learning Laravel
+**JagaSewa** adalah platform web booking rental barang (*mobile-first*) yang dirancang khusus untuk toko/vendor yang berjualan melalui media sosial (Instagram, X/Twitter, TikTok). 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Penyewa dapat mengecek ketersediaan tanggal dan melakukan reservasi **tanpa perlu registrasi/login**. Vendor mengelola jadwal booking, persetujuan sewa, status barang, dan denda melalui dashboard terpusat.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### ✨ Fitur Unggulan
 
-## Laravel Sponsors
+- **Direct Booking Tanpa Login:** Penyewa cukup mengakses tautan toko/barang dari bio media sosial untuk reservasi.
+- **Smart Buffer Calendar:** Kalender interaktif cerdas yang otomatis memperhitungkan jeda pengiriman barang (*buffer before*) dan waktu cuci/inspeksi/laundry (*buffer after*), mencegah tabrakan jadwal sewa.
+- **Pencegahan Double-Booking:** Transaksi atomik dengan *Pessimistic Locking* (`SELECT ... FOR UPDATE`) pada level database MySQL untuk mencegah *race condition* saat berebut slot tanggal.
+- **Keamanan Data Pribadi (UU PDP):** 
+  - Foto KTP & selfie di-re-encode otomatis, metadata EXIF dihapus, dan diberi watermark dinamis (*"VERIFIKASI JAGASEWA - [VENDOR] - [TANGGAL]"*).
+  - Penyimpanan berkas privat dengan akses terbatas melalui *Signed URL* (TTL ≤ 60 menit).
+  - Retensi & pembersihan otomatis: berkas KTP dihapus permanen oleh background scheduler setelah masa sewa selesai.
+- **Blind Index Blacklist:** Pencarian penyewa bermasalah menggunakan hashing HMAC-SHA256 (`BLACKLIST_SECRET`) tanpa menyimpan plaintext NIK/No. WA di tabel pencarian.
+- **Multi-Vendor Panel (Filament v5):** Dashboard terisolasi ketat untuk masing-masing vendor guna memantau katalog barang, pesanan masuk, persetujuan sewa, dan pengembalian barang.
+- **Integrasi WhatsApp:** Tautan langsung ke `wa.me` untuk konfirmasi pemesanan dan koordinasi pengiriman.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Stack Teknologi
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Backend Framework:** Laravel 13 (PHP 8.2+)
+- **Admin & Vendor Dashboard:** Filament v5 & Livewire v4
+- **Database:** MySQL 8 / MariaDB (atau SQLite untuk uji coba lokal cepat)
+- **Frontend / Styling:** Tailwind CSS 4 + Vite
+- **Storage:** S3-compatible Backblaze B2 (Bucket Privat) / Local Disk
+- **Queue & Cache:** Database Driver (`QUEUE_CONNECTION=database`, `CACHE_STORE=database`)
+- **Zona Waktu:** `Asia/Jakarta` (WIB)
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 💻 Persyaratan Sistem
 
-## Code of Conduct
+Pastikan perangkat lokal Anda telah terpasang:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **PHP >= 8.2** (direkomendasikan PHP 8.3 atau 8.4)
+   - Ekstensi PHP wajib: `pdo`, `pdo_mysql` (atau `pdo_sqlite`), `gd` (untuk watermark foto KTP), `fileinfo`, `mbstring`, `openssl`, `curl`, `xml`, `zip`.
+2. **Composer 2.x**
+3. **Node.js >= 18.x** dan **NPM**
+4. **Database Server:** MySQL 8.x (atau SQLite)
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🚀 Panduan Instalasi (Local Development)
 
-## License
+Ikuti langkah-langkah berikut untuk menjalankan proyek dari awal:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 1. Masuk ke Direktori Proyek
+
+```bash
+cd jagasewa
+```
+
+### 2. Install Dependensi PHP & Node.js
+
+```bash
+# Install dependensi backend
+composer install
+
+# Install dependensi frontend
+npm install
+```
+
+### 3. Konfigurasi Environment (`.env`)
+
+Salin file contoh konfigurasi `.env.example` menjadi `.env`:
+
+- **Di Windows PowerShell:**
+  ```powershell
+  Copy-Item .env.example .env
+  ```
+- **Di Linux / macOS / Git Bash:**
+  ```bash
+  cp .env.example .env
+  ```
+
+Generate application key Laravel:
+
+```bash
+php artisan key:generate
+```
+
+### 4. Konfigurasi Database & Keamanan di `.env`
+
+Buka file `.env` di text editor dan sesuaikan parameter koneksi database:
+
+#### Opsi A: Menggunakan MySQL (Standar)
+Pastikan server MySQL aktif dan database baru (misalnya `jagasewa`) sudah dibuat:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=jagasewa
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+#### Opsi B: Menggunakan SQLite (Uji Coba Cepat Tanpa MySQL)
+Jika ingin menjalankan secara instan tanpa database server:
+
+```powershell
+# Buat file database kosong (PowerShell)
+New-Item -ItemType File database/database.sqlite -Force
+```
+Lalu ubah di `.env`:
+```env
+DB_CONNECTION=sqlite
+```
+
+#### Kunci Enkripsi Blacklist (Blind Index)
+Tambahkan string acak (minimal 32 karakter) untuk hashing identitas blacklist:
+```env
+BLACKLIST_SECRET=base64:random32characterstringforblindindex
+```
+*(Jika dikosongkan, sistem otomatis menggunakan `APP_KEY` sebagai fallback).*
+
+### 5. Buat Storage Symlink
+
+Buat symlink folder storage agar aset publik dapat diakses:
+
+```bash
+php artisan storage:link
+```
+
+### 6. Jalankan Migrasi & Database Seeder
+
+Eksekusi migrasi skema tabel dan isi data awal (akun demo, vendor contoh, dan katalog barang):
+
+```bash
+php artisan migrate --seed
+```
+
+---
+
+## 🏃 Cara Menjalankan Aplikasi
+
+Anda dapat menjalankan seluruh layanan aplikasi menggunakan salah satu dari dua cara di bawah ini:
+
+### Cara 1: Menggunakan Script Dev Sekaligus (Rekomendasi)
+
+Jalankan satu perintah untuk mengaktifkan web server, queue worker, log viewer, dan compiler Vite secara bersamaan:
+
+```bash
+composer run dev
+```
+
+### Cara 2: Menjalankan Manual per Terminal
+
+Jika ingin menjalankan setiap proses secara mandiri di terminal terpisah:
+
+1. **Terminal 1 — Web Server Laravel:**
+   ```bash
+   php artisan serve
+   ```
+   Aplikasi berjalan di: `http://127.0.0.1:8000`
+
+2. **Terminal 2 — Compiler Frontend (Vite):**
+   ```bash
+   npm run dev
+   ```
+
+3. **Terminal 3 — Background Queue Worker (Pemrosesan Antrean):**
+   ```bash
+   php artisan queue:work
+   ```
+
+4. **Terminal 4 — Scheduler Otomatis (Pembatalan Booking & Pembersihan Dokumen KTP):**
+   ```bash
+   php artisan schedule:work
+   ```
+
+---
+
+## 🔑 Akun Demo & Rute Aplikasi
+
+Setelah database di-seed dengan `php artisan migrate --seed`, akun dan data berikut siap digunakan:
+
+### 1. Katalog & Halaman Booking Publik (Penyewa)
+
+Penyewa dapat melihat katalog toko vendor atau langsung membuka produk sewa:
+
+- **Etalase Toko Vendor:**  
+  👉 `http://127.0.0.1:8000/b/tokyo-cosplay`
+- **Contoh Halaman Detail Barang & Booking:**
+  - Kostum Yor Forger: `http://127.0.0.1:8000/b/tokyo-cosplay/kostum-yor-forger`
+  - Kostum Tanjiro Kamado: `http://127.0.0.1:8000/b/tokyo-cosplay/kostum-tanjiro-kamado`
+  - Kebaya Kutubaru: `http://127.0.0.1:8000/b/tokyo-cosplay/kebaya-kutubaru-maroon`
+
+### 2. Dashboard Vendor (Manajemen Rental)
+
+Vendor mengelola barang, meninjau foto KTP penyewa, approve/reject pesanan, dan mencatat pengembalian sewa.
+
+- **URL Login:** 👉 `http://127.0.0.1:8000/vendor`
+- **Email:** `vendor@tokyo.id`
+- **Password:** `password`
+
+### 3. Dashboard Admin Platform
+
+Administrator platform mengelola daftar vendor yang terdaftar dan memantau audit keamanan.
+
+- **URL Login:** 👉 `http://127.0.0.1:8000/admin`
+- **Email:** `admin@jagasewa.id`
+- **Password:** `password`
+
+---
+
+## 🧪 Pengujian & Code Quality
+
+Proyek ini dilengkapi dengan unit dan feature tests komprehensif (termasuk pengujian isolasi multi-vendor IDOR, kalkulasi smart buffer, dan denda).
+
+```bash
+# Menjalankan seluruh rangkaian tes otomatis
+php artisan test
+
+# Menjalankan tes pada file/domain spesifik
+php artisan test --filter=BookingCalendarTest
+php artisan test --filter=VendorIsolationTest
+
+# Memeriksa dan memformat standar kode (Laravel Pint)
+./vendor/bin/pint
+# Mode cek tanpa modifikasi:
+./vendor/bin/pint --test
+```
+
+---
+
+## ⚙️ Perintah Artisan Khusus
+
+- **Batalkan Booking Pending yang Expired (> 24 jam):**
+  ```bash
+  php artisan booking:auto-cancel-pending
+  ```
+- **Hapus Permanen Dokumen Identitas KTP/Selfie sesuai Retensi:**
+  ```bash
+  php artisan documents:auto-delete
+  ```
+
+---
+
+## 📚 Dokumentasi Proyek
+
+Dokumentasi arsitektur, keamanan, dan aturan bisnis lengkap tersedia di direktori [`docs/`](./docs/):
+
+| File | Deskripsi |
+| :--- | :--- |
+| [`docs/prd.md`](./docs/prd.md) | Product Requirement Document (Visi, Scope, User Persona) |
+| [`docs/business-rules.md`](./docs/business-rules.md) | Aturan bisnis Smart Buffer, siklus status booking, & denda |
+| [`docs/erd.md`](./docs/erd.md) | Rancangan Entity Relationship Diagram & kamus data |
+| [`docs/security.md`](./docs/security.md) | Standar kepatuhan UU PDP, enkripsi PII, signed URL, dan audit |
+| [`docs/user-flow.md`](./docs/user-flow.md) | Diagram alur interaksi penyewa dan vendor |
+| [`docs/tasks.md`](./docs/tasks.md) | Roadmap milestone dan task checklist pengerjaan |
+| [`AGENTS.md`](./AGENTS.md) | Panduan standar kode & konvensi bagi AI Agent |
+
+---
+
+## 📄 Lisensi
+
+Proyek ini dilisensikan di bawah lisensi [MIT](LICENSE).
