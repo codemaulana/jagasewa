@@ -6,6 +6,7 @@ use App\Http\Controllers\Vendor\AuthController;
 use App\Http\Controllers\Vendor\BillingReturnController;
 use App\Http\Controllers\Vendor\BlacklistCheckController;
 use App\Http\Controllers\Vendor\IdentityDocumentController;
+use App\Http\Controllers\Webhooks\MayarWebhookController;
 use App\Http\Controllers\Webhooks\XenditWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,10 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
         ->middleware('auth:vendor')
         ->name('billing.finish');
 });
+
+// Mayar.id Webhook Endpoint (T-42 / SEC-22..SEC-25) - CSRF-exempted
+Route::post('/webhooks/mayar', [MayarWebhookController::class, 'handle'])
+    ->name('webhooks.mayar');
 
 // Xendit Webhook Endpoint (T-42 / SEC-22..SEC-25) - CSRF-exempted
 Route::post('/webhooks/xendit', [XenditWebhookController::class, 'handle'])

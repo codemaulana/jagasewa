@@ -52,7 +52,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Xendit Payment Gateway Configuration (T-42)
+    | Mayar Payment Gateway Configuration (T-42)
+    |--------------------------------------------------------------------------
+    */
+    'mayar' => [
+        'api_key' => env('MAYAR_API_KEY'),
+        'webhook_secret' => env('MAYAR_WEBHOOK_SECRET', 'test-mayar-webhook-secret'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Xendit Payment Gateway Configuration (Fallback/Alternative)
     |--------------------------------------------------------------------------
     */
     'xendit' => [

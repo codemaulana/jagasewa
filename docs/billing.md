@@ -142,20 +142,20 @@ stateDiagram-v2
 
 ---
 
-## 5. Jalur Gateway (Xendit [ASUMSI])
+## 5. Jalur Gateway (Mayar.id [Utama] & Xendit [Alternatif])
 
 > [!NOTE]
-> [ASUMSI] Provider yang dipilih adalah **Xendit**. Alternatif yang dipertimbangkan: **Midtrans**. Keduanya mendukung hosted checkout dan webhook. Ikuti dokumentasi resmi masing-masing provider untuk detail parameter API.
+> Provider utama yang dipilih adalah **Mayar.id** (cocok untuk micro-SaaS, langganan digital, biaya QRIS murah ~0.7%, dan pendaftaran personal/UMKM yang cepat). Sistem juga mendukung **Xendit** sebagai alternatif arsitektural.
 
 **Prioritas: P1 untuk Fase 1.5** — diimplementasikan setelah jalur manual stabil.
 
 | Langkah | Aktor | Aksi |
 |---|---|---|
-| 1 | Vendor | Tekan **'Langganan Premium'** → server membuat invoice/payment link via Xendit API |
-| 2 | Vendor | Diarahkan ke hosted checkout Xendit (data kartu/rekening **tidak pernah** menyentuh server JagaSewa) |
-| 3 | Vendor | Browser redirect kembali ke JagaSewa setelah checkout |
-| 4 | Xendit | Mengirim webhook ke `POST /webhooks/xendit` |
-| 5 | Sistem | Webhook handler memproses (lihat Seksi 6) |
+| 1 | Vendor | Tekan **'Langganan Pro'** → sistem membuat payment link / invoice via Mayar API |
+| 2 | Vendor | Diarahkan ke hosted checkout Mayar (QRIS, VA, E-Wallet) |
+| 3 | Vendor | Browser redirect kembali ke JagaSewa (`GET /vendor/billing/finish`) |
+| 4 | Mayar | Mengirim webhook notifikasi ke `POST /webhooks/mayar` |
+| 5 | Sistem | Webhook handler memproses secara atomik dan idempoten (lihat Seksi 6) |
 
 > [!CAUTION]
 > **JANGAN** gunakan redirect browser sebagai sumber kebenaran status pembayaran. Redirect hanya untuk UX. Sumber kebenaran tunggal adalah webhook (Seksi 6).
@@ -164,9 +164,9 @@ stateDiagram-v2
 
 ## 6. Webhook Handler — Urutan Langkah
 
-**Endpoint:** `POST /webhooks/xendit` [ASUMSI]
+**Endpoint:** `POST /webhooks/mayar` (dan `POST /webhooks/xendit`)
 
-> Ikuti dokumentasi resmi Xendit untuk format header signature dan cara verifikasinya.
+> Verifikasi signature Mayar via HMAC-SHA256 (`x-mayar-signature`) atau token header (`x-mayar-token`).
 
 | # | Langkah | Detail |
 |---|---|---|
