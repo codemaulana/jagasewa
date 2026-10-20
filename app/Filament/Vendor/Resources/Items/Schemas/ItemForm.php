@@ -157,18 +157,24 @@ class ItemForm
                     ]),
 
                 Section::make('Galeri Foto Barang')
-                    ->description('Unggah foto barang rental ke penyimpanan S3 privat.')
+                    ->description('Unggah foto barang rental ke penyimpanan S3 privat. Foto pertama akan menjadi foto utama pada katalog toko.')
                     ->schema([
                         FileUpload::make('photo_paths')
                             ->label('Foto Barang')
                             ->multiple()
+                            ->reorderable()
+                            ->appendFiles()
+                            ->openable()
+                            ->downloadable()
                             ->image()
                             ->disk(config('filesystems.disks.s3.key') || app()->environment('testing') ? 's3' : 'public')
                             ->directory('item_photos')
                             ->visibility('private')
-                            ->maxFiles(5)
+                            ->maxFiles(fn () => auth('vendor')->user()?->vendor?->isPro() ? 8 : 5)
                             ->maxSize(5120)
-                            ->helperText('Maksimal 5 foto gambar (JPG, PNG, WebP), maksimal 5MB per file.')
+                            ->helperText(fn () => auth('vendor')->user()?->vendor?->isPro()
+                                ? 'Paket Pro: Maksimal 8 foto gambar (JPG, PNG, WebP), maksimal 5MB per file. Geser untuk mengatur urutan.'
+                                : 'Paket Free: Maksimal 5 foto gambar (JPG, PNG, WebP), maksimal 5MB per file. Upgrade ke Pro untuk hingga 8 foto. Geser untuk mengatur urutan.')
                             ->columnSpanFull(),
                     ]),
             ]);

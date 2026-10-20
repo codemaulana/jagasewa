@@ -32,14 +32,14 @@ class SecurityHeaders
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }
 
-        // Rule 12 & SEC-37: Content Security Policy with Backblaze B2 whitelist for images
+        // Rule 12 & SEC-37: Content Security Policy with Backblaze B2, AWS S3, and blob: for Livewire image uploads
         $csp = implode('; ', [
             "default-src 'self'",
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
             "font-src 'self' https://fonts.bunny.net data:",
-            "img-src 'self' data: https://*.backblazeb2.com",
-            "connect-src 'self'",
+            "img-src 'self' data: blob: https://*.backblazeb2.com https://*.amazonaws.com",
+            "connect-src 'self' blob: https://*.backblazeb2.com https://*.amazonaws.com",
             "frame-ancestors 'self'",
         ]);
         $response->headers->set('Content-Security-Policy', $csp);

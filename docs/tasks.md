@@ -427,7 +427,7 @@
   - **Estimasi:** M
   - **SEC:** SEC-22, SEC-25, BUG-01
 
-- [ ] **T-46** | [P1] Perbaikan Upload & Penggantian Foto Barang S3 Privat (BUG-02)
+- [x] **T-46** | [P1] Perbaikan Upload & Penggantian Foto Barang S3 Privat (BUG-02)
   - **Tujuan:** Form edit barang di Filament ItemResource dapat memuat thumbnail preview foto yang sudah ada dari S3 privat via signed URL, serta mendukung penambahan, penghapusan, dan penggantian foto tanpa menghilangkan foto lain.
   - **Dependensi:** T-09, T-19
   - **Kriteria Selesai:** Pada alur browser, vendor membuka `/vendor/items/{ulid}/edit`, foto lama ter-render jelas tanpa icon broken; vendor menghapus 1 foto dan mengunggah foto pengganti baru; klik Simpan -> berhasil tanpa error Livewire; foto baru tersimpan di bucket S3 privat dan etalase `/b/{vendor_slug}/{item_slug}` menampilkan foto baru.
