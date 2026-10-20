@@ -435,7 +435,7 @@
   - **Estimasi:** M
   - **BUG:** BUG-02
 
-- [ ] **T-47** | [P1] Halaman Pengaturan Profil Toko & WhatsApp di Filament (BUG-04)
+- [x] **T-47** | [P1] Halaman Pengaturan Profil Toko & WhatsApp di Filament (BUG-04)
   - **Tujuan:** Migrasi penambahan kolom profil toko di tabel `vendors` (`logo_path`, `banner_path`, `description`, `address`, `bank_account_info`) dan pembuatan Filament Page `StoreSettings` di panel vendor.
   - **Dependensi:** T-04, T-05
   - **Kriteria Selesai:** Pada alur browser, vendor membuka menu "Pengaturan Toko", mengisi deskripsi toko, mengunggah logo toko, memasukkan nomor WhatsApp toko dan info rekening; klik Simpan -> tersimpan; halaman publik `/b/{vendor_slug}` langsung menampilkan logo, banner, dan deskripsi baru; tombol wa.me menggunakan nomor WhatsApp toko terbaru.

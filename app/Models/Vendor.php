@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 
 class Vendor extends Model
 {
@@ -24,6 +25,12 @@ class Vendor extends Model
         'slug',
         'wa_number',
         'email',
+        'logo_path',
+        'banner_path',
+        'description',
+        'address',
+        'bank_account_info',
+        'custom_wa_templates',
         'is_active',
     ];
 
@@ -55,7 +62,56 @@ class Vendor extends Model
         return [
             'wa_number' => 'encrypted',
             'is_active' => 'boolean',
+            'custom_wa_templates' => 'array',
         ];
+    }
+
+    /**
+     * Get temporary signed URL or public URL for store logo.
+     */
+    public function getLogoUrlAttribute(): ?string
+    {
+        if (empty($this->logo_path)) {
+            return null;
+        }
+
+        $hasS3 = ! empty(config('filesystems.disks.s3.key')) && ! empty(config('filesystems.disks.s3.bucket'));
+        $diskName = $hasS3 || app()->environment('testing') ? 's3' : 'public';
+        $disk = Storage::disk($diskName);
+
+        try {
+            return $disk->temporaryUrl($this->logo_path, now()->addMinutes(60));
+        } catch (\Throwable) {
+            try {
+                return $disk->url($this->logo_path);
+            } catch (\Throwable) {
+                return Storage::disk('public')->url($this->logo_path);
+            }
+        }
+    }
+
+    /**
+     * Get temporary signed URL or public URL for store banner.
+     */
+    public function getBannerUrlAttribute(): ?string
+    {
+        if (empty($this->banner_path)) {
+            return null;
+        }
+
+        $hasS3 = ! empty(config('filesystems.disks.s3.key')) && ! empty(config('filesystems.disks.s3.bucket'));
+        $diskName = $hasS3 || app()->environment('testing') ? 's3' : 'public';
+        $disk = Storage::disk($diskName);
+
+        try {
+            return $disk->temporaryUrl($this->banner_path, now()->addMinutes(60));
+        } catch (\Throwable) {
+            try {
+                return $disk->url($this->banner_path);
+            } catch (\Throwable) {
+                return Storage::disk('public')->url($this->banner_path);
+            }
+        }
     }
 
     /**

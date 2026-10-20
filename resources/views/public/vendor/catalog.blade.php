@@ -28,27 +28,75 @@
     <main class="max-w-xl mx-auto px-4 pt-4 space-y-4">
 
         <!-- Informasi Vendor -->
-        <div class="bg-white p-4 sm:p-5 rounded-xl border border-neutral-200 shadow-xs space-y-3">
-            <div class="flex items-center gap-3">
-                <div class="w-12 h-12 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 font-bold text-lg flex-shrink-0">
-                    {{ strtoupper(substr($vendor->name, 0, 1)) }}
+        <div class="bg-white rounded-xl border border-neutral-200 shadow-xs overflow-hidden">
+            @if($vendor->banner_url)
+                <div class="relative w-full aspect-[3/1] bg-neutral-100 overflow-hidden border-b border-neutral-200">
+                    <img src="{{ $vendor->banner_url }}" alt="Banner {{ $vendor->name }}" class="w-full h-full object-cover">
                 </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-1.5 mb-0.5">
-                        <h1 class="text-base font-bold text-neutral-900 truncate">{{ $vendor->name }}</h1>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#86F04C] text-[#0A0A0A]">Terverifikasi</span>
-                    </div>
-                    <p class="text-xs text-neutral-500">
-                        Penyedia rental terdaftar di JagaSewa
-                    </p>
-                </div>
-            </div>
+            @endif
 
-            <div class="pt-2 border-t border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
-                <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded font-mono text-[11px]">@ {{ $vendor->slug }}</span>
-                <span class="font-medium text-neutral-700">
-                    {{ $items->total() }} Pilihan Rental
-                </span>
+            <div class="p-4 sm:p-5 space-y-3">
+                <div class="flex items-start gap-3">
+                    @if($vendor->logo_url)
+                        <img src="{{ $vendor->logo_url }}" alt="Logo {{ $vendor->name }}" class="w-12 h-12 rounded-xl object-cover border border-neutral-200 flex-shrink-0 shadow-2xs">
+                    @else
+                        <div class="w-12 h-12 rounded-xl bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-800 font-bold text-lg flex-shrink-0 shadow-2xs">
+                            {{ strtoupper(substr($vendor->name, 0, 1)) }}
+                        </div>
+                    @endif
+
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
+                            <h1 class="text-base font-bold text-neutral-900 truncate">{{ $vendor->name }}</h1>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#86F04C] text-[#0A0A0A]">Terverifikasi</span>
+                        </div>
+                        
+                        @if(!empty($vendor->description))
+                            <p class="text-xs text-neutral-600 leading-relaxed line-clamp-3 mt-1">
+                                {{ $vendor->description }}
+                            </p>
+                        @else
+                            <p class="text-xs text-neutral-500">
+                                Penyedia rental terdaftar di JagaSewa
+                            </p>
+                        @endif
+
+                        @if(!empty($vendor->address))
+                            <div class="flex items-center gap-1 text-[11px] text-neutral-500 mt-1.5">
+                                <svg class="w-3.5 h-3.5 text-neutral-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                <span class="truncate">{{ $vendor->address }}</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
+                @php
+                    $vendorPhone = \App\Helpers\WaNotificationHelper::normalizePhoneNumber($vendor->wa_number);
+                @endphp
+
+                <div class="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2 flex-wrap text-xs text-neutral-500">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded font-mono text-[11px]">@ {{ $vendor->slug }}</span>
+                        <span class="font-medium text-neutral-700">
+                            {{ $items->total() }} Pilihan Rental
+                        </span>
+                    </div>
+
+                    @if($vendorPhone)
+                        <a href="https://wa.me/{{ $vendorPhone }}?text={{ rawurlencode('Halo ' . $vendor->name . ', saya ingin bertanya mengenai rental barang di katalog Anda.') }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 transition">
+                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z"/>
+                            </svg>
+                            <span>Hubungi Toko</span>
+                        </a>
+                    @endif
+                </div>
             </div>
         </div>
 

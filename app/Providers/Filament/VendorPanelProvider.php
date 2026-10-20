@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Vendor\Pages\Auth\Register;
+use App\Filament\Vendor\Pages\StoreSettings;
 use App\Http\Middleware\EnsureVendorOwnership;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -64,6 +65,10 @@ class VendorPanelProvider extends PanelProvider
                     ->label(fn () => (auth('vendor')->user()?->vendor?->isPro() ? '💎 Paket Pro' : '🟢 Paket Free').' — Kelola')
                     ->url(fn () => route('vendor.billing.index'))
                     ->icon('heroicon-o-credit-card'),
+                MenuItem::make()
+                    ->label('Pengaturan Toko')
+                    ->url(fn () => StoreSettings::getUrl())
+                    ->icon('heroicon-o-cog-6-tooth'),
             ])
             ->discoverWidgets(in: app_path('Filament/Vendor/Widgets'), for: 'App\Filament\Vendor\Widgets')
             ->widgets([
