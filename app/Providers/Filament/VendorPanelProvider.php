@@ -9,6 +9,8 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -46,6 +48,22 @@ class VendorPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Vendor/Pages'), for: 'App\Filament\Vendor\Pages')
             ->pages([
                 Dashboard::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Paket & Kuota Toko')
+                    ->url(fn () => route('vendor.billing.index'))
+                    ->icon('heroicon-o-sparkles')
+                    ->badge(
+                        fn () => auth('vendor')->user()?->vendor?->isPro() ? 'PRO' : 'FREE',
+                        fn () => auth('vendor')->user()?->vendor?->isPro() ? 'success' : 'gray'
+                    )
+                    ->sort(90),
+            ])
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label(fn () => (auth('vendor')->user()?->vendor?->isPro() ? '💎 Paket Pro' : '🟢 Paket Free').' — Kelola')
+                    ->url(fn () => route('vendor.billing.index'))
+                    ->icon('heroicon-o-credit-card'),
             ])
             ->discoverWidgets(in: app_path('Filament/Vendor/Widgets'), for: 'App\Filament\Vendor\Widgets')
             ->widgets([

@@ -27,14 +27,14 @@ class EntitlementService
             return false;
         }
 
-        /** @var Subscription|null $subscription */
-        $subscription = $vendor->currentSubscription;
-
-        if (! $subscription) {
-            return false;
-        }
-
-        return $subscription->isPro();
+        return $vendor->subscriptions()
+            ->where('plan', Subscription::PLAN_PRO)
+            ->where('status', Subscription::STATUS_ACTIVE)
+            ->where(function ($query) {
+                $query->whereNull('current_period_end')
+                    ->orWhere('current_period_end', '>', now());
+            })
+            ->exists();
     }
 
     /**

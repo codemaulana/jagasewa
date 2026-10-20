@@ -107,6 +107,31 @@ class Vendor extends Model
     }
 
     /**
+     * Get the active Pro subscription if present.
+     */
+    public function activeSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class)
+            ->where('plan', Subscription::PLAN_PRO)
+            ->where('status', Subscription::STATUS_ACTIVE)
+            ->where(function ($query) {
+                $query->whereNull('current_period_end')
+                    ->orWhere('current_period_end', '>', now());
+            })
+            ->latestOfMany();
+    }
+
+    /**
+     * Get the latest pending payment subscription if present.
+     */
+    public function pendingSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class)
+            ->where('status', Subscription::STATUS_PENDING_PAYMENT)
+            ->latestOfMany();
+    }
+
+    /**
      * Get the subscription webhook and transaction events for the vendor.
      */
     public function subscriptionEvents(): HasMany

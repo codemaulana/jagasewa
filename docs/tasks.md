@@ -77,7 +77,7 @@
   - **Estimasi:** S
   - **Story:** US-07 (SEC-10)
 
-- [x] **T-09** | CRUD barang di dashboard vendor (Filament Resource)
+- [ ] **T-09** | CRUD barang di dashboard vendor (Filament Resource) [PARTIAL - Ganti foto S3 privat pending]
   - **Tujuan:** Vendor bisa tambah, edit, nonaktifkan barang lewat UI.
   - **Dependensi:** T-08, T-06
   - **Kriteria Selesai:** Barang tersimpan dengan validasi (harga > 0, deposit ≥ 0, buffer ≥ 0); foto ter-upload ke S3.
@@ -324,21 +324,21 @@
 
 ## Milestone 10 — Deploy, Backup & Pemantauan Error
 
-- [x] **T-34** | Konfigurasi environment produksi cPanel (Addon Domain, SSL, & Cron Job)
+- [x] **T-34** | Konfigurasi environment produksi cPanel (Addon Domain, SSL, & Cron Job) [VERIFIED - Dikonfigurasi oleh user]
   - **Tujuan:** Hosting Jagoan Hosting (Cloud Hosting cPanel) siap menjalankan aplikasi Laravel, scheduler, dan queue worker via Cron Job cPanel.
   - **Dependensi:** T-01
   - **Kriteria Selesai:** Document root mengarah ke `/jagasewa/public`; HTTPS aktif; Cron Job cPanel `* * * * * php /home/sdncirac/jagasewa/artisan schedule:run > /dev/null 2>&1` berjalan untuk mengeksekusi auto-cancel booking, auto-delete dokumen, dan queue worker (`queue:work --stop-when-empty`); upload limit & hide PHP version via `.htaccess`; `APP_DEBUG=false`.
   - **Tes:** Cek log eksekusi cron; curl HTTPS domain publik → 200.
   - **Estimasi:** M
 
-- [x] **T-35** | Backup otomatis database harian terenkripsi + uji restore
-  - **Tujuan:** Backup database berjalan terjadwal setiap hari dan dienkripsi sebelum dikirim ke remote bucket Backblaze B2; prosedur restore diuji.
+- [ ] **T-35** | Backup otomatis database harian terenkripsi + uji restore [PARTIAL - Storage S3/AWS disetup user; uji restore di server live menunggu verifikasi]
+  - **Tujuan:** Backup database berjalan terjadwal setiap hari dan dienkripsi sebelum dikirim ke remote bucket Backblaze/AWS S3; prosedur restore diuji.
   - **Dependensi:** T-34
   - **Kriteria Selesai:** Backup terenkripsi (password-protected ZIP AES-256) tersimpan di S3/Backblaze bucket backup privat; retensi 30 hari; prosedur restore terdokumentasi dan diuji sekali.
   - **Tes:** Jalankan restore dari backup terbaru ke environment staging/lokal; verifikasi integritas data konsisten.
   - **Estimasi:** M
 
-- [x] **T-36** | Error monitoring (Sentry atau setara) + checklist pre-launch security
+- [ ] **T-36** | Error monitoring (Sentry atau setara) + checklist pre-launch security [PARTIAL - DSN live & checklist live pending]
   - **Tujuan:** Error produksi terdeteksi; semua item checklist di `security.md` lulus.
   - **Dependensi:** T-34
   - **Kriteria Selesai:** Error terkait di Sentry / Webhook; semua 16+ item checklist security dicentang dan diaudit.
@@ -373,7 +373,7 @@
   - **Estimasi:** S
   - **SEC:** SEC-10
 
-- [x] **T-40** | Hardening Cloud Hosting cPanel (.htaccess, PHP Options, Cloudflare Proxy)
+- [x] **T-40** | Hardening Cloud Hosting cPanel & AWS (.htaccess, PHP Options, Cloudflare Proxy) [VERIFIED - Dikonfigurasi oleh user]
   - **Tujuan:** Pengaturan keamanan lingkungan cPanel Jagoan Hosting: konfigurasi `public/.htaccess` untuk batas upload 6M, blokir akses file sensitif (.env/git), hide `X-Powered-By`/`expose_php=Off`, dan proxy DNS Cloudflare.
   - **Dependensi:** T-34
   - **Kriteria Selesai:** File `.htaccess` terkonfigurasi dengan proteksi direktori; cPanel PHP Options `expose_php=Off` & `upload_max_filesize=6M`; domain diarahkan via Cloudflare Proxy (Orange Cloud).
@@ -400,7 +400,7 @@
   - **Estimasi:** L
   - **SEC:** SEC-22, SEC-23, SEC-24, SEC-25
 
-- [x] **T-43** | [Fase 1.5] Entitlement check server-side untuk fitur Premium
+- [ ] **T-43** | [Fase 1.5] Entitlement check server-side untuk fitur Premium [PARTIAL - Celah langganan ganda & fitur Pro belum tuntas]
   - **Tujuan:** Middleware/service mengecek status subscription aktif setiap request ke fitur berbayar.
   - **Dependensi:** T-41
   - **Kriteria Selesai:** Request fitur Premium oleh vendor Free diarahkan ke halaman upgrade; dicek di server setiap request.
@@ -417,10 +417,70 @@
 
 ---
 
+## Milestone 13 — Stabilisasi & Penutupan Celah (Audit Pasca-MVP)
+
+- [x] **T-45** | [P0] Proteksi Langganan Ganda & Transaksi Atomik Billing (BUG-01)
+  - **Tujuan:** Mencegah vendor memiliki lebih dari satu langganan aktif/pending; mengunci baris vendor (`lockForUpdate()`) dalam transaksi saat checkout; validasi UI & backend jika vendor sudah Pro.
+  - **Dependensi:** T-41, T-42, T-43
+  - **Kriteria Selesai:** Pada alur browser, vendor Pro yang membuka `/vendor/billing` melihat status aktif dan tombol checkout dinonaktifkan/digantikan status masa aktif; jika ada order pending, ditampilkan link lanjutkan pembayaran atau tombol batalkan order pending; request POST checkout langsung dari vendor Pro mengembalikan redirect error; dua request checkout simultan hanya menghasilkan satu subscription record.
+  - **Tes:** `tests/Feature/VendorDoubleSubscriptionTest.php`: Vendor Pro mencoba checkout kembali -> gagal/ditolak; tes race condition 2 request checkout bersamaan -> hanya 1 sukses.
+  - **Estimasi:** M
+  - **SEC:** SEC-22, SEC-25, BUG-01
+
+- [ ] **T-46** | [P1] Perbaikan Upload & Penggantian Foto Barang S3 Privat (BUG-02)
+  - **Tujuan:** Form edit barang di Filament ItemResource dapat memuat thumbnail preview foto yang sudah ada dari S3 privat via signed URL, serta mendukung penambahan, penghapusan, dan penggantian foto tanpa menghilangkan foto lain.
+  - **Dependensi:** T-09, T-19
+  - **Kriteria Selesai:** Pada alur browser, vendor membuka `/vendor/items/{ulid}/edit`, foto lama ter-render jelas tanpa icon broken; vendor menghapus 1 foto dan mengunggah foto pengganti baru; klik Simpan -> berhasil tanpa error Livewire; foto baru tersimpan di bucket S3 privat dan etalase `/b/{vendor_slug}/{item_slug}` menampilkan foto baru.
+  - **Tes:** `tests/Feature/VendorItemPhotoUpdateTest.php`: Simpan item dengan foto -> buka edit form -> ganti foto -> assert foto baru tersimpan di storage dan DB terupdate.
+  - **Estimasi:** M
+  - **BUG:** BUG-02
+
+- [ ] **T-47** | [P1] Halaman Pengaturan Profil Toko & WhatsApp di Filament (BUG-04)
+  - **Tujuan:** Migrasi penambahan kolom profil toko di tabel `vendors` (`logo_path`, `banner_path`, `description`, `address`, `bank_account_info`) dan pembuatan Filament Page `StoreSettings` di panel vendor.
+  - **Dependensi:** T-04, T-05
+  - **Kriteria Selesai:** Pada alur browser, vendor membuka menu "Pengaturan Toko", mengisi deskripsi toko, mengunggah logo toko, memasukkan nomor WhatsApp toko dan info rekening; klik Simpan -> tersimpan; halaman publik `/b/{vendor_slug}` langsung menampilkan logo, banner, dan deskripsi baru; tombol wa.me menggunakan nomor WhatsApp toko terbaru.
+  - **Tes:** `tests/Feature/VendorStoreSettingsTest.php`: Vendor mengubah profil toko via form Filament -> data tersimpan di DB; vendor lain tidak bisa mengakses/mengubah -> 404; etalase publik me-render profil baru.
+  - **Estimasi:** M
+  - **Story:** US-07, BUG-04
+
+- [ ] **T-48** | [P1] Implementasi Kustom Template WhatsApp & Kuota Foto Pro (BUG-06)
+  - **Tujuan:** Menghidupkan fitur Paket Pro:
+    1. Vendor Pro dapat mengatur template pesan WhatsApp (approval, reject, return reminder) dengan tag dinamis (`{nama_penyewa}`, `{nama_barang}`, `{kode_booking}`, `{rekening_toko}`) di Pengaturan Toko.
+    2. `WaNotificationHelper` memprioritaskan template kustom vendor Pro, dengan fallback ke template standar untuk vendor Free.
+    3. `ItemForm.php` mendeteksi status entitlement vendor: batas 5 foto untuk Free, hingga 8 foto untuk Pro.
+  - **Dependensi:** T-43, T-47, T-32
+  - **Kriteria Selesai:** Pada alur browser, vendor Pro mengatur template pesan WhatsApp approval; saat vendor menyetujui booking penyewa, tombol wa.me membuka URL WhatsApp dengan teks sesuai template kustom vendor. Form tambah/edit barang mengizinkan hingga 8 foto untuk vendor Pro.
+  - **Tes:** `tests/Feature/ProFeaturesCustomWaTemplateTest.php`: Vendor Pro menghasilkan tautan wa.me kustom; vendor Free menghasilkan tautan standar; vendor Pro dapat mengunggah 8 foto, vendor Free dibatasi 5 foto.
+  - **Estimasi:** M
+  - **Story:** US-12, BUG-06
+
+- [ ] **T-49** | [P2] Redesain Beranda Dashboard Rental & Pembersihan Widget Filament Bawaan (BUG-03)
+  - **Tujuan:** Menghapus `AccountWidget` dan `FilamentInfoWidget` default; membangun widgets operasional rental:
+    1. Kartu Tautan Toko (`/b/{vendor_slug}`) dengan tombol 1-klik "Salin Tautan".
+    2. Statistik Ringkas: Pesanan Menunggu (Pending), Barang Disewa Hari Ini (Aktif), Pengembalian Hari Ini (Returned).
+    3. Kartu Kuota & Status Paket (Free vs Pro).
+    4. Checklist Onboarding Vendor Baru (Atur Toko → Tambah Barang → Bagikan Tautan).
+    5. Fallback avatar inisial bersih untuk `VendorUser`.
+  - **Dependensi:** T-05, T-22, T-47
+  - **Kriteria Selesai:** Pada alur browser, halaman utama `/vendor` bebas dari widget dokumentasi Filament dan icon broken avatar; menampilkan ringkasan pesanan nyata, status paket toko, dan kartu salin tautan toko yang responsif di ponsel dan desktop.
+  - **Tes:** `tests/Feature/VendorDashboardWidgetsTest.php`: Halaman dashboard me-render semua custom widget dan data statistik mencerminkan record DB milik vendor yang sedang login.
+  - **Estimasi:** M
+  - **Story:** US-11, BUG-03
+
+- [ ] **T-50** | [P2] Kalender Booking Visual Interaktif di Panel Vendor (BUG-05)
+  - **Tujuan:** Membangun halaman kalender visual jadwal sewa (`VendorBookingCalendar`) di Filament Vendor Panel untuk memenuhi US-11 (Melihat Kalender Barang).
+  - **Dependensi:** T-11, T-22
+  - **Kriteria Selesai:** Pada alur browser, vendor membuka menu "Kalender Sewa" di dashboard, melihat kisi kalender bulanan dengan blok warna untuk tanggal booking (pending, approved, active, returned) dan jeda buffer; filter per barang; klik entri booking membuka modal/halaman detail booking.
+  - **Tes:** `tests/Feature/VendorCalendarPageTest.php`: Halaman kalender me-render booking milik vendor sendiri; booking vendor lain tidak muncul; filter per barang berfungsi.
+  - **Estimasi:** M
+  - **Story:** US-11, BUG-05
+
+---
+
 ## Matriks Referensi Silang
 
-| Task | User Story | Business Rule | Security Control |
-|------|-----------|--------------|------------------|
+| Task | User Story | Business Rule | Security Control / Bug ID |
+|------|-----------|--------------|---------------------------|
 | T-11 | US-01 | BR-01 | — |
 | T-15 | US-02 | BR-01, BR-02 | SEC-19 |
 | T-18 | US-03 | BR-05 | SEC-26 |
@@ -437,4 +497,11 @@
 | T-39 | — | — | SEC-10 |
 | T-40 | — | — | SEC-15..SEC-17 |
 | T-42 | — | — | SEC-22..SEC-25 |
+| T-45 | — | — | SEC-22, SEC-25, BUG-01 |
+| T-46 | US-07 | — | BUG-02 |
+| T-47 | US-07 | — | BUG-04 |
+| T-48 | US-12 | — | BUG-06 |
+| T-49 | US-11 | — | BUG-03 |
+| T-50 | US-11 | — | BUG-05 |
+
 

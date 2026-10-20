@@ -6,10 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Item;
 use App\Models\Subscription;
+use App\Models\Vendor;
 use App\Services\Billing\EntitlementService;
 use App\Services\Billing\MayarPaymentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BillingController extends Controller
@@ -30,6 +32,8 @@ class BillingController extends Controller
         }
 
         $subscription = $vendor->currentSubscription;
+        $activeSubscription = $vendor->activeSubscription;
+        $pendingSubscription = $vendor->pendingSubscription;
         $isPro = $this->entitlement->isPro($vendor);
         $activeItemsCount = Item::where('vendor_id', $vendor->id)->where('is_active', true)->count();
         $blacklistCount = $vendor->blacklistEntries()->count();
@@ -37,6 +41,8 @@ class BillingController extends Controller
         $data = [
             'vendor' => $vendor,
             'subscription' => $subscription,
+            'active_subscription' => $activeSubscription,
+            'pending_subscription' => $pendingSubscription,
             'is_pro' => $isPro,
             'limits' => [
                 'active_items' => [
@@ -118,6 +124,7 @@ class BillingController extends Controller
 
     /**
      * Initiate checkout for Pro subscription tier via Mayar.id (Pilihan A).
+     * Protected by pessimistic locking and single-active-subscription rule (T-45 / BUG-01).
      */
     public function checkout(Request $request, MayarPaymentService $paymentService): RedirectResponse
     {
@@ -125,33 +132,107 @@ class BillingController extends Controller
             'cycle' => ['required', 'string', 'in:monthly,quarterly,annually'],
         ]);
 
-        $vendor = auth('vendor')->user()?->vendor;
-
-        if (! $vendor) {
+        $user = auth('vendor')->user();
+        if (! $user || ! $user->vendor_id) {
             abort(403);
         }
 
         $cycle = $request->input('cycle');
 
-        /** @var Subscription $subscription */
-        $subscription = Subscription::create([
-            'vendor_id' => $vendor->id,
-            'plan' => Subscription::PLAN_PRO,
-            'status' => Subscription::STATUS_PENDING_PAYMENT,
-            'billing_cycle' => $cycle,
-            'current_period_start' => now('Asia/Jakarta'),
-        ]);
+        return DB::transaction(function () use ($user, $cycle, $paymentService) {
+            /** @var Vendor $vendor */
+            $vendor = Vendor::where('id', $user->vendor_id)->lockForUpdate()->firstOrFail();
 
+            // 1. Guard against double subscription if already Pro
+            if ($this->entitlement->isPro($vendor)) {
+                $activeSub = $vendor->activeSubscription;
+                $expiryText = $activeSub?->current_period_end
+                    ? $activeSub->current_period_end->translatedFormat('d F Y')
+                    : 'Aktif';
+
+                return redirect()->route('vendor.billing.index')
+                    ->with('error', "Toko Anda sudah aktif berlangganan Paket Pro (berlaku hingga {$expiryText}). Pembelian ganda tidak diizinkan.");
+            }
+
+            // 2. Guard against duplicate pending subscriptions
+            $pendingSub = Subscription::where('vendor_id', $vendor->id)
+                ->where('status', Subscription::STATUS_PENDING_PAYMENT)
+                ->lockForUpdate()
+                ->latest()
+                ->first();
+
+            if ($pendingSub) {
+                // If the pending order is the exact same billing cycle, reuse payment or avoid duplicate
+                if ($pendingSub->billing_cycle === $cycle) {
+                    $mockInvoiceId = $pendingSub->gateway_subscription_id;
+                    $paymentUrl = $mockInvoiceId && str_starts_with($mockInvoiceId, 'pay_mock_')
+                        ? "https://sandbox.mayar.id/pay/{$mockInvoiceId}"
+                        : null;
+
+                    if ($paymentUrl) {
+                        return redirect()->away($paymentUrl);
+                    }
+
+                    return redirect()->route('vendor.billing.index')
+                        ->with('error', 'Anda sudah memiliki tagihan pending untuk paket ini. Silakan selesaikan pembayaran atau batalkan tagihan sebelum membuat yang baru.');
+                }
+
+                // If vendor deliberately chooses a different billing cycle, cancel previous pending order
+                $pendingSub->update([
+                    'status' => Subscription::STATUS_CANCELLED,
+                ]);
+            }
+
+            /** @var Subscription $subscription */
+            $subscription = Subscription::create([
+                'vendor_id' => $vendor->id,
+                'plan' => Subscription::PLAN_PRO,
+                'status' => Subscription::STATUS_PENDING_PAYMENT,
+                'billing_cycle' => $cycle,
+                'current_period_start' => now('Asia/Jakarta'),
+            ]);
+
+            try {
+                $result = $paymentService->createPaymentLink($subscription, $user);
+
+                return redirect()->away($result['payment_url']);
+            } catch (\Exception $e) {
+                $subscription->delete();
+
+                return redirect()->route('vendor.billing.index')->with('error', $e->getMessage());
+            }
+        });
+    }
+
+    /**
+     * Cancel an existing pending payment order so the vendor can choose another plan.
+     */
+    public function cancelPending(Request $request): RedirectResponse
+    {
         $user = auth('vendor')->user();
-
-        try {
-            $result = $paymentService->createPaymentLink($subscription, $user);
-
-            return redirect()->away($result['payment_url']);
-        } catch (\Exception $e) {
-            $subscription->delete();
-
-            return redirect()->route('vendor.billing.index')->with('error', $e->getMessage());
+        if (! $user || ! $user->vendor_id) {
+            abort(403);
         }
+
+        return DB::transaction(function () use ($user) {
+            $vendor = Vendor::where('id', $user->vendor_id)->lockForUpdate()->firstOrFail();
+
+            $pendingSub = Subscription::where('vendor_id', $vendor->id)
+                ->where('status', Subscription::STATUS_PENDING_PAYMENT)
+                ->lockForUpdate()
+                ->first();
+
+            if ($pendingSub) {
+                $pendingSub->update([
+                    'status' => Subscription::STATUS_CANCELLED,
+                ]);
+
+                return redirect()->route('vendor.billing.index')
+                    ->with('status', 'Tagihan tertunda berhasil dibatalkan. Anda dapat memilih paket langganan kembali.');
+            }
+
+            return redirect()->route('vendor.billing.index')
+                ->with('error', 'Tidak ada tagihan tertunda yang ditemukan.');
+        });
     }
 }

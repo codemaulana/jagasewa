@@ -67,6 +67,11 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
         ->middleware('auth:vendor')
         ->name('billing.checkout');
 
+    // Vendor Billing Cancel Pending Order (T-45 / BUG-01)
+    Route::post('/billing/cancel-pending', [BillingController::class, 'cancelPending'])
+        ->middleware('auth:vendor')
+        ->name('billing.cancel-pending');
+
     // Pro-Only Feature: Export CSV Report (T-43 / SEC-25)
     Route::get('/reports/export', [BillingController::class, 'exportReports'])
         ->middleware(['auth:vendor', 'vendor.pro'])
