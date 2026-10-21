@@ -79,7 +79,8 @@ class WaNotificationHelper
     }
 
     /**
-     * Generate wa.me URL for vendor to contact renter (e.g. approved, rejected, settled actions).
+     * Generate wa.me URL for vendor to contact renter (e.g. approved, rejected, settled, return_reminder actions).
+     * Pro vendors can customize message templates with dynamic tags (T-48 / US-12).
      */
     public static function generateRenterChatUrl(Booking $booking, string $action = 'approved'): ?string
     {
@@ -90,11 +91,38 @@ class WaNotificationHelper
             return null;
         }
 
+        $vendor = $booking->vendor;
         $itemName = $booking->item?->name ?? 'Barang Rental';
-        $vendorName = $booking->vendor?->name ?? 'Vendor';
+        $vendorName = $vendor?->name ?? 'Vendor';
         $renterName = $renter->name ?? 'Kak';
         $startDate = $booking->start_date ? $booking->start_date->format('d M Y') : '-';
         $endDate = $booking->end_date ? $booking->end_date->format('d M Y') : '-';
+        $bankAccount = $vendor?->bank_account_info ?? '';
+        $totalPrice = number_format($booking->total_price, 0, ',', '.');
+        $depositAmount = number_format($booking->deposit_paid ?? $booking->item?->deposit_amount ?? 0, 0, ',', '.');
+
+        // Check if Pro vendor has a custom template configured for this action
+        $isPro = $vendor && $vendor->isPro();
+        $customTemplates = $vendor?->custom_wa_templates ?? [];
+
+        if ($isPro && ! empty($customTemplates[$action])) {
+            $template = (string) $customTemplates[$action];
+            $replacements = [
+                '{nama_penyewa}' => $renterName,
+                '{nama_barang}' => $itemName,
+                '{kode_booking}' => $booking->reference_code,
+                '{nama_toko}' => $vendorName,
+                '{nama_vendor}' => $vendorName,
+                '{rekening_toko}' => $bankAccount,
+                '{jadwal_sewa}' => "{$startDate} s/d {$endDate}",
+                '{total_biaya}' => "Rp {$totalPrice}",
+                '{total_deposit}' => "Rp {$depositAmount}",
+            ];
+
+            $message = str_replace(array_keys($replacements), array_values($replacements), $template);
+
+            return 'https://wa.me/'.$renterPhone.'?text='.rawurlencode($message);
+        }
 
         if ($action === 'approved') {
             $message = "Halo {$renterName},\n\n"
@@ -102,11 +130,16 @@ class WaNotificationHelper
                 ."• No. Referensi: {$booking->reference_code}\n"
                 ."• Barang: {$itemName}\n"
                 ."• Jadwal: {$startDate} s/d {$endDate}\n\n"
+                .(! empty($bankAccount) ? "Info Pembayaran / Rekening:\n{$bankAccount}\n\n" : '')
                 .'Silakan balas pesan ini untuk koordinasi penyerahan / pengiriman barang. Terima kasih!';
         } elseif ($action === 'rejected') {
             $message = "Halo {$renterName},\n\n"
                 ."Mohon maaf, permohonan booking Anda untuk {$itemName} (Ref: {$booking->reference_code}) belum dapat kami setujui saat ini.\n\n"
                 .'Terima kasih atas pengertian Anda.';
+        } elseif ($action === 'return_reminder') {
+            $message = "Halo {$renterName},\n\n"
+                ."Mengingatkan jadwal sewa untuk {$itemName} (Ref: {$booking->reference_code}) di {$vendorName} dijadwalkan kembali pada {$endDate}.\n\n"
+                .'Mohon persiapkan barang dan kelengkapannya. Silakan balas pesan ini jika ada kendala. Terima kasih!';
         } elseif (in_array($action, ['settled', 'closed'])) {
             $settlement = $booking->settlement;
             $depositRemaining = $settlement ? (int) $settlement->deposit_remaining : 0;

@@ -257,6 +257,14 @@ class ViewBooking extends ViewRecord
                     $notification->send();
                 }),
 
+            Action::make('remind_wa')
+                ->label('Pengingat Pengembalian via WA')
+                ->icon(Heroicon::OutlinedClock)
+                ->color('warning')
+                ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl($record, 'return_reminder'))
+                ->openUrlInNewTab()
+                ->visible(fn (Booking $record): bool => $record->status === Booking::STATUS_ACTIVE),
+
             Action::make('contact_wa')
                 ->label('Hubungi Penyewa via WA')
                 ->icon(Heroicon::OutlinedChatBubbleLeftRight)

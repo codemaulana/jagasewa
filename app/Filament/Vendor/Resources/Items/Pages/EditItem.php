@@ -35,6 +35,16 @@ class EditItem extends EditRecord
             ]);
         }
 
+        // Enforce maximum photos per item based on plan (Free: 5, Pro: 8)
+        if ($vendor) {
+            $maxPhotos = app(EntitlementService::class)->getMaxPhotosPerItem($vendor);
+            if (! empty($data['photo_paths']) && is_array($data['photo_paths']) && count($data['photo_paths']) > $maxPhotos) {
+                throw ValidationException::withMessages([
+                    'data.photo_paths' => "Batas kuota foto terlampaui (maksimal {$maxPhotos} foto).",
+                ]);
+            }
+        }
+
         // Clean up any photos removed by vendor from storage
         $originalPhotos = $this->record->photo_paths ?? [];
         $newPhotos = $data['photo_paths'] ?? [];

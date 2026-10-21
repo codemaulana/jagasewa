@@ -443,7 +443,7 @@
   - **Estimasi:** M
   - **Story:** US-07, BUG-04
 
-- [ ] **T-48** | [P1] Implementasi Kustom Template WhatsApp & Kuota Foto Pro (BUG-06)
+- [x] **T-48** | [P1] Implementasi Kustom Template WhatsApp & Kuota Foto Pro (BUG-06)
   - **Tujuan:** Menghidupkan fitur Paket Pro:
     1. Vendor Pro dapat mengatur template pesan WhatsApp (approval, reject, return reminder) dengan tag dinamis (`{nama_penyewa}`, `{nama_barang}`, `{kode_booking}`, `{rekening_toko}`) di Pengaturan Toko.
     2. `WaNotificationHelper` memprioritaskan template kustom vendor Pro, dengan fallback ke template standar untuk vendor Free.

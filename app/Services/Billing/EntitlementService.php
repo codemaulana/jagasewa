@@ -13,7 +13,7 @@ class EntitlementService
 
     public const MAX_FREE_BLACKLIST_ENTRIES = 5;
 
-    public const MAX_FREE_PHOTOS_PER_ITEM = 2;
+    public const MAX_FREE_PHOTOS_PER_ITEM = 5;
 
     public const MAX_PRO_PHOTOS_PER_ITEM = 8;
 
@@ -23,7 +23,7 @@ class EntitlementService
      */
     public function isPro(?Vendor $vendor): bool
     {
-        if (! $vendor) {
+        if (! $vendor || ! $vendor->exists || ! $vendor->id) {
             return false;
         }
 

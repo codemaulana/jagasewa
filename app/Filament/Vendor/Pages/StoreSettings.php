@@ -6,6 +6,7 @@ use App\Models\Vendor;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -18,6 +19,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 
 /**
  * @property-read Schema $form
@@ -42,6 +44,8 @@ class StoreSettings extends Page
         $vendor = $this->getVendor();
 
         if ($vendor) {
+            $templates = $vendor->custom_wa_templates ?? [];
+
             $this->data = [
                 'name' => $vendor->name,
                 'slug' => $vendor->slug,
@@ -51,6 +55,11 @@ class StoreSettings extends Page
                 'bank_account_info' => $vendor->bank_account_info,
                 'logo_path' => $vendor->logo_path,
                 'banner_path' => $vendor->banner_path,
+                'custom_wa_templates' => [
+                    'approved' => $templates['approved'] ?? null,
+                    'rejected' => $templates['rejected'] ?? null,
+                    'return_reminder' => $templates['return_reminder'] ?? null,
+                ],
             ];
 
             $this->form->fill($this->data);
@@ -144,6 +153,46 @@ class StoreSettings extends Page
                                     ->helperText('Format PNG/JPG/WebP, rasio lebar 16:9 atau 3:1 disarankan, maksimal 5MB.'),
                             ]),
                     ]),
+
+                Section::make('Template Pesan WhatsApp (Fitur Pro)')
+                    ->description(fn () => ($vendor = $this->getVendor()) && $vendor->isPro()
+                        ? 'Atur kata-kata pesan otomatis saat menghubungi penyewa. Tag dinamis: {nama_penyewa}, {nama_barang}, {kode_booking}, {rekening_toko}, {jadwal_sewa}, {total_biaya}.'
+                        : 'Kustomisasi template pesan WhatsApp ke penyewa merupakan fitur eksklusif Paket Pro. Saat ini toko Anda menggunakan template standar JagaSewa.')
+                    ->schema(function () {
+                        $vendor = $this->getVendor();
+                        $isPro = $vendor && $vendor->isPro();
+
+                        if (! $isPro) {
+                            return [
+                                Placeholder::make('pro_badge_notice')
+                                    ->label('Status Fitur')
+                                    ->content(new HtmlString(
+                                        '<div class="flex items-center justify-between p-3.5 rounded-lg border border-zinc-200 bg-zinc-50 text-xs text-zinc-700">'
+                                        .'<div><span class="font-semibold text-zinc-900">💎 Fitur Kustom Pesan WhatsApp Terkunci.</span><p class="mt-0.5 text-zinc-500">Toko Free menggunakan format pesan WhatsApp standar otomatis dari JagaSewa.</p></div>'
+                                        .'<a href="'.route('vendor.billing.index').'" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-xs transition flex-shrink-0">Upgrade ke Pro</a>'
+                                        .'</div>'
+                                    )),
+                            ];
+                        }
+
+                        return [
+                            Textarea::make('custom_wa_templates.approved')
+                                ->label('Template Pesan Persetujuan (Approve)')
+                                ->placeholder("Halo {nama_penyewa},\n\nPesanan {nama_barang} (Ref: {kode_booking}) telah DISETUJUI!\nSilakan transfer ke rekening:\n{rekening_toko}\n\nTerima kasih!")
+                                ->rows(3)
+                                ->helperText('Dikirimkan saat Anda menekan tombol Setujui Booking.'),
+                            Textarea::make('custom_wa_templates.rejected')
+                                ->label('Template Pesan Penolakan (Reject)')
+                                ->placeholder("Halo {nama_penyewa},\n\nMohon maaf permohonan booking {nama_barang} (Ref: {kode_booking}) belum dapat kami setujui.\n\nTerima kasih.")
+                                ->rows(3)
+                                ->helperText('Dikirimkan saat Anda menolak pesanan.'),
+                            Textarea::make('custom_wa_templates.return_reminder')
+                                ->label('Template Pengingat Pengembalian Barang')
+                                ->placeholder("Halo {nama_penyewa},\n\nMengingatkan jadwal pengembalian {nama_barang} (Ref: {kode_booking}) dijadwalkan pada {jadwal_sewa}.\n\nTerima kasih!")
+                                ->rows(3)
+                                ->helperText('Dikirimkan untuk mengingatkan penyewa menjelang jatuh tempo pengembalian.'),
+                        ];
+                    }),
             ]);
     }
 
@@ -210,7 +259,7 @@ class StoreSettings extends Page
             }
         }
 
-        $vendor->update([
+        $updateData = [
             'name' => $state['name'],
             'wa_number' => $state['wa_number'],
             'description' => $state['description'] ?? null,
@@ -218,7 +267,13 @@ class StoreSettings extends Page
             'bank_account_info' => $state['bank_account_info'] ?? null,
             'logo_path' => $state['logo_path'] ?? null,
             'banner_path' => $state['banner_path'] ?? null,
-        ]);
+        ];
+
+        if ($vendor->isPro()) {
+            $updateData['custom_wa_templates'] = $state['custom_wa_templates'] ?? null;
+        }
+
+        $vendor->update($updateData);
 
         Notification::make()
             ->title('Pengaturan toko berhasil disimpan.')
