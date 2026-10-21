@@ -467,7 +467,7 @@
   - **Estimasi:** M
   - **Story:** US-11, BUG-03
 
-- [ ] **T-50** | [P2] Kalender Booking Visual Interaktif di Panel Vendor (BUG-05)
+- [x] **T-50** | [P2] Kalender Booking Visual Interaktif di Panel Vendor (BUG-05)
   - **Tujuan:** Membangun halaman kalender visual jadwal sewa (`VendorBookingCalendar`) di Filament Vendor Panel untuk memenuhi US-11 (Melihat Kalender Barang).
   - **Dependensi:** T-11, T-22
   - **Kriteria Selesai:** Pada alur browser, vendor membuka menu "Kalender Sewa" di dashboard, melihat kisi kalender bulanan dengan blok warna untuk tanggal booking (pending, approved, active, returned) dan jeda buffer; filter per barang; klik entri booking membuka modal/halaman detail booking.
