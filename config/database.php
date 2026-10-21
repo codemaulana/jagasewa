@@ -181,4 +181,20 @@ return [
 
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Database Backup Configuration (T-35)
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for automated daily encrypted backups and retention policy.
+    |
+    */
+
+    'backup' => [
+        'disk' => env('DB_BACKUP_DISK', 's3'),
+        'password' => env('DB_BACKUP_PASSWORD', env('APP_KEY')),
+        'retention_days' => (int) env('DB_BACKUP_RETENTION_DAYS', 30),
+        'directory' => env('DB_BACKUP_DIRECTORY', 'backups'),
+    ],
+
 ];

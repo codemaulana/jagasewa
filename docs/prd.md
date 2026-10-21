@@ -55,9 +55,15 @@ JagaSewa adalah platform booking berbasis web (mobile-first) untuk pemilik renta
 - 1 item = 1 unit; satuan hari penuh inklusif; zona `Asia/Jakarta`
 - Uang dalam bilangan bulat rupiah
 
+### Fase 1.5 — Monetisasi & Billing Langganan (Micro-SaaS)
+- **Model Freemium (Opsi B):**
+  - **Paket Free:** Maksimal 5 barang aktif, 5 entri blacklist pribadi, 2 foto/item, watermark *"Powered by JagaSewa"* di katalog.
+  - **Paket Pro (Rp 15.000/bulan, Rp 39.000/3 bln, Rp 129.000/thn):** Unlimited barang aktif, white-label (tanpa watermark JagaSewa), kustom template chat WhatsApp (info rekening & aturan toko), 6–8 foto/item, unlimited blacklist + catatan riwayat risiko penyewa, download rekap keuangan Excel/CSV.
+- **Jalur Pembayaran Langganan Vendor:** Transfer manual (verifikasi admin) dan Payment Gateway otomatis (Xendit hosted checkout + webhook).
+
 ### Fase 2 (Ditunda)
 - Blacklist bersama antar-vendor (ditunda karena risiko UU PDP & cold start)
-- Payment gateway
+- Pembayaran sewa otomatis renter-ke-vendor via gateway (saat ini transfer langsung di luar sistem)
 - Chat internal
 - Multi-unit per item
 

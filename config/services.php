@@ -35,4 +35,40 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Error Monitoring Configuration (T-36)
+    |--------------------------------------------------------------------------
+    |
+    | Supports Sentry DSN (via official Sentry Store REST API) and Webhook
+    | alerts (Discord/Slack/Telegram) without extra heavy packages.
+    |
+    */
+    'monitoring' => [
+        'sentry_dsn' => env('SENTRY_DSN'),
+        'webhook_url' => env('MONITOR_WEBHOOK_URL'),
+        'enabled' => env('MONITOR_ENABLED', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mayar Payment Gateway Configuration (T-42)
+    |--------------------------------------------------------------------------
+    */
+    'mayar' => [
+        'api_url' => env('MAYAR_API_URL', 'https://api.mayar.id/hl/v1'),
+        'api_key' => env('MAYAR_API_KEY'),
+        'webhook_secret' => env('MAYAR_WEBHOOK_SECRET', 'test-mayar-webhook-secret'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Xendit Payment Gateway Configuration (Fallback/Alternative)
+    |--------------------------------------------------------------------------
+    */
+    'xendit' => [
+        'callback_token' => env('XENDIT_CALLBACK_TOKEN', 'test-xendit-callback-token'),
+        'secret_key' => env('XENDIT_SECRET_KEY'),
+    ],
+
 ];

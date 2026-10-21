@@ -7,11 +7,17 @@ use App\Helpers\WaNotificationHelper;
 use App\Models\Booking;
 use App\Services\BlacklistService;
 use App\Services\BookingStatusService;
+use App\Services\FineCalculatorService;
 use Filament\Actions\Action;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Support\HtmlString;
 
 class ViewBooking extends ViewRecord
 {
@@ -155,13 +161,129 @@ class ViewBooking extends ViewRecord
                         ->send();
                 }),
 
+            Action::make('settle')
+                ->label('Penyelesaian Sewa')
+                ->icon(Heroicon::OutlinedClipboardDocumentCheck)
+                ->color('success')
+                ->visible(fn (Booking $record): bool => $record->status === Booking::STATUS_RETURNED)
+                ->modalHeading('Penyelesaian Sewa & Perhitungan Denda')
+                ->modalDescription('Periksa tanggal aktual pengembalian dan rincian kerusakan barang. Sistem menghitung denda dan deposit secara otomatis (BR-03).')
+                ->modalSubmitActionLabel('Konfirmasi Penyelesaian')
+                ->form([
+                    DatePicker::make('actual_return_date')
+                        ->label('Tanggal Kembali Aktual')
+                        ->default(now(FineCalculatorService::TIMEZONE)->toDateString())
+                        ->required()
+                        ->live(),
+
+                    Repeater::make('damage_items')
+                        ->label('Daftar Kerusakan Barang (Opsional)')
+                        ->schema([
+                            TextInput::make('description')
+                                ->label('Deskripsi Kerusakan')
+                                ->placeholder('Contoh: Kancing copot / noda membandel')
+                                ->required(),
+                            TextInput::make('amount')
+                                ->label('Biaya Perbaikan (Rp)')
+                                ->numeric()
+                                ->prefix('Rp')
+                                ->default(0)
+                                ->required()
+                                ->live(debounce: 500),
+                        ])
+                        ->columns(2)
+                        ->collapsible()
+                        ->live()
+                        ->addActionLabel('+ Tambah Item Kerusakan'),
+
+                    Placeholder::make('calculation_summary')
+                        ->label('Ringkasan Perhitungan Real-Time')
+                        ->content(function ($get, Booking $record, FineCalculatorService $calculator) {
+                            $actualReturnDate = $get('actual_return_date') ?: now(FineCalculatorService::TIMEZONE)->toDateString();
+                            $damageItems = $get('damage_items') ?: [];
+                            $damageTotal = $calculator->calculateTotalDamage($damageItems);
+
+                            $result = $calculator->calculateForBooking($record, $actualReturnDate, $damageTotal);
+
+                            return new HtmlString(view('filament.vendor.bookings.settlement-summary', [
+                                'result' => $result,
+                                'booking' => $record,
+                            ])->render());
+                        }),
+
+                    Textarea::make('damage_notes')
+                        ->label('Catatan Kondisi Barang / Vendor (Opsional)')
+                        ->placeholder('Keterangan tambahan kondisi saat barang dikembalikan...')
+                        ->maxLength(500),
+                ])
+                ->action(function (Booking $record, array $data, BookingStatusService $statusService, FineCalculatorService $calculator) {
+                    $actualReturnDate = $data['actual_return_date'] ?? now(FineCalculatorService::TIMEZONE)->toDateString();
+                    $damageItems = $data['damage_items'] ?? [];
+                    $damageTotal = $calculator->calculateTotalDamage($damageItems);
+
+                    $calcResult = $calculator->calculateForBooking($record, $actualReturnDate, $damageTotal);
+
+                    $statusService->closeWithSettlement(
+                        $record,
+                        $calcResult->toSettlementAttributes([
+                            'damage_notes' => $data['damage_notes'] ?? null,
+                        ]),
+                        $damageItems
+                    );
+
+                    $record->refresh();
+
+                    $outcomeMsg = $calcResult->hasRefund
+                        ? 'Sisa uang jaminan yang harus dikembalikan ke penyewa: Rp '.number_format($calcResult->refund, 0, ',', '.')
+                        : ($calcResult->hasShortfall
+                            ? 'Kekurangan bayar yang ditagihkan ke penyewa: Rp '.number_format($calcResult->shortfall, 0, ',', '.')
+                            : 'Uang jaminan habis pas (Rp 0).');
+
+                    $notification = Notification::make()
+                        ->title('Penyelesaian Sewa Berhasil')
+                        ->body("Pesanan telah ditutup (closed). {$outcomeMsg}")
+                        ->success();
+
+                    $waUrl = WaNotificationHelper::generateRenterChatUrl($record, 'settled');
+                    if ($waUrl) {
+                        $notification->actions([
+                            Action::make('chat_wa_settled')
+                                ->label('Kirim Info ke Penyewa via WA')
+                                ->url($waUrl, shouldOpenInNewTab: true)
+                                ->button(),
+                        ]);
+                    }
+
+                    $notification->send();
+                }),
+
+            Action::make('remind_wa')
+                ->label('Pengingat Pengembalian via WA')
+                ->icon(Heroicon::OutlinedClock)
+                ->color('warning')
+                ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl($record, 'return_reminder'))
+                ->openUrlInNewTab()
+                ->visible(fn (Booking $record): bool => $record->status === Booking::STATUS_ACTIVE),
+
             Action::make('contact_wa')
                 ->label('Hubungi Penyewa via WA')
                 ->icon(Heroicon::OutlinedChatBubbleLeftRight)
                 ->color('success')
-                ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl($record, 'approved'))
+                ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl(
+                    $record,
+                    match ($record->status) {
+                        Booking::STATUS_CLOSED => 'settled',
+                        Booking::STATUS_REJECTED => 'rejected',
+                        default => 'approved',
+                    }
+                ))
                 ->openUrlInNewTab()
-                ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE])),
+                ->visible(fn (Booking $record): bool => in_array($record->status, [
+                    Booking::STATUS_APPROVED,
+                    Booking::STATUS_ACTIVE,
+                    Booking::STATUS_CLOSED,
+                    Booking::STATUS_REJECTED,
+                ])),
         ];
     }
 }

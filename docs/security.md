@@ -378,26 +378,26 @@ Rujuk runbook detail di `deployment-ops.md` (RB-01 s.d. RB-05).
 ## N. Checklist Pra-Peluncuran
 
 ### N.1 Checklist Teknis
-- [ ] `APP_DEBUG=false`, `APP_ENV=production`
-- [ ] `.env` tidak ter-commit; tidak ada secret di Git history
-- [ ] Bucket S3: tidak ada public-read ACL; SSE aktif
-- [ ] HTTPS aktif dengan sertifikat valid; HSTS diaktifkan
-- [ ] Firewall VPS: hanya Cloudflare IP yang bisa akses port 80/443
-- [ ] Rate limiting dikonfigurasi dan diuji (TC-21..TC-23)
-- [ ] Test isolasi vendor lulus: HTTP 404 untuk resource vendor lain (IDOR-01..IDOR-14)
-- [ ] Upload validation: magic bytes, max size 5MB, UUID rename, EXIF dihapus (TC-31..TC-35)
-- [ ] Auto-delete job terdaftar di scheduler dan diuji di staging (TC-36..TC-38)
-- [ ] `audit_logs` tidak mengandung PII (spot check manual)
-- [ ] Signed URL TTL ≤ 60 menit; direct URL → 403
-- [ ] Password bcrypt cost ≥ 12
-- [ ] `BLACKLIST_SECRET` berbeda dari `APP_KEY`
-- [ ] Header keamanan hadir: CSP, HSTS, X-Frame-Options, X-Content-Type-Options (TC-39)
-- [ ] `composer audit` → 0 high/critical CVE
-- [ ] Backup database terjadwal dan pernah diuji restore (lihat `deployment-ops.md`)
-- [ ] Error monitoring aktif (Sentry atau setara) [ASUMSI]
-- [ ] Concurrent booking test lulus (TC-24..TC-25)
-- [ ] CSRF aktif untuk semua POST/PUT/PATCH/DELETE
-- [ ] DB user hanya memiliki hak SELECT/INSERT/UPDATE/DELETE
+- [x] `APP_DEBUG=false`, `APP_ENV=production`
+- [x] `.env` tidak ter-commit; tidak ada secret di Git history
+- [x] Bucket S3: tidak ada public-read ACL; SSE aktif
+- [x] HTTPS aktif dengan sertifikat valid; HSTS diaktifkan
+- [x] Firewall VPS: hanya Cloudflare / reverse proxy IP yang bisa akses port 80/443
+- [x] Rate limiting dikonfigurasi dan diuji (TC-21..TC-23) [T-37]
+- [x] Test isolasi vendor lulus: HTTP 404 untuk resource vendor lain (IDOR-01..IDOR-14)
+- [x] Upload validation: magic bytes, max size 5MB, UUID rename, EXIF dihapus (TC-31..TC-35)
+- [x] Auto-delete job terdaftar di scheduler dan diuji di staging (TC-36..TC-38)
+- [x] `audit_logs` tidak mengandung PII (spot check manual)
+- [x] Signed URL TTL ≤ 60 menit; direct URL → 403
+- [x] Password bcrypt cost ≥ 12
+- [x] `BLACKLIST_SECRET` berbeda dari `APP_KEY`
+- [x] Header keamanan hadir: CSP, HSTS, X-Frame-Options, X-Content-Type-Options (TC-39)
+- [x] `composer audit` → 0 high/critical CVE
+- [x] Backup database terjadwal dan pernah diuji restore (lihat `deployment-ops.md` & `restore-guide.md`)
+- [x] Error monitoring aktif (Sentry / Webhook ErrorMonitoringService) [T-36]
+- [x] Concurrent booking test lulus (TC-24..TC-25)
+- [x] CSRF aktif untuk semua POST/PUT/PATCH/DELETE
+- [x] DB user hanya memiliki hak SELECT/INSERT/UPDATE/DELETE
 
 ### N.2 Checklist Legal & Proses
 - [ ] Teks consent penyewa ditinjau ahli hukum 🔍

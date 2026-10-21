@@ -6,6 +6,7 @@ use App\Helpers\WaNotificationHelper;
 use App\Models\Booking;
 use App\Models\Item;
 use App\Models\Renter;
+use App\Models\Settlement;
 use App\Models\Vendor;
 use Carbon\Carbon;
 use Tests\TestCase;
@@ -119,5 +120,80 @@ class WaNotificationHelperTest extends TestCase
         $this->assertNotNull($rejectedUrl);
         $decodedRejected = rawurldecode(parse_url($rejectedUrl, PHP_URL_QUERY));
         $this->assertStringContainsString('belum dapat kami setujui', $decodedRejected);
+    }
+
+    public function test_generate_renter_chat_url_formats_settled_messages_with_refund_and_shortfall(): void
+    {
+        $vendor = new Vendor(['name' => 'Cosplay Rental Jogja']);
+        $item = new Item(['name' => 'Kostum Genshin']);
+        $renter = new Renter([
+            'name' => 'Dewi Lestari',
+            'phone' => '081234567899',
+        ]);
+
+        $booking = new Booking([
+            'reference_code' => 'JS-20261019-SETTLE',
+            'start_date' => Carbon::parse('2026-10-15'),
+            'end_date' => Carbon::parse('2026-10-17'),
+            'total_days' => 3,
+        ]);
+        $booking->setRelation('vendor', $vendor);
+        $booking->setRelation('item', $item);
+        $booking->setRelation('renter', $renter);
+
+        // Scenario 1: Refund
+        $settlementRefund = new Settlement([
+            'deposit_remaining' => 50000,
+        ]);
+        $booking->setRelation('settlement', $settlementRefund);
+
+        $urlRefund = WaNotificationHelper::generateRenterChatUrl($booking, 'settled');
+        $this->assertNotNull($urlRefund);
+        $decodedRefund = rawurldecode(parse_url($urlRefund, PHP_URL_QUERY));
+        $this->assertStringContainsString('telah SELESAI', $decodedRefund);
+        $this->assertStringContainsString('Rp 50.000', $decodedRefund);
+        $this->assertStringContainsString('akan/telah kami kembalikan', $decodedRefund);
+
+        // Scenario 2: Shortfall
+        $settlementShortfall = new Settlement([
+            'deposit_remaining' => -75000,
+        ]);
+        $booking->setRelation('settlement', $settlementShortfall);
+
+        $urlShortfall = WaNotificationHelper::generateRenterChatUrl($booking, 'settled');
+        $this->assertNotNull($urlShortfall);
+        $decodedShortfall = rawurldecode(parse_url($urlShortfall, PHP_URL_QUERY));
+        $this->assertStringContainsString('telah SELESAI', $decodedShortfall);
+        $this->assertStringContainsString('Rp 75.000', $decodedShortfall);
+        $this->assertStringContainsString('kekurangan bayar', $decodedShortfall);
+    }
+
+    public function test_special_characters_and_newlines_are_safely_encoded(): void
+    {
+        $customMessage = "Baris 1: Halo & Selamat Datang!\n"
+            ."Baris 2: Karakter spesial: 100% \"diskon\" & 'promo' #1/2?\n"
+            ."Baris 3: • Poin A\n• Poin B";
+
+        $url = WaNotificationHelper::generateCustomChatUrl('081234567890', $customMessage);
+
+        $this->assertNotNull($url);
+        // Verify no raw unencoded whitespace exists in the URL
+        $this->assertStringNotContainsString(' ', $url);
+        $this->assertStringNotContainsString("\n", $url);
+
+        // Verify URL decodes back exactly to original message
+        $queryString = parse_url($url, PHP_URL_QUERY);
+        $this->assertNotNull($queryString);
+        $this->assertStringStartsWith('text=', $queryString);
+
+        $encodedText = substr($queryString, 5);
+        $this->assertEquals($customMessage, rawurldecode($encodedText));
+    }
+
+    public function test_normalize_phone_number_with_punctuation_and_parentheses(): void
+    {
+        $this->assertEquals('6281234567890', WaNotificationHelper::normalizePhoneNumber('(0812) 3456-7890'));
+        $this->assertEquals('6281234567890', WaNotificationHelper::normalizePhoneNumber('+62 (812) 3456-7890'));
+        $this->assertEquals('6281234567890', WaNotificationHelper::normalizePhoneNumber('0812.3456.7890'));
     }
 }
