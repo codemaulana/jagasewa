@@ -1,104 +1,1490 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JagaSewa — Platform Booking Rental Aman</title>
+    <title>JagaSewa — Platform Booking & Manajemen Rental Barang Aman</title>
+    <meta name="description" content="Temukan dan booking barang rental (kamera, kostum cosplay, kebaya, busana adat) tanpa perlu membuat akun. Aman, cepat, dan terkonfirmasi langsung via WhatsApp.">
     <link rel="icon" type="image/png" href="{{ asset('jagasewa_logo3.png') }}">
-    <script src="https://cdn.tailwindcss.com"></script>
-    @include('public.partials.design-tokens')
-</head>
-<body class="bg-neutral-50 text-neutral-900 antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Header Navigasi -->
-    <header class="border-b border-neutral-200 bg-white/95 backdrop-blur-sm sticky top-0 z-30">
-        <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <a href="{{ url('/') }}" class="flex items-center gap-2 text-neutral-900 font-bold text-base tracking-tight">
-                    <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-9 sm:h-10 w-auto object-contain" style="height: 40px; width: auto; max-width: 180px; object-fit: contain;">
+    <!-- Google Fonts: Cormorant Garamond (Luxury Serif), Plus Jakarta Sans, & Inter Tight -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS CDN (100% Support PHP Shared Hosting / cPanel) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '"Inter Tight"', 'system-ui', 'sans-serif'],
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            gold: '#A27B5C',
+                            goldLight: '#E8D5C4',
+                            goldAccent: '#C79D66',
+                            goldDark: '#8C6546',
+                            cream: '#F6F4EE',
+                            creamDark: '#ECE8DD',
+                            dark: '#141312',
+                            darkCard: '#1E1C1A',
+                            muted: '#616161',
+                            border: '#C8B7A6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- GSAP & ScrollTrigger (Local First with CDN Fallback) -->
+    <script src="{{ asset('js/gsap.min.js') }}"></script>
+    <script src="{{ asset('js/ScrollTrigger.min.js') }}"></script>
+    <script>
+        if (typeof gsap === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>');
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>');
+        }
+    </script>
+
+    <style>
+        /* ========================================================
+           GLOBAL SYSTEM & COMPATIBILITY (Shared Hosting Friendly)
+           ======================================================== */
+        :root {
+            --color-dark: #191919;
+            --color-gold: #A27B5C;
+            --color-border: #C8B7A6;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Inter Tight', system-ui, sans-serif;
+            background-color: #F6F4EE;
+            color: var(--color-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            will-change: background-color;
+        }
+
+        .font-luxury {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+        }
+
+        /* ========================================================
+           RESPONSIVE BUTTONS & HOVER FILL ANIMATION
+           (Fill from Left to Right, 60fps GPU-Accelerated)
+           ======================================================== */
+        .btn-fill-dark,
+        .btn-fill-outline,
+        .btn-fill-light,
+        .btn-fill-outline-light {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 9999px;
+            transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-fill-dark:active,
+        .btn-fill-outline:active,
+        .btn-fill-light:active,
+        .btn-fill-outline-light:active {
+            transform: scale(0.97);
+        }
+
+        /* Pseudo-element fill layer */
+        .btn-fill-dark::before,
+        .btn-fill-outline::before,
+        .btn-fill-light::before,
+        .btn-fill-outline-light::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: -1;
+            border-radius: 9999px;
+        }
+
+        .btn-fill-dark:hover::before,
+        .btn-fill-outline:hover::before,
+        .btn-fill-light:hover::before,
+        .btn-fill-outline-light:hover::before {
+            transform: scaleX(1);
+        }
+
+        .btn-fill-dark > *,
+        .btn-fill-outline > *,
+        .btn-fill-light > *,
+        .btn-fill-outline-light > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Varian 1 (Tombol Gelap) */
+        .btn-fill-dark {
+            background-color: #191919;
+            color: #FFFFFF;
+        }
+        .btn-fill-dark::before {
+            background-color: #A27B5C;
+        }
+        .btn-fill-dark:hover {
+            color: #FFFFFF;
+            box-shadow: 0 12px 28px -6px rgba(162, 123, 92, 0.45);
+        }
+
+        /* Varian 2 (Tombol Outline Gelap) */
+        .btn-fill-outline {
+            background-color: transparent;
+            color: #191919;
+            border: 2px solid #C8B7A6;
+        }
+        .btn-fill-outline::before {
+            background-color: #191919;
+        }
+        .btn-fill-outline:hover {
+            color: #FFFFFF;
+            border-color: #191919;
+            box-shadow: 0 12px 28px -6px rgba(25, 25, 25, 0.22);
+        }
+
+        /* Varian 3 (Tombol Putih di Curtain Reveal) */
+        .btn-fill-light {
+            background-color: #FFFFFF;
+            color: #141312;
+        }
+        .btn-fill-light::before {
+            background-color: #C79D66;
+        }
+        .btn-fill-light:hover {
+            color: #FFFFFF;
+            box-shadow: 0 14px 32px -6px rgba(199, 157, 102, 0.5);
+        }
+
+        /* Varian 4 (Tombol Outline Terang di Curtain Reveal) */
+        .btn-fill-outline-light {
+            background-color: transparent;
+            color: #FFFFFF;
+            border: 2px solid rgba(255, 255, 255, 0.45);
+        }
+        .btn-fill-outline-light::before {
+            background-color: #FFFFFF;
+        }
+        .btn-fill-outline-light:hover {
+            color: #141312;
+            border-color: #FFFFFF;
+        }
+
+        /* ========================================================
+           CARD ELEVATION & EDITORIAL GLASS
+           ======================================================== */
+        .card-editorial {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(200, 183, 166, 0.45);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.3s ease;
+        }
+        .card-editorial:hover {
+            border-color: #A27B5C;
+            box-shadow: 0 20px 40px -12px rgba(162, 123, 92, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .pedestal-stage {
+            background: radial-gradient(circle at 50% 120%, #EFE8DC 0%, #F6F4EE 70%);
+            border: 1px solid rgba(200, 183, 166, 0.35);
+        }
+
+        .shadow-ground {
+            filter: drop-shadow(0 22px 32px rgba(0, 0, 0, 0.34));
+        }
+
+        .shadow-mannequin {
+            filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.18));
+        }
+
+        /* Active Nav Marker */
+        .nav-link.active-nav {
+            color: #A27B5C;
+            font-weight: 700;
+        }
+        .nav-link.active-nav .nav-indicator {
+            width: 100% !important;
+        }
+
+        /* ========================================================
+           ENTRANCE & SCROLL REVEAL BOUNCE ANIMATION CLASSES
+           Default: Elemen terlihat normal agar teks tidak pernah hilang.
+           GSAP akan menganimasikannya secara dinamis saat halaman dimuat.
+           ======================================================== */
+        .reveal-bounce-left {
+            will-change: transform, opacity;
+        }
+
+        .hero-bounce-line-1,
+        .hero-bounce-line-2,
+        .hero-bounce-sub,
+        .hero-bounce-cta {
+            will-change: transform, opacity;
+        }
+
+        /* ========================================================
+           STICKY STACKING CARDS ENHANCEMENTS
+           ======================================================== */
+        .sticky-card {
+            will-change: transform, opacity, filter;
+            transition: box-shadow 0.3s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#A27B5C] selection:text-white">
+
+    <!-- ========================================================
+         NAVBAR / HEADER (Tersinkronisasi Urutan: Katalog -> Panggung Mitra -> Cara Kerja -> Keunggulan)
+         ======================================================== -->
+    <header id="site-header" class="w-full border-b border-[#E8E2D5]/70 bg-[#F6F4EE]/90 backdrop-blur-md sticky top-0 z-50 transition-colors duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo JagaSewa -->
+            <a href="{{ url('/') }}" class="flex items-center gap-2 group transition hover:opacity-90">
+                <img src="{{ asset('jagasewa_logo1.png') }}" 
+                     alt="JagaSewa" 
+                     class="h-10 sm:h-11 w-auto object-contain">
+            </a>
+
+            <!-- Navigasi Menu Tengah (Berurutan Tepat Sesuai Alur Halaman) -->
+            <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-sm font-medium text-[#1A1A1A]">
+                <!-- 1. Katalog (#jelajahi-rental) -->
+                <a href="#jelajahi-rental" id="nav-katalog" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                    <span>Katalog</span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
                 </a>
-            </div>
+
+                <!-- 2. Panggung Mitra Curtain Reveal (#reveal-showcase) -->
+                <a href="#reveal-showcase" id="nav-mitra" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                    <span>Panggung Mitra</span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
+                </a>
+
+                <!-- 3. Cara Kerja (#cara-kerja) -->
+                <a href="#cara-kerja" id="nav-cara-kerja" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                    <span>Cara Kerja</span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
+                </a>
+
+                <!-- 4. Keunggulan (#keunggulan) -->
+                <a href="#keunggulan" id="nav-keunggulan" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                    <span>Keunggulan</span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
+                </a>
+            </nav>
+
+            <!-- Tombol Aksi Kanan (Masuk Vendor) -->
             <div class="flex items-center gap-3">
-                <a href="{{ url('/vendor/login') }}" class="text-xs font-medium text-neutral-700 hover:text-neutral-900 px-3 py-2 rounded-xl transition min-h-[44px] inline-flex items-center">
-                    Masuk Vendor
+                <a href="{{ url('/vendor/login') }}" class="btn-fill-dark btn-magnetic text-xs sm:text-sm font-semibold h-11 px-5 sm:px-6 rounded-full inline-flex items-center gap-2 text-white bg-[#191919] shadow-sm">
+                    <svg class="w-4 h-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                    </svg>
+                    <span>Masuk</span>
                 </a>
-                <a href="{{ url('/vendor/register') }}" class="text-xs font-semibold text-white bg-[#111111] hover:bg-[#262626] active:bg-black h-10 px-4 rounded-full transition inline-flex items-center justify-center shadow-xs">
-                    Daftar Rental
-                </a>
+
+                <!-- Mobile Hamburger Button -->
+                <button type="button" 
+                        onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
+                        class="md:hidden p-2 rounded-xl text-neutral-700 hover:text-neutral-900 hover:bg-[#ECE8DD] transition"
+                        aria-label="Toggle Menu">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
             </div>
+        </div>
+
+        <!-- Mobile Drawer Menu (Sesuai Urutan Section) -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-[#E8E2D5] bg-[#F6F4EE]/95 backdrop-blur-md px-4 pt-3 pb-5 space-y-2">
+            <a href="#jelajahi-rental" 
+               onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               Katalog
+            </a>
+            <a href="#reveal-showcase" 
+               onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               Panggung Mitra
+            </a>
+            <a href="#cara-kerja" 
+               onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               Cara Kerja
+            </a>
+            <a href="#keunggulan" 
+               onclick="document.getElementById('mobile-menu').classList.add('hidden')"
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               Keunggulan
+            </a>
         </div>
     </header>
 
-    <!-- Konten Utama Hero -->
-    <main class="max-w-3xl mx-auto px-4 py-16 sm:py-24 text-center space-y-8 flex-1 flex flex-col justify-center">
-        <div class="space-y-4">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#86F04C] text-[#0A0A0A]">
-                Sistem Manajemen Rental Terpadu
-            </span>
-            <h1 class="text-3xl sm:text-4xl font-bold text-neutral-900 tracking-tight leading-tight">
-                Kelola jadwal sewa dan verifikasi penyewa dengan tertib.
-            </h1>
-            <p class="text-sm sm:text-base text-neutral-600 max-w-xl mx-auto leading-relaxed">
-                Platform booking rental dengan kalender jeda otomatis (buffer laundry & pengiriman), verifikasi identitas terenkripsi, dan konfirmasi langsung via WhatsApp.
-            </p>
-        </div>
 
-        <!-- Tombol Aksi -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="{{ url('/vendor/register') }}" class="w-full sm:w-auto h-11 px-6 rounded-full bg-[#111111] hover:bg-[#262626] active:bg-black text-white font-semibold text-sm shadow-xs transition inline-flex items-center justify-center">
-                Mulai Kelola Toko Rental
-            </a>
-            <a href="{{ url('/vendor/login') }}" class="w-full sm:w-auto h-11 px-6 rounded-full bg-white hover:bg-neutral-50 active:bg-neutral-100 text-neutral-800 border border-neutral-200 font-semibold text-sm transition inline-flex items-center justify-center">
-                Masuk ke Dashboard
-            </a>
-        </div>
+    <main id="main-content">
 
-        <!-- Fitur Inti Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-8 text-left">
-            <div class="bg-white p-4 rounded-xl border border-neutral-200 shadow-xs space-y-1.5">
-                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700 mb-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                    </svg>
-                </div>
-                <h3 class="text-sm font-semibold text-neutral-900">Smart Buffer Calendar</h3>
-                <p class="text-xs text-neutral-500 leading-relaxed">
-                    Jeda waktu pengiriman dan laundry otomatis terkunci untuk mencegah jadwal sewa bertabrakan.
-                </p>
+        <!-- ========================================================
+             1. HERO SECTION: EDITORIAL TYPOGRAPHY & GSAP BOUNCE ENTRANCE
+             ======================================================== -->
+        <section id="hero-section" class="relative overflow-hidden pt-8 pb-14 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-24">
+            
+            <!-- Golden Ribbon Background Curve SVG -->
+            <div id="hero-ribbon-wrapper" class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+                <svg id="hero-ribbon-svg" class="w-full h-full min-w-[1100px] opacity-85" viewBox="0 0 1600 850" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="goldRibbon" x1="0%" y1="20%" x2="100%" y2="80%">
+                            <stop offset="0%" stop-color="#EED7A1" stop-opacity="0.85"/>
+                            <stop offset="30%" stop-color="#C79D66" stop-opacity="1"/>
+                            <stop offset="60%" stop-color="#EACD96" stop-opacity="0.9"/>
+                            <stop offset="85%" stop-color="#A57D48" stop-opacity="0.85"/>
+                            <stop offset="100%" stop-color="#D8B57E" stop-opacity="0.8"/>
+                        </linearGradient>
+                        <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="2.5" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    <path d="M 100,520 C 350,620 520,320 820,180 C 1050,70 1350,110 1550,340" 
+                          stroke="url(#goldRibbon)" stroke-width="2.5" fill="none" filter="url(#softGlow)"/>
+                    <path d="M 140,540 C 380,630 540,350 830,210 C 1030,110 1310,130 1510,330" 
+                          stroke="url(#goldRibbon)" stroke-width="1" stroke-dasharray="8 6" fill="none" opacity="0.45"/>
+                    <path d="M 320,710 C 580,800 850,780 1150,680 C 1380,600 1540,480 1580,340" 
+                          stroke="url(#goldRibbon)" stroke-width="2" fill="none"/>
+                    <path d="M 1200,680 C 1420,620 1560,500 1580,320 C 1600,160 1480,90 1320,130" 
+                          stroke="url(#goldRibbon)" stroke-width="1.8" fill="none" opacity="0.45"/>
+                </svg>
             </div>
 
-            <div class="bg-white p-4 rounded-xl border border-neutral-200 shadow-xs space-y-1.5">
-                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700 mb-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-                    </svg>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center min-h-[540px]">
+                    
+                    <!-- SISI KIRI: Headline dengan Animasi Muncul dari Kiri dengan Bounce -->
+                    <div class="lg:col-span-5 space-y-6 text-left hero-text-block">
+                        <div class="space-y-2 overflow-hidden">
+                            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold text-[#191919] tracking-tight leading-[1.12]">
+                                <span class="hero-bounce-line-1 block">Barang yang kamu butuhkan.</span>
+                                <span class="hero-bounce-line-2 font-luxury italic font-normal text-[#A27B5C] block text-4xl sm:text-5xl md:text-6xl lg:text-[62px] mt-1">Waktu yang kamu tentukan.</span>
+                            </h1>
+                        </div>
+                        
+                        <p class="hero-bounce-sub text-base sm:text-lg text-[#5A5854] max-w-lg leading-relaxed font-normal">
+                            Temukan dan booking barang rental dari berbagai bisnis, tanpa perlu membuat akun.
+                        </p>
+
+                        <!-- Tombol Aksi Hero Responsif (Pill Buttons) -->
+                        <div class="hero-bounce-cta flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2 w-full max-w-md sm:max-w-none">
+                            <!-- Primary CTA -->
+                            <a href="#jelajahi-rental" class="btn-fill-dark btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 rounded-full text-sm sm:text-base font-bold inline-flex items-center justify-center gap-2.5 text-white bg-[#191919] shadow-md group">
+                                <span>Jelajahi Rental</span>
+                                <span class="text-lg leading-none transition-transform duration-300 group-hover:translate-x-1.5">&rarr;</span>
+                            </a>
+
+                            <!-- Secondary CTA -->
+                            <a href="{{ url('/vendor/register') }}" class="btn-fill-outline btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-7 rounded-full text-xs sm:text-sm font-semibold inline-flex items-center justify-center text-center text-[#191919] border-2 border-[#C8B7A6] bg-transparent">
+                                <span>Gabung sebagai<br class="hidden sm:inline"> Pemilik Rental</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SISI KANAN: Komposisi 4 Aset Visual dengan Interaktivitas GSAP -->
+                    <div class="lg:col-span-7 relative w-full flex items-center justify-center lg:justify-end">
+                        <div id="hero-interactive-canvas" class="relative w-full max-w-[680px] h-[380px] sm:h-[460px] md:h-[520px] lg:h-[560px]">
+                            
+                            <!-- Bayangan Halus di Lantai -->
+                            <div class="hero-shadow-floor absolute bottom-4 left-1/2 -translate-x-1/2 w-4/5 h-14 bg-black/15 blur-2xl rounded-full pointer-events-none"></div>
+
+                            <!-- 1. Kostum Cosplay (Interaktif: GSAP Zoom-Out Entrance & Hover Zoom-Out) -->
+                            <div class="hero-cosplay js-zoom-out absolute bottom-6 sm:bottom-8 left-[12%] sm:left-[16%] h-[82%] sm:h-[84%] flex items-end justify-center z-10 cursor-pointer"
+                                 title="Arahkan kursor untuk efek zoom out">
+                                <img src="{{ asset('cosplay.png') }}" 
+                                     alt="Rental Kostum Cosplay Anime Lengkap" 
+                                     class="h-full w-auto object-contain object-bottom shadow-mannequin pointer-events-auto"
+                                     loading="eager" 
+                                     fetchpriority="high">
+                            </div>
+
+                            <!-- 2. Kebaya Modern (Manekin Kebaya Brokat Peach/Pink dengan Jarik) -->
+                            <div class="hero-kebaya absolute bottom-6 sm:bottom-8 left-[44%] sm:left-[46%] h-[90%] sm:h-[93%] flex items-end justify-center z-10">
+                                <img src="{{ asset('kebaya.png') }}" 
+                                     alt="Rental Kebaya Modern & Wisuda" 
+                                     class="h-full w-auto object-contain object-bottom shadow-mannequin pointer-events-auto"
+                                     loading="eager" 
+                                     fetchpriority="high">
+                            </div>
+
+                            <!-- 3. Busana Adat Tradisional (Interaktif: GSAP Zoom-Out Entrance & Hover Zoom-Out) -->
+                            <div class="hero-adat js-zoom-out absolute bottom-6 sm:bottom-8 right-[-2%] sm:right-[1%] h-[86%] sm:h-[89%] flex items-end justify-center z-10 cursor-pointer"
+                                 title="Arahkan kursor untuk efek zoom out">
+                                <img src="{{ asset('adat.png') }}" 
+                                     alt="Rental Busana Pengantin Adat Tradisional" 
+                                     class="h-full w-auto object-contain object-bottom shadow-mannequin pointer-events-auto"
+                                     loading="eager" 
+                                     fetchpriority="high">
+                            </div>
+
+                            <!-- 4. Kamera Mirrorless (Sony Alpha di Foreground Kiri dengan Parallax Kursor) -->
+                            <div class="hero-camera absolute bottom-2 sm:bottom-3 left-[-2%] sm:left-[2%] h-[48%] sm:h-[54%] flex items-end justify-center z-20">
+                                <img src="{{ asset('kamera.png') }}" 
+                                     alt="Rental Kamera Mirrorless & Lensa Sony" 
+                                     class="h-full w-auto object-contain object-bottom shadow-ground pointer-events-auto"
+                                     loading="eager" 
+                                     fetchpriority="high">
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
-                <h3 class="text-sm font-semibold text-neutral-900">Verifikasi Dokumen Aman</h3>
-                <p class="text-xs text-neutral-500 leading-relaxed">
-                    Watermark otomatis pada KTP dan selfie, penyimpanan privat terenkripsi, serta auto-delete.
-                </p>
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             2. KATALOG KATEGORI RENTAL POPULER
+             (Scrubbed Background: Transisi ke Warm Linen #F0EAE0)
+             ======================================================== -->
+        <section id="jelajahi-rental" class="py-16 sm:py-24 border-t border-[#E8E2D5]/70 relative overflow-hidden bg-transparent">
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                
+                <div class="kategori-header flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-4">
+                    <div class="space-y-2">
+                        <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#E8D5C4]/70 text-[#8C6546] border border-[#C8B7A6]/40">
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#A27B5C]"></span>
+                            <span>Katalog Pilihan JagaSewa</span>
+                        </span>
+                        <h2 class="reveal-bounce-left text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#191919] tracking-tight">
+                            Jelajahi Berdasarkan Kategori
+                        </h2>
+                        <p class="reveal-bounce-left text-sm sm:text-base text-neutral-600 max-w-xl">
+                            Semua inventaris terdaftar memiliki proteksi jadwal real-time untuk memastikan barang siap saat Anda butuhkan.
+                        </p>
+                    </div>
+
+                    <a href="{{ url('/vendor/register') }}" class="reveal-bounce-left text-xs sm:text-sm font-semibold text-[#8C6546] hover:text-[#191919] inline-flex items-center gap-1.5 transition">
+                        <span>Punya inventaris rental? Pasang di sini</span>
+                        <span>&rarr;</span>
+                    </a>
+                </div>
+
+                <!-- 4 KARTU KATEGORI MEWAH DENGAN GAMBAR ASLI -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7">
+                    
+                    <!-- Kartu 1: Kostum Cosplay Anime (Interaktif Zoom-Out) -->
+                    <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
+                        <div>
+                            <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
+                                    ⭐ Paling Laris
+                                </span>
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                    Rp 75rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
+                                </span>
+                                <img src="{{ asset('cosplay.png') }}" 
+                                     alt="Rental Kostum Cosplay" 
+                                     class="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-90 js-zoom-out">
+                            </div>
+                            
+                            <div class="space-y-1.5">
+                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                    Kostum Cosplay Anime
+                                </h3>
+                                <p class="text-xs text-neutral-500 leading-relaxed">
+                                    Fullset kostum, wig tertata rapi, boots, dan aksesori senjata busa untuk event & photoshoot.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-1.5 pt-3">
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Wig Styled</span>
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Laundry Steril</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
+                            </span>
+                            <a href="{{ url('/b/tokyo-cosplay/frieren-fullset-m') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                                Pilih Jadwal &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Kartu 2: Kamera & Alat Dokumentasi -->
+                    <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
+                        <div>
+                            <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
+                                    📷 Pro Gear
+                                </span>
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                    Rp 250rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
+                                </span>
+                                <img src="{{ asset('kamera.png') }}" 
+                                     alt="Rental Kamera Mirrorless" 
+                                     class="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-105">
+                            </div>
+                            
+                            <div class="space-y-1.5">
+                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                    Kamera & Lensa Mirrorless
+                                </h3>
+                                <p class="text-xs text-neutral-500 leading-relaxed">
+                                    Kamera Sony Alpha full frame, lensa fix bokeh, flash godox, stabilizer gimbal untuk wisuda & konten.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-1.5 pt-3">
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Sensor Bersih</span>
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Memory Pro</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
+                            </span>
+                            <a href="{{ url('/b/tokyo-cosplay/sony-a7-iii-kit') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                                Pilih Jadwal &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Kartu 3: Kebaya & Gaun Wisuda -->
+                    <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
+                        <div>
+                            <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
+                                    🌸 Brokat Modern Halus
+                                </span>
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                    Rp 120rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
+                                </span>
+                                <img src="{{ asset('kebaya.png') }}" 
+                                     alt="Rental Kebaya Wisuda" 
+                                     class="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-105">
+                            </div>
+                            
+                            <div class="space-y-1.5">
+                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                    Kebaya Modern & Wisuda
+                                </h3>
+                                <p class="text-xs text-neutral-500 leading-relaxed">
+                                    Kebaya kutubaru beludru, payet mewah, kain jarik wiru batik, kemben satin untuk wisuda & lamaran.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-1.5 pt-3">
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Fitting Rapih</span>
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Bros Susun Emas</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
+                            </span>
+                            <a href="{{ url('/b/tokyo-cosplay/kebaya-kutubaru-maroon') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                                Pilih Jadwal &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Kartu 4: Busana Adat Tradisional (Animasi Zoom-Out pada Gambar) -->
+                    <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
+                        <div>
+                            <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
+                                    👑 Warisan Nusantara
+                                </span>
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                    Rp 180rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
+                                </span>
+                                <img src="{{ asset('adat.png') }}" 
+                                     alt="Rental Busana Adat" 
+                                     class="h-full w-auto object-contain transition-transform duration-500 group-hover:scale-90 js-zoom-out">
+                            </div>
+                            
+                            <div class="space-y-1.5">
+                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                    Busana Adat Tradisional
+                                </h3>
+                                <p class="text-xs text-neutral-500 leading-relaxed">
+                                    Baju bodo, beskap jawa lengkap blangkon, songket minang, mahkota adat untuk tari & peringatan nasional.
+                                </p>
+                            </div>
+
+                            <div class="flex flex-wrap gap-1.5 pt-3">
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Aksesori Komplit</span>
+                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Kain Asli Tenun</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
+                            </span>
+                            <a href="{{ url('/b/tokyo-cosplay/baju-adat-jawa-pria') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                                Pilih Jadwal &rarr;
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             3. CURTAIN REVEAL SHOWCASE
+             (Posisi Tepat Setelah Kategori — Panggung Pinned & Tirai Membuka)
+             (Scrubbed Background: Transisi ke Deep Obsidian #141312)
+             ======================================================== -->
+        <section id="reveal-showcase" class="relative overflow-hidden w-full min-h-screen flex items-center justify-center bg-[#141312]">
+
+            <!-- THE INNER STAGE: Teater Gelap Mewah Obsidian #141312 yang Terbuka -->
+            <div id="curtain-stage" class="relative w-full min-h-screen py-20 sm:py-28 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center bg-[#141312] text-white z-10 overflow-hidden">
+                
+                <!-- Ambient Glowing Orbs -->
+                <div class="curtain-glow-1 absolute -top-32 -right-32 w-96 h-96 bg-[#A27B5C]/35 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="curtain-glow-2 absolute -bottom-32 -left-32 w-96 h-96 bg-[#C79D66]/25 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="curtain-content relative z-20 max-w-4xl mx-auto space-y-7 sm:space-y-8 w-full">
+                    
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#A27B5C]/25 border border-[#A27B5C]/40 text-[#E8D5C4] tracking-wider uppercase">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#C79D66] animate-pulse"></span>
+                        <span>Panggung Eksklusif Mitra Rental</span>
+                    </div>
+
+                    <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12]">
+                        Waktunya Toko Rental Anda <br class="hidden sm:inline">
+                        <span class="font-luxury italic font-normal text-[#C79D66] block mt-1">Bebas dari Drama Bentrok Jadwal</span>
+                    </h2>
+
+                    <p class="text-sm sm:text-base md:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed font-normal">
+                        Tinggalkan rekap spreadsheet manual dan perdebatan jadwal di DM. Kelola pesanan sewa, verifikasi KTP penyewa, dan terima pembayaran langsung di WhatsApp toko Anda.
+                    </p>
+
+                    <!-- 3 Kartu Metrik Keunggulan -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 max-w-3xl mx-auto pt-2 text-left w-full">
+                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-[#A27B5C]/60 transition">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">0%</div>
+                            <div class="text-sm font-bold text-white">Double Booking</div>
+                            <p class="text-xs text-neutral-400">Pessimistic locking database mengunci slot secara atomik.</p>
+                        </div>
+
+                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-[#A27B5C]/60 transition">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">100%</div>
+                            <div class="text-sm font-bold text-white">Kepatuhan UU PDP</div>
+                            <p class="text-xs text-neutral-400">Watermark dinamis otomatis & pemusnahan berkas 7 hari.</p>
+                        </div>
+
+                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-[#A27B5C]/60 transition">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">24 Jam</div>
+                            <div class="text-sm font-bold text-white">Auto-Release Slot</div>
+                            <p class="text-xs text-neutral-400">Booking tak berbayar otomatis dibatalkan, kalender bebas lagi.</p>
+                        </div>
+                    </div>
+
+                    <!-- TOMBOL AKSI RESPONSIF 100% (Sesuai Presisi Gambar Acuan Pengguna) -->
+                    <div class="pt-4 sm:pt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 sm:gap-4 max-w-md sm:max-w-none mx-auto w-full">
+                        <!-- Button Putih Solid: Buka Toko Rental Sekarang -->
+                        <a href="{{ url('/vendor/register') }}" 
+                           class="btn-fill-light btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 sm:px-10 rounded-full text-sm sm:text-base font-bold inline-flex items-center justify-center shadow-2xl">
+                            <span>Buka Toko Rental Sekarang &rarr;</span>
+                        </a>
+
+                        <!-- Button Outline: Masuk Dashboard Vendor -->
+                        <a href="{{ url('/vendor/login') }}" 
+                           class="btn-fill-outline-light btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 sm:px-10 rounded-full text-sm sm:text-base font-semibold inline-flex items-center justify-center border-2 border-white/40 hover:border-white">
+                            <span>Masuk Dashboard Vendor</span>
+                        </a>
+                    </div>
+
+                </div>
             </div>
 
-            <div class="bg-white p-4 rounded-xl border border-neutral-200 shadow-xs space-y-1.5">
-                <div class="w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-700 mb-2">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
+            <!-- DUA TIRAI TEATER MEWAH (Membuka ke Kiri & Kanan saat di-scroll) -->
+            <div id="curtain-left" class="absolute inset-y-0 left-0 w-1/2 bg-[#F0EAE0] border-r-2 border-[#C8B7A6]/60 z-30 flex items-center justify-end pr-6 sm:pr-12 pointer-events-none shadow-2xl">
+                <div class="text-right space-y-2 opacity-85">
+                    <span class="text-xs uppercase tracking-widest text-[#8C6546] font-semibold block">Platform Terpadu</span>
+                    <div class="h-0.5 w-16 bg-[#A27B5C] ml-auto"></div>
                 </div>
-                <h3 class="text-sm font-semibold text-neutral-900">Denda & Deposit Jelas</h3>
-                <p class="text-xs text-neutral-500 leading-relaxed">
-                    Perhitungan otomatis denda keterlambatan dan pemotongan deposit saat barang dikembalikan.
-                </p>
             </div>
-        </div>
+
+            <div id="curtain-right" class="absolute inset-y-0 right-0 w-1/2 bg-[#F0EAE0] border-l-2 border-[#C8B7A6]/60 z-30 flex items-center justify-start pl-6 sm:pl-12 pointer-events-none shadow-2xl">
+                <div class="text-left space-y-2 opacity-85">
+                    <span class="text-xs uppercase tracking-widest text-[#8C6546] font-semibold block">Solusi Rental</span>
+                    <div class="h-0.5 w-16 bg-[#A27B5C]"></div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- ========================================================
+             4. CARA KERJA (ARCHITECTURAL STEP DESIGN)
+             (Scrubbed Background: Transisi ke Artisan Sand #E7DFCE)
+             ======================================================== -->
+        <section id="cara-kerja" class="py-16 sm:py-24 border-t border-[#E8E2D5]/70 relative overflow-hidden bg-transparent">
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                
+                <div class="cara-kerja-header max-w-2xl mx-auto space-y-2">
+                    <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#E8D5C4]/70 text-[#8C6546] border border-[#C8B7A6]/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#A27B5C]"></span>
+                        <span>Alur Singkat Tanpa Repot</span>
+                    </span>
+                    <h2 class="reveal-bounce-left text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#191919] tracking-tight">
+                        Cara Mudah Sewa Barang di JagaSewa
+                    </h2>
+                    <p class="reveal-bounce-left text-sm sm:text-base text-neutral-600 mt-2">
+                        Langsung booking dari tautan bio media sosial toko tanpa registrasi atau membuat akun baru.
+                    </p>
+                </div>
+
+                <!-- 3 Kartu Langkah Terstruktur dengan Animasi Stagger Bounce -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 sm:mt-16 text-left relative">
+                    
+                    <!-- Langkah 1 -->
+                    <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-[#191919] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                                01
+                            </div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-[#A27B5C]">Langkah Pertama</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-[#191919]">Pilih Barang & Cek Kalender</h3>
+                        <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                            Pilih tanggal pada <strong>Smart Buffer Calendar</strong>. Sistem otomatis mengunci jeda pengiriman barang dan waktu laundry/cuci, memastikan tanggal sewa Anda tidak bentrok.
+                        </p>
+                        <div class="pt-2 text-[11px] font-semibold text-emerald-700 bg-emerald-50/70 border border-emerald-200/60 rounded-lg p-2.5 flex items-center gap-2">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>Anti double-booking dengan row locking DB.</span>
+                        </div>
+                    </div>
+
+                    <!-- Langkah 2 -->
+                    <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-[#191919] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                                02
+                            </div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-[#A27B5C]">Langkah Kedua</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-[#191919]">Isi Data & Upload KTP Aman</h3>
+                        <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                            Cukup masukkan nama dan nomor WhatsApp. Unggah foto KTP yang langsung dilindungi dengan <strong>watermark otomatis</strong> dan disimpan di storage privat terenkripsi.
+                        </p>
+                        <div class="pt-2 text-[11px] font-semibold text-blue-700 bg-blue-50/70 border border-blue-200/60 rounded-lg p-2.5 flex items-center gap-2">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                            </svg>
+                            <span>Sesuai UU Perlindungan Data Pribadi (UU PDP).</span>
+                        </div>
+                    </div>
+
+                    <!-- Langkah 3 -->
+                    <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="w-12 h-12 rounded-2xl bg-[#191919] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                                03
+                            </div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-[#A27B5C]">Langkah Terakhir</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-[#191919]">Konfirmasi via WhatsApp</h3>
+                        <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
+                            Satu klik membuka percakapan ke admin toko di WhatsApp dengan nomor referensi dan total sewa yang terisi otomatis. Konfirmasi DP/lunas langsung ke pemilik rental.
+                        </p>
+                        <div class="pt-2 text-[11px] font-semibold text-emerald-800 bg-emerald-100/60 border border-emerald-300/60 rounded-lg p-2.5 flex items-center gap-2">
+                            <svg class="w-4 h-4 flex-shrink-0 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.696c.969.586 1.838.894 2.806.894 3.181 0 5.767-2.587 5.768-5.766.001-3.18-2.585-5.777-5.768-5.777zm0-1.172c3.824 0 6.94 3.116 6.94 6.94 0 3.824-3.116 6.94-6.94 6.94-1.129 0-2.227-.275-3.21-.803l-3.821 1.002 1.023-3.731c-.604-1.042-.932-2.213-.932-3.408 0-3.824 3.116-6.94 6.94-6.94z" />
+                            </svg>
+                            <span>Tanpa biaya perantara (direct vendor transaction).</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ========================================================
+             5. KEUNGGULAN (STICKY STACKING CARDS ARCHITECTURE)
+             (Scrubbed Background: Transisi ke Soft Linen #EDE7DC)
+             ======================================================== -->
+        <section id="keunggulan" class="py-20 sm:py-28 border-t border-[#E8E2D5]/70 relative bg-transparent">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                <!-- Header Keunggulan dengan Bounce Reveal dari Kiri -->
+                <div class="keunggulan-header text-center max-w-2xl mx-auto mb-14 sm:mb-20 space-y-3">
+                    <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#E8D5C4]/70 text-[#8C6546] border border-[#C8B7A6]/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#A27B5C]"></span>
+                        <span>Infrastruktur Terpercaya</span>
+                    </span>
+                    <h2 class="reveal-bounce-left text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#191919] tracking-tight">
+                        Dirancang Khusus untuk Bisnis Rental Modern
+                    </h2>
+                    <p class="reveal-bounce-left text-sm sm:text-base text-neutral-600 max-w-lg mx-auto">
+                        Scroll ke bawah untuk melihat 4 pilar arsitektur proteksi dan automasi yang menjaga kelancaran usaha rental Anda.
+                    </p>
+                </div>
+
+                <!-- STICKY STACKING CARDS WRAPPER -->
+                <div class="sticky-stack-wrapper relative space-y-6 sm:space-y-8 pb-16">
+                    
+                    <!-- STACK CARD 1: Smart Buffer Calendar -->
+                    <div class="sticky-card sticky top-24 sm:top-28 z-10 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-[#C8B7A6]/50 shadow-xl transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+                            <div class="md:col-span-8 space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#E8D5C4] text-[#8C6546]">Pilar 01</span>
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Kalender Cerdas</span>
+                                </div>
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#191919]">
+                                    Smart Buffer Calendar Otomatis
+                                </h3>
+                                <p class="text-sm sm:text-base text-neutral-600 leading-relaxed">
+                                    Secara otomatis mengunci jeda pengiriman (<em>buffer before</em>) dan waktu cuci/laundry/inspeksi (<em>buffer after</em>) saat pesanan masuk. Tidak akan ada lagi kostum atau kamera yang belum dicuci atau belum kembali saat penyewa berikutnya datang.
+                                </p>
+                                <div class="flex flex-wrap gap-2 pt-2">
+                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Buffer Before & After</span>
+                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Sinkronisasi Real-Time</span>
+                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Kalender Visual Interaktif</span>
+                                </div>
+                            </div>
+                            <div class="md:col-span-4 flex items-center justify-center">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-[#E8D5C4] to-[#F6F4EE] border border-[#C8B7A6]/60 flex items-center justify-center text-[#8C6546] shadow-inner">
+                                    <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.253 3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STACK CARD 2: Kepatuhan UU PDP & Watermark -->
+                    <div class="sticky-card sticky top-28 sm:top-36 z-20 bg-[#FAF7F2] backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-[#C8B7A6]/60 shadow-xl transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+                            <div class="md:col-span-8 space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#E8D5C4] text-[#8C6546]">Pilar 02</span>
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Keamanan Data Pribadi</span>
+                                </div>
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#191919]">
+                                    Kepatuhan Penuh UU PDP No. 27/2022
+                                </h3>
+                                <p class="text-sm sm:text-base text-neutral-600 leading-relaxed">
+                                    Foto KTP & identitas penyewa otomatis dibubuhi watermark dinamis ("VERIFIKASI JAGASEWA - [VENDOR] - [TANGGAL]"), metadata EXIF dihapus tuntas, file disimpan di storage privat S3 Backblaze B2, dan dimusnahkan secara otomatis setelah sewa selesai.
+                                </p>
+                                <div class="flex flex-wrap gap-2 pt-2">
+                                    <span class="px-3 py-1 rounded-lg bg-[#EFE9DE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Watermark Dinamis Otomatis</span>
+                                    <span class="px-3 py-1 rounded-lg bg-[#EFE9DE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Auto-Delete Berkas 7 Hari</span>
+                                    <span class="px-3 py-1 rounded-lg bg-[#EFE9DE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Private S3 Storage (Signed URL)</span>
+                                </div>
+                            </div>
+                            <div class="md:col-span-4 flex items-center justify-center">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-[#E8D5C4] to-[#F6F4EE] border border-[#C8B7A6]/60 flex items-center justify-center text-[#8C6546] shadow-inner">
+                                    <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STACK CARD 3: Pessimistic Row Locking -->
+                    <div class="sticky-card sticky top-32 sm:top-44 z-30 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-[#C8B7A6]/60 shadow-xl transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+                            <div class="md:col-span-8 space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#E8D5C4] text-[#8C6546]">Pilar 03</span>
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Integritas Transaksi</span>
+                                </div>
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#191919]">
+                                    Pessimistic Locking Database (Zero Double-Booking)
+                                </h3>
+                                <p class="text-sm sm:text-base text-neutral-600 leading-relaxed">
+                                    Setiap reservasi dieksekusi dalam transaksi ACID database dengan perintah <code class="px-1.5 py-0.5 rounded bg-neutral-100 text-xs text-neutral-800 font-mono">lockForUpdate()</code>. Dua pelanggan yang mengklik tombol sewa di milidetik yang sama tidak akan pernah bisa mendapatkan slot yang sama.
+                                </p>
+                                <div class="flex flex-wrap gap-2 pt-2">
+                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ SELECT ... FOR UPDATE</span>
+                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Database ACID Transaction</span>
+                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Race-Condition Immunity</span>
+                                </div>
+                            </div>
+                            <div class="md:col-span-4 flex items-center justify-center">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-[#E8D5C4] to-[#F6F4EE] border border-[#C8B7A6]/60 flex items-center justify-center text-[#8C6546] shadow-inner">
+                                    <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STACK CARD 4: Kalkulator Denda Pasti & Auto-Release -->
+                    <div class="sticky-card sticky top-36 sm:top-52 z-40 bg-[#1E1C1A] text-white rounded-3xl p-6 sm:p-10 border border-[#C79D66]/40 shadow-2xl transition-all duration-300">
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+                            <div class="md:col-span-8 space-y-4">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#A27B5C] text-white">Pilar 04</span>
+                                    <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Proteksi Finansial</span>
+                                </div>
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">
+                                    Kalkulator Denda Pasti & Auto-Release 24 Jam
+                                </h3>
+                                <p class="text-sm sm:text-base text-neutral-300 leading-relaxed">
+                                    Aritmatika bilangan bulat murni (integer rupiah tanpa floating point) menghitung denda keterlambatan dan deposit secara transparan. Booking tanpa konfirmasi pembayaran otomatis dibatalkan dalam 24 jam sehingga kalender barang kembali terbuka.
+                                </p>
+                                <div class="flex flex-wrap gap-2 pt-2">
+                                    <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">✓ Zero Float Precision Error</span>
+                                    <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">✓ Auto-Cancel Pending Unpaid</span>
+                                    <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">✓ WhatsApp Format Otomatis</span>
+                                </div>
+                            </div>
+                            <div class="md:col-span-4 flex items-center justify-center">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white/5 border border-[#C79D66]/50 flex items-center justify-center text-[#C79D66] shadow-inner">
+                                    <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6H2.25m0 0H3m-1.5 0h1.5m0 0a60.07 60.07 0 0115.797-2.101c.727-.198 1.453.342 1.453 1.096V6m-1.5 0H18m1.5 0H21m-1.5 0v.75" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-neutral-200 bg-white py-6 text-center">
-        <p class="text-xs text-neutral-400">
-            JagaSewa &copy; {{ date('Y') }}. Hak cipta dilindungi undang-undang.
-        </p>
+
+    <!-- ========================================================
+         6. FOOTER
+         ======================================================== -->
+    <footer id="site-footer" class="border-t border-[#E8E2D5]/70 py-10 transition-colors duration-500 bg-[#141312] text-neutral-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs">
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-8 w-auto object-contain brightness-110">
+                <span class="border-l border-neutral-700 pl-3 font-normal text-neutral-400">Platform booking rental mobile-first</span>
+            </div>
+            <div class="flex items-center gap-6 text-neutral-300">
+                <a href="#jelajahi-rental" class="hover:text-[#C79D66] transition">Katalog</a>
+                <a href="#reveal-showcase" class="hover:text-[#C79D66] transition">Panggung Mitra</a>
+                <a href="#cara-kerja" class="hover:text-[#C79D66] transition">Cara Kerja</a>
+                <a href="#keunggulan" class="hover:text-[#C79D66] transition">Keunggulan</a>
+                <a href="{{ url('/vendor/login') }}" class="hover:text-[#C79D66] transition">Portal Vendor</a>
+            </div>
+            <div>
+                &copy; {{ date('Y') }} JagaSewa. Hak cipta dilindungi undang-undang.
+            </div>
+        </div>
     </footer>
+
+
+    <!-- ========================================================
+         GSAP 3D PARALLAX, CURTAIN REVEAL, STICKY STACKING, & SCRUB
+         ======================================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof gsap === 'undefined') {
+                console.warn('GSAP tidak tersedia atau diblokir; mode tampilan statis aktif.');
+                return;
+            }
+
+            if (typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+            }
+
+            /* ====================================================
+               1. PERPINDAHAN BACKGROUND SECARA HALUS (CONTINUOUS SCRUB)
+               (Hero -> Katalog -> Curtain Showcase -> Cara Kerja -> Keunggulan)
+               ==================================================== */
+            // Hero -> Katalog (#F6F4EE -> #F0EAE0)
+            gsap.to('body', {
+                backgroundColor: '#F0EAE0',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#jelajahi-rental',
+                    start: 'top 85%',
+                    end: 'top 20%',
+                    scrub: 0.6
+                }
+            });
+
+            // Katalog -> Curtain Showcase (#F0EAE0 -> #141312)
+            gsap.to('body', {
+                backgroundColor: '#141312',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#reveal-showcase',
+                    start: 'top 80%',
+                    end: 'top 15%',
+                    scrub: 0.6
+                }
+            });
+
+            // Curtain Showcase -> Cara Kerja (#141312 -> #E7DFCE)
+            gsap.to('body', {
+                backgroundColor: '#E7DFCE',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#cara-kerja',
+                    start: 'top 85%',
+                    end: 'top 20%',
+                    scrub: 0.6
+                }
+            });
+
+            // Cara Kerja -> Keunggulan (#E7DFCE -> #EDE7DC)
+            gsap.to('body', {
+                backgroundColor: '#EDE7DC',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: '#keunggulan',
+                    start: 'top 85%',
+                    end: 'top 20%',
+                    scrub: 0.6
+                }
+            });
+
+
+            /* ====================================================
+               2. SCROLLSPY NAVBAR AKTIF SESUAI URUTAN SECTION
+               ==================================================== */
+            const navItems = [
+                { id: '#jelajahi-rental', nav: 'nav-katalog' },
+                { id: '#reveal-showcase', nav: 'nav-mitra' },
+                { id: '#cara-kerja', nav: 'nav-cara-kerja' },
+                { id: '#keunggulan', nav: 'nav-keunggulan' }
+            ];
+
+            navItems.forEach(function(item) {
+                ScrollTrigger.create({
+                    trigger: item.id,
+                    start: 'top 50%',
+                    end: 'bottom 50%',
+                    onEnter: function() {
+                        setNavbarActive(item.nav);
+                    },
+                    onEnterBack: function() {
+                        setNavbarActive(item.nav);
+                    }
+                });
+            });
+
+            function setNavbarActive(navId) {
+                document.querySelectorAll('.nav-link').forEach(function(link) {
+                    link.classList.remove('active-nav');
+                });
+                const current = document.getElementById(navId);
+                if (current) {
+                    current.classList.add('active-nav');
+                }
+            }
+
+
+            /* ====================================================
+               3. CURTAIN REVEAL SHOWCASE (Tirai Teater Membuka)
+               (Posisi: Tepat setelah Kategori Rental)
+               ==================================================== */
+            const curtainTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '#reveal-showcase',
+                    start: 'top top',
+                    end: '+=100%',
+                    pin: true,
+                    scrub: 1.2,
+                    anticipatePin: 1
+                }
+            });
+
+            curtainTl
+                .to('#curtain-left', {
+                    xPercent: -105,
+                    ease: 'power2.inOut'
+                }, 0)
+                .to('#curtain-right', {
+                    xPercent: 105,
+                    ease: 'power2.inOut'
+                }, 0)
+                .from('.curtain-content', {
+                    scale: 0.88,
+                    opacity: 0.15,
+                    y: 45,
+                    ease: 'power2.out'
+                }, 0.1)
+                .from('.curtain-metric-card', {
+                    y: 35,
+                    opacity: 0,
+                    stagger: 0.1,
+                    ease: 'power2.out'
+                }, 0.25);
+
+
+            /* ====================================================
+               4. ANIMASI ENTRANCE SAAT WEBSITE PERTAMA KALI DIBUKA
+               (Text Bounce dari Kiri + Zoom Out Cosplay & Adat)
+               ==================================================== */
+            const masterTl = gsap.timeline({
+                defaults: {
+                    ease: 'power3.out'
+                }
+            });
+
+            masterTl
+                .from('#site-header', {
+                    y: -30,
+                    opacity: 0,
+                    duration: 0.8
+                })
+                
+                // TEXT MUNCUL DARI KIRI DENGAN BOUNCE
+                .from('.hero-bounce-line-1', {
+                    x: -80,
+                    opacity: 0,
+                    duration: 1.0,
+                    ease: 'back.out(1.7)'
+                }, 0.2)
+                .from('.hero-bounce-line-2', {
+                    x: -80,
+                    opacity: 0,
+                    duration: 1.0,
+                    ease: 'back.out(1.7)'
+                }, 0.35)
+                .from('.hero-bounce-sub', {
+                    x: -80,
+                    opacity: 0,
+                    duration: 0.9,
+                    ease: 'back.out(1.5)'
+                }, 0.5)
+                .from('.hero-bounce-cta', {
+                    x: -80,
+                    opacity: 0,
+                    duration: 0.9,
+                    ease: 'back.out(1.5)'
+                }, 0.65)
+                
+                .from('#hero-ribbon-svg', {
+                    scale: 0.85,
+                    opacity: 0,
+                    duration: 1.2
+                }, 0.2)
+
+                // ANIMASI ZOOM OUT KHUSUS COSPLAY.PNG (Dari scale 1.28 mengecil ke 1.0)
+                .fromTo('.hero-cosplay', {
+                    scale: 1.28,
+                    y: 55,
+                    opacity: 0
+                }, {
+                    scale: 1,
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.3,
+                    ease: 'power3.out'
+                }, 0.4)
+
+                // ANIMASI ZOOM OUT KHUSUS ADAT.PNG (Dari scale 1.28 mengecil ke 1.0)
+                .fromTo('.hero-adat', {
+                    scale: 1.28,
+                    y: 55,
+                    opacity: 0
+                }, {
+                    scale: 1,
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.3,
+                    ease: 'power3.out'
+                }, 0.5)
+
+                .from('.hero-kebaya', {
+                    y: 60,
+                    opacity: 0,
+                    duration: 1.2
+                }, 0.45)
+                .from('.hero-camera', {
+                    scale: 0.75,
+                    y: 50,
+                    opacity: 0,
+                    duration: 1.2,
+                    ease: 'back.out(1.5)'
+                }, 0.6);
+
+
+            /* ====================================================
+               5. INTERACTIVE 3D MOUSE PARALLAX PADA HERO SECTION
+               ==================================================== */
+            const heroSection = document.getElementById('hero-section');
+            if (heroSection && !window.matchMedia('(pointer: coarse)').matches) {
+                const camX = gsap.quickTo('.hero-camera', 'x', { duration: 0.5, ease: 'power2.out' });
+                const camY = gsap.quickTo('.hero-camera', 'y', { duration: 0.5, ease: 'power2.out' });
+                const camRot = gsap.quickTo('.hero-camera', 'rotation', { duration: 0.5, ease: 'power2.out' });
+
+                const cosplayX = gsap.quickTo('.hero-cosplay', 'x', { duration: 0.8, ease: 'power2.out' });
+                const cosplayY = gsap.quickTo('.hero-cosplay', 'y', { duration: 0.8, ease: 'power2.out' });
+
+                const kebayaX = gsap.quickTo('.hero-kebaya', 'x', { duration: 0.9, ease: 'power2.out' });
+                const kebayaY = gsap.quickTo('.hero-kebaya', 'y', { duration: 0.9, ease: 'power2.out' });
+
+                const adatX = gsap.quickTo('.hero-adat', 'x', { duration: 0.85, ease: 'power2.out' });
+                const adatY = gsap.quickTo('.hero-adat', 'y', { duration: 0.85, ease: 'power2.out' });
+
+                const ribbonRot = gsap.quickTo('#hero-ribbon-svg', 'rotation', { duration: 1.2, ease: 'power2.out' });
+                const ribbonX = gsap.quickTo('#hero-ribbon-svg', 'x', { duration: 1.2, ease: 'power2.out' });
+
+                heroSection.addEventListener('mousemove', function(e) {
+                    const rect = heroSection.getBoundingClientRect();
+                    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+                    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+
+                    camX(nx * 42);
+                    camY(ny * 32);
+                    camRot(nx * 4);
+
+                    cosplayX(nx * -28);
+                    cosplayY(ny * -18);
+
+                    kebayaX(nx * -16);
+                    kebayaY(ny * -12);
+
+                    adatX(nx * -32);
+                    adatY(ny * -24);
+
+                    ribbonRot(nx * 6);
+                    ribbonX(nx * 25);
+                });
+
+                heroSection.addEventListener('mouseleave', function() {
+                    camX(0);
+                    camY(0);
+                    camRot(0);
+                    cosplayX(0);
+                    cosplayY(0);
+                    kebayaX(0);
+                    kebayaY(0);
+                    adatX(0);
+                    adatY(0);
+                    ribbonRot(0);
+                    ribbonX(0);
+                });
+            }
+
+
+            /* ====================================================
+               6. HERO SCROLL PARALLAX SCRUBBING
+               ==================================================== */
+            gsap.to('.hero-camera', {
+                y: -140,
+                x: -30,
+                rotation: -4,
+                scrollTrigger: {
+                    trigger: '#hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.2
+                }
+            });
+
+            gsap.to('.hero-cosplay', {
+                y: -75,
+                scale: 0.90,
+                scrollTrigger: {
+                    trigger: '#hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+
+            gsap.to('.hero-adat', {
+                y: -90,
+                scale: 0.88,
+                scrollTrigger: {
+                    trigger: '#hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.1
+                }
+            });
+
+            gsap.to('.hero-kebaya', {
+                y: -50,
+                scale: 0.95,
+                scrollTrigger: {
+                    trigger: '#hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 0.9
+                }
+            });
+
+            gsap.to('#hero-ribbon-svg', {
+                y: 110,
+                rotation: 12,
+                scale: 1.12,
+                scrollTrigger: {
+                    trigger: '#hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.4
+                }
+            });
+
+            gsap.to('.hero-text-block', {
+                y: -50,
+                opacity: 0.85,
+                scrollTrigger: {
+                    trigger: '#hero-section',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 0.8
+                }
+            });
+
+
+            /* ====================================================
+               7. SCROLL REVEAL BOUNCE ANIMATION (TEXT DARI KIRI)
+               ==================================================== */
+            gsap.utils.toArray('.reveal-bounce-left').forEach(function(el) {
+                gsap.from(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 88%',
+                        toggleActions: 'play none none none'
+                    },
+                    x: -70,
+                    opacity: 0,
+                    duration: 0.95,
+                    ease: 'back.out(1.7)'
+                });
+            });
+
+            // Kategori Cards Stagger
+            gsap.from('.kategori-card', {
+                scrollTrigger: {
+                    trigger: '#jelajahi-rental',
+                    start: 'top 75%'
+                },
+                y: 65,
+                opacity: 0,
+                stagger: 0.14,
+                duration: 1,
+                ease: 'power3.out'
+            });
+
+            // Cara Kerja Step Cards Stagger
+            gsap.from('.step-card', {
+                scrollTrigger: {
+                    trigger: '#cara-kerja',
+                    start: 'top 75%'
+                },
+                y: 75,
+                opacity: 0,
+                scale: 0.94,
+                stagger: 0.16,
+                duration: 1,
+                ease: 'power3.out'
+            });
+
+
+            /* ====================================================
+               8. STICKY STACKING CARDS DI SECTION KEUNGGULAN
+               (Kartu berikutnya menumpuk, kartu sebelumnya scale down & dim)
+               ==================================================== */
+            const stickyCards = gsap.utils.toArray('.sticky-card');
+            stickyCards.forEach(function(card, index) {
+                if (index < stickyCards.length - 1) {
+                    gsap.to(card, {
+                        scale: 0.94 - index * 0.02,
+                        opacity: 0.72,
+                        filter: 'brightness(0.88)',
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: stickyCards[index + 1],
+                            start: 'top 45%',
+                            end: 'top 20%',
+                            scrub: 0.8
+                        }
+                    });
+                }
+            });
+
+
+            /* ====================================================
+               9. INTERAKTIF HOVER ZOOM-OUT KHUSUS COSPLAY & ADAT
+               ==================================================== */
+            document.querySelectorAll('.js-zoom-out').forEach(function(el) {
+                el.addEventListener('mouseenter', function() {
+                    gsap.to(el, {
+                        scale: 0.88,
+                        y: 8,
+                        duration: 0.45,
+                        ease: 'power2.out',
+                        overwrite: 'auto'
+                    });
+                });
+
+                el.addEventListener('mouseleave', function() {
+                    gsap.to(el, {
+                        scale: 1,
+                        y: 0,
+                        duration: 0.65,
+                        ease: 'elastic.out(1, 0.6)',
+                        overwrite: 'auto'
+                    });
+                });
+            });
+
+
+            /* ====================================================
+               10. MAGNETIC BUTTONS (Desktop Pointer)
+               ==================================================== */
+            if (!window.matchMedia('(pointer: coarse)').matches) {
+                document.querySelectorAll('.btn-magnetic').forEach(function(btn) {
+                    const bx = gsap.quickTo(btn, 'x', { duration: 0.35, ease: 'power2.out' });
+                    const by = gsap.quickTo(btn, 'y', { duration: 0.35, ease: 'power2.out' });
+
+                    btn.addEventListener('mousemove', function(e) {
+                        const rect = btn.getBoundingClientRect();
+                        const x = e.clientX - (rect.left + rect.width / 2);
+                        const y = e.clientY - (rect.top + rect.height / 2);
+                        bx(x * 0.28);
+                        by(y * 0.28);
+                    });
+
+                    btn.addEventListener('mouseleave', function() {
+                        bx(0);
+                        by(0);
+                    });
+                });
+            }
+        });
+    </script>
 
 </body>
 </html>
