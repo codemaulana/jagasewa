@@ -20,12 +20,12 @@
 
 | ID | Prioritas | Alur Terkait | Judul Masalah | Dampak Bisnis / Pengguna | Status |
 |----|-----------|--------------|---------------|--------------------------|--------|
-| **BUG-01** | **P0** (Uang/Finansial) | **J5** (Siklus Langganan) | Langganan Pro dapat dibeli berkali-kali tanpa pembatasan (*Double Subscription*) | Vendor terpotong biaya berkali-kali; *dangling records* di tabel `subscriptions` | Terkonfirmasi |
-| **BUG-02** | **P1** (Alur Inti) | **J1** (Katalog Barang) | Form edit barang gagal memperbarui/mengganti foto pada disk S3 privat | Vendor tidak bisa mengganti foto lama barang rental; risiko foto lama hilang | Terkonfirmasi |
-| **BUG-03** | **P2** (UX/Tampilan) | **J1, J3, J5** (Dashboard) | Beranda dashboard vendor memuat widget default Filament dan avatar rusak | Tampilan tidak profesional, membingungkan vendor baru, tidak ada ringkasan operasional | Terkonfirmasi |
-| **BUG-04** | **P1** (Alur Inti) | **J1** (Profil Toko) | Tidak ada UI/Halaman Pengaturan Profil Toko (Logo, Banner, Deskripsi, No. WA Toko) | Vendor tidak bisa mengkustomisasi etalase `/b/{slug}` atau memperbarui kontak WA setelah registrasi | Terkonfirmasi |
-| **BUG-05** | **P2** (UX/Operasional) | **J3** (Kalender Vendor) | Tidak ada tampilan kalender visual jadwal booking di sisi vendor | Vendor kesulitan memantau slot sewa dan jadwal laundry/buffer harian secara visual | Terkonfirmasi |
-| **BUG-06** | **P1** (Nilai Produk) | **J5** (Fitur Premium) | Fitur Pro (Kustom Template WA & Kapasitas Foto) dijanjikan tapi belum diimplementasikan | Vendor yang sudah membayar Pro merasa tertipu karena tidak ada fitur baru yang terbuka | Terkonfirmasi |
+| **BUG-01** | **P0** (Uang/Finansial) | **J5** (Siklus Langganan) | Langganan Pro dapat dibeli berkali-kali tanpa pembatasan (*Double Subscription*) | Vendor terpotong biaya berkali-kali; *dangling records* di tabel `subscriptions` | Ditutup / Selesai (T-45) |
+| **BUG-02** | **P1** (Alur Inti) | **J1** (Katalog Barang) | Form edit barang gagal memperbarui/mengganti foto pada disk S3 privat | Vendor tidak bisa mengganti foto lama barang rental; risiko foto lama hilang | Ditutup / Selesai (T-46) |
+| **BUG-03** | **P2** (UX/Tampilan) | **J1, J3, J5** (Dashboard) | Beranda dashboard vendor memuat widget default Filament dan avatar rusak | Tampilan tidak profesional, membingungkan vendor baru, tidak ada ringkasan operasional | Ditutup / Selesai (T-49) |
+| **BUG-04** | **P1** (Alur Inti) | **J1** (Profil Toko) | Tidak ada UI/Halaman Pengaturan Profil Toko (Logo, Banner, Deskripsi, No. WA Toko) | Vendor tidak bisa mengkustomisasi etalase `/b/{slug}` atau memperbarui kontak WA setelah registrasi | Ditutup / Selesai (T-47) |
+| **BUG-05** | **P2** (UX/Operasional) | **J3** (Kalender Vendor) | Tidak ada tampilan kalender visual jadwal booking di sisi vendor | Vendor kesulitan memantau slot sewa dan jadwal laundry/buffer harian secara visual | Ditutup / Selesai (T-50) |
+| **BUG-06** | **P1** (Nilai Produk) | **J5** (Fitur Premium) | Fitur Pro (Kustom Template WA & Kapasitas Foto) dijanjikan tapi belum diimplementasikan | Vendor yang sudah membayar Pro merasa tertipu karena tidak ada fitur baru yang terbuka | Ditutup / Selesai (T-48) |
 
 ---
 

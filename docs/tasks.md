@@ -77,8 +77,8 @@
   - **Estimasi:** S
   - **Story:** US-07 (SEC-10)
 
-- [ ] **T-09** | CRUD barang di dashboard vendor (Filament Resource) [PARTIAL - Ganti foto S3 privat pending]
-  - **Tujuan:** Vendor bisa tambah, edit, nonaktifkan barang lewat UI.
+- [x] **T-09** | CRUD barang di dashboard vendor (Filament Resource)
+  - **Tujuan:** Vendor bisa tambah, edit, nonaktifkan barang lewat UI. S3 privat photo replacement terverifikasi (T-46).
   - **Dependensi:** T-08, T-06
   - **Kriteria Selesai:** Barang tersimpan dengan validasi (harga > 0, deposit ≥ 0, buffer ≥ 0); foto ter-upload ke S3.
   - **Tes:** Feature test: POST item valid; POST item harga = 0 → validasi gagal.
@@ -400,8 +400,8 @@
   - **Estimasi:** L
   - **SEC:** SEC-22, SEC-23, SEC-24, SEC-25
 
-- [ ] **T-43** | [Fase 1.5] Entitlement check server-side untuk fitur Premium [PARTIAL - Celah langganan ganda & fitur Pro belum tuntas]
-  - **Tujuan:** Middleware/service mengecek status subscription aktif setiap request ke fitur berbayar.
+- [x] **T-43** | [Fase 1.5] Entitlement check server-side untuk fitur Premium
+  - **Tujuan:** Middleware/service mengecek status subscription aktif setiap request ke fitur berbayar. Dituntaskan dengan proteksi double booking langganan (T-45) dan fitur Pro (T-48).
   - **Dependensi:** T-41
   - **Kriteria Selesai:** Request fitur Premium oleh vendor Free diarahkan ke halaman upgrade; dicek di server setiap request.
   - **Tes:** Feature test: vendor Free akses fitur Premium → 403/redirect; vendor Premium → 200.
