@@ -105,7 +105,7 @@ class WaNotificationHelper
         $isPro = $vendor && $vendor->isPro();
         $customTemplates = $vendor?->custom_wa_templates ?? [];
 
-        if ($isPro && ! empty($customTemplates[$action])) {
+        if ($isPro && ! empty($customTemplates[$action]) && trim((string) $customTemplates[$action]) !== '') {
             $template = (string) $customTemplates[$action];
             $replacements = [
                 '{nama_penyewa}' => $renterName,

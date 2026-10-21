@@ -454,7 +454,7 @@
   - **Estimasi:** M
   - **Story:** US-12, BUG-06
 
-- [ ] **T-49** | [P2] Redesain Beranda Dashboard Rental & Pembersihan Widget Filament Bawaan (BUG-03)
+- [x] **T-49** | [P2] Redesain Beranda Dashboard Rental & Pembersihan Widget Filament Bawaan (BUG-03)
   - **Tujuan:** Menghapus `AccountWidget` dan `FilamentInfoWidget` default; membangun widgets operasional rental:
     1. Kartu Tautan Toko (`/b/{vendor_slug}`) dengan tombol 1-klik "Salin Tautan".
     2. Statistik Ringkas: Pesanan Menunggu (Pending), Barang Disewa Hari Ini (Aktif), Pengembalian Hari Ini (Returned).
