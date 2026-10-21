@@ -41,9 +41,15 @@
         }
     </script>
 
-    <!-- GSAP & ScrollTrigger CDN (Client-side, Zero Server Dependency) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- GSAP & ScrollTrigger (Local First with CDN Fallback) -->
+    <script src="{{ asset('js/gsap.min.js') }}"></script>
+    <script src="{{ asset('js/ScrollTrigger.min.js') }}"></script>
+    <script>
+        if (typeof gsap === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>');
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>');
+        }
+    </script>
 
     <style>
         /* ========================================================
@@ -224,11 +230,10 @@
 
         /* ========================================================
            ENTRANCE & SCROLL REVEAL BOUNCE ANIMATION CLASSES
-           (Elemen bersembunyi awal di -70px lalu muncul dengan bounce)
+           Default: Elemen terlihat normal agar teks tidak pernah hilang.
+           GSAP akan menganimasikannya secara dinamis saat halaman dimuat.
            ======================================================== */
         .reveal-bounce-left {
-            opacity: 0;
-            transform: translateX(-70px);
             will-change: transform, opacity;
         }
 
@@ -236,8 +241,6 @@
         .hero-bounce-line-2,
         .hero-bounce-sub,
         .hero-bounce-cta {
-            opacity: 0;
-            transform: translateX(-80px);
             will-change: transform, opacity;
         }
 
@@ -1009,7 +1012,14 @@
          ======================================================== -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            gsap.registerPlugin(ScrollTrigger);
+            if (typeof gsap === 'undefined') {
+                console.warn('GSAP tidak tersedia atau diblokir; mode tampilan statis aktif.');
+                return;
+            }
+
+            if (typeof ScrollTrigger !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger);
+            }
 
             /* ====================================================
                1. PERPINDAHAN BACKGROUND SECARA HALUS (CONTINUOUS SCRUB)
@@ -1154,28 +1164,28 @@
                     duration: 0.8
                 })
                 
-                // TEXT HIDDEN LALU MUNCUL DARI KIRI DENGAN BOUNCE
-                .to('.hero-bounce-line-1', {
-                    x: 0,
-                    opacity: 1,
+                // TEXT MUNCUL DARI KIRI DENGAN BOUNCE
+                .from('.hero-bounce-line-1', {
+                    x: -80,
+                    opacity: 0,
                     duration: 1.0,
                     ease: 'back.out(1.7)'
                 }, 0.2)
-                .to('.hero-bounce-line-2', {
-                    x: 0,
-                    opacity: 1,
+                .from('.hero-bounce-line-2', {
+                    x: -80,
+                    opacity: 0,
                     duration: 1.0,
                     ease: 'back.out(1.7)'
                 }, 0.35)
-                .to('.hero-bounce-sub', {
-                    x: 0,
-                    opacity: 1,
+                .from('.hero-bounce-sub', {
+                    x: -80,
+                    opacity: 0,
                     duration: 0.9,
                     ease: 'back.out(1.5)'
                 }, 0.5)
-                .to('.hero-bounce-cta', {
-                    x: 0,
-                    opacity: 1,
+                .from('.hero-bounce-cta', {
+                    x: -80,
+                    opacity: 0,
                     duration: 0.9,
                     ease: 'back.out(1.5)'
                 }, 0.65)
@@ -1361,14 +1371,14 @@
                7. SCROLL REVEAL BOUNCE ANIMATION (TEXT DARI KIRI)
                ==================================================== */
             gsap.utils.toArray('.reveal-bounce-left').forEach(function(el) {
-                gsap.to(el, {
+                gsap.from(el, {
                     scrollTrigger: {
                         trigger: el,
                         start: 'top 88%',
                         toggleActions: 'play none none none'
                     },
-                    x: 0,
-                    opacity: 1,
+                    x: -70,
+                    opacity: 0,
                     duration: 0.95,
                     ease: 'back.out(1.7)'
                 });

@@ -35,9 +35,9 @@ class SecurityHeaders
         // Rule 12 & SEC-37: Content Security Policy with Backblaze B2, AWS S3, and blob: for Livewire image uploads
         $csp = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com",
-            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
-            "font-src 'self' https://fonts.bunny.net data:",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com",
+            "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://fonts.googleapis.com",
+            "font-src 'self' https://fonts.bunny.net https://fonts.gstatic.com data:",
             "img-src 'self' data: blob: https://*.backblazeb2.com https://*.amazonaws.com",
             "connect-src 'self' blob: https://*.backblazeb2.com https://*.amazonaws.com",
             "frame-ancestors 'self'",
