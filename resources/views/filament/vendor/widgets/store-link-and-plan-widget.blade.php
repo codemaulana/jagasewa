@@ -125,21 +125,32 @@
                     </div>
 
                     <div class="space-y-2 mt-3">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-text-secondary">Barang Aktif</span>
-                            <span class="font-bold text-text-main tabular-nums">{{ $activeItems }} / {{ $maxActiveItems }}</span>
-                        </div>
-                        <div class="w-full bg-surface-subtle border border-border-subtle rounded-full h-1.5 overflow-hidden">
-                            @php
-                                $percentItems = $isPro ? 100 : min(100, ($activeItems / 5) * 100);
-                            @endphp
-                            <div class="h-1.5 rounded-full {{ $isPro ? 'bg-success' : ($percentItems >= 100 ? 'bg-warning' : 'bg-primary') }}" style="width: {{ $percentItems }}%"></div>
-                        </div>
+                        @if($isPro)
+                            <div class="text-xs py-1">
+                                <span class="font-bold text-text-main tabular-nums">{{ $activeItems }} barang aktif</span>
+                                <span class="text-text-muted"> · Tanpa Batas</span>
+                            </div>
+                            <div class="text-xs">
+                                <span class="font-medium text-text-main tabular-nums">{{ $blacklistCount }} catatan blacklist</span>
+                                <span class="text-text-muted"> · Tanpa Batas</span>
+                            </div>
+                        @else
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-text-secondary">Barang Aktif</span>
+                                <span class="font-bold text-text-main tabular-nums">{{ $activeItems }} / 15</span>
+                            </div>
+                            <div class="w-full bg-surface-subtle border border-border-subtle rounded-full h-1.5 overflow-hidden">
+                                @php
+                                    $percentItems = min(100, ($activeItems / 15) * 100);
+                                @endphp
+                                <div class="h-1.5 rounded-full {{ $percentItems >= 100 ? 'bg-warning' : 'bg-primary' }}" style="width: {{ $percentItems }}%"></div>
+                            </div>
 
-                        <div class="flex items-center justify-between text-xs pt-1">
-                            <span class="text-text-secondary">Catatan Blacklist</span>
-                            <span class="font-medium text-text-main tabular-nums">{{ $blacklistCount }} / {{ $maxBlacklist }}</span>
-                        </div>
+                            <div class="flex items-center justify-between text-xs pt-1">
+                                <span class="text-text-secondary">Catatan Blacklist</span>
+                                <span class="font-medium text-text-main tabular-nums">{{ $blacklistCount }} / 10</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
 

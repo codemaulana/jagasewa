@@ -9,6 +9,7 @@ use App\Filament\Vendor\Pages\StoreSettings;
 use App\Filament\Vendor\Widgets\OnboardingChecklistWidget;
 use App\Filament\Vendor\Widgets\RentalStatsOverviewWidget;
 use App\Filament\Vendor\Widgets\StoreLinkAndPlanWidget;
+use App\Filament\Vendor\Widgets\TodayAgendaWidget;
 use App\Http\Middleware\EnsureVendorOwnership;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -18,7 +19,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -44,11 +44,27 @@ class VendorPanelProvider extends PanelProvider
             ->login()
             ->registration(Register::class)
             ->colors([
-                'primary' => Color::hex('#1B1B19'),
+                'primary' => [
+                    50 => '#f6f6f5',
+                    100 => '#e7e7e5',
+                    200 => '#d1d1cd',
+                    300 => '#b2b1ab',
+                    400 => '#6b6963',
+                    500 => '#1B1B19',
+                    600 => '#1B1B19',
+                    700 => '#161614',
+                    800 => '#11110f',
+                    900 => '#0c0c0b',
+                    950 => '#050505',
+                ],
             ])
             ->font('Plus Jakarta Sans')
+            ->viteTheme('resources/css/app.css')
+            ->sidebarWidth('248px')
+            ->collapsedSidebarWidth('72px')
+            ->collapsibleNavigationGroups(false)
             ->sidebarCollapsibleOnDesktop()
-            ->renderHook(PanelsRenderHook::HEAD_END, fn () => Blade::render("@vite(['resources/css/app.css', 'resources/js/app.js'])"))
+            ->renderHook(PanelsRenderHook::HEAD_END, fn () => Blade::render("@vite(['resources/js/app.js'])"))
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn () => view('filament.vendor.layout.topbar-badge'))
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.vendor.layout.bottom-nav'))
             ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn () => view('filament.vendor.layout.sidebar-plan-card'))
@@ -73,6 +89,7 @@ class VendorPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Vendor/Widgets'), for: 'App\Filament\Vendor\Widgets')
             ->widgets([
                 StoreLinkAndPlanWidget::class,
+                TodayAgendaWidget::class,
                 RentalStatsOverviewWidget::class,
                 OnboardingChecklistWidget::class,
             ])

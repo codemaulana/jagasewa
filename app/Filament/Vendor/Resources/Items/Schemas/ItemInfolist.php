@@ -2,7 +2,9 @@
 
 namespace App\Filament\Vendor\Resources\Items\Schemas;
 
-use App\Models\Item;
+use App\Enums\ItemCondition;
+use App\Enums\ItemStatus;
+use App\Helpers\FormatHelper;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -34,20 +36,9 @@ class ItemInfolist
                                 TextEntry::make('unit_status')
                                     ->label('Status Unit')
                                     ->badge()
-                                    ->formatStateUsing(fn (?string $state): string => match ($state) {
-                                        Item::UNIT_STATUS_AVAILABLE => 'Tersedia',
-                                        Item::UNIT_STATUS_RENTED => 'Disewa',
-                                        Item::UNIT_STATUS_LAUNDRY => 'Laundry',
-                                        Item::UNIT_STATUS_MAINTENANCE => 'Perbaikan',
-                                        default => 'Tersedia',
-                                    })
-                                    ->color(fn (?string $state): string => match ($state) {
-                                        Item::UNIT_STATUS_AVAILABLE => 'success',
-                                        Item::UNIT_STATUS_RENTED => 'info',
-                                        Item::UNIT_STATUS_LAUNDRY => 'warning',
-                                        Item::UNIT_STATUS_MAINTENANCE => 'danger',
-                                        default => 'gray',
-                                    }),
+                                    ->formatStateUsing(fn ($state) => ItemStatus::tryFrom($state)?->getLabel() ?? $state)
+                                    ->color(fn ($state) => ItemStatus::tryFrom($state)?->getColor() ?? 'gray')
+                                    ->icon(fn ($state) => ItemStatus::tryFrom($state)?->getIcon()),
                             ]),
                         Grid::make(2)
                             ->schema([
@@ -77,7 +68,9 @@ class ItemInfolist
                                 TextEntry::make('condition')
                                     ->label('Kondisi Fisik')
                                     ->badge()
-                                    ->color('info')
+                                    ->formatStateUsing(fn ($state) => ItemCondition::tryFrom($state)?->getLabel() ?? $state)
+                                    ->color(fn ($state) => ItemCondition::tryFrom($state)?->getColor() ?? 'info')
+                                    ->icon(fn ($state) => ItemCondition::tryFrom($state)?->getIcon())
                                     ->placeholder('-'),
                                 TextEntry::make('included_items')
                                     ->label('Kelengkapan Komponen')
@@ -96,26 +89,32 @@ class ItemInfolist
                             ->schema([
                                 TextEntry::make('price_per_day')
                                     ->label('Harga Sewa / Hari')
-                                    ->formatStateUsing(fn ($state) => 'Rp '.number_format((int) $state, 0, ',', '.')),
+                                    ->extraAttributes(['class' => 'tabular-nums font-medium'])
+                                    ->formatStateUsing(fn ($state) => FormatHelper::rupiah($state)),
                                 TextEntry::make('package_price_3d')
                                     ->label('Tarif Paket 3 Hari')
-                                    ->formatStateUsing(fn ($state) => $state ? 'Rp '.number_format((int) $state, 0, ',', '.') : '-')
+                                    ->extraAttributes(['class' => 'tabular-nums font-medium'])
+                                    ->formatStateUsing(fn ($state) => $state ? FormatHelper::rupiah($state) : '-')
                                     ->placeholder('-'),
                                 TextEntry::make('deposit_amount')
                                     ->label('Deposit Jaminan')
-                                    ->formatStateUsing(fn ($state) => 'Rp '.number_format((int) $state, 0, ',', '.')),
+                                    ->extraAttributes(['class' => 'tabular-nums font-medium'])
+                                    ->formatStateUsing(fn ($state) => FormatHelper::rupiah($state)),
                                 TextEntry::make('fine_per_day')
                                     ->label('Denda Telat / Hari')
-                                    ->formatStateUsing(fn ($state) => 'Rp '.number_format((int) $state, 0, ',', '.')),
+                                    ->extraAttributes(['class' => 'tabular-nums font-medium'])
+                                    ->formatStateUsing(fn ($state) => FormatHelper::rupiah($state)),
                             ]),
                         Grid::make(2)
                             ->schema([
                                 TextEntry::make('buffer_before')
                                     ->label('Buffer Sebelum Sewa')
-                                    ->formatStateUsing(fn ($state) => "{$state} hari"),
+                                    ->extraAttributes(['class' => 'tabular-nums'])
+                                    ->formatStateUsing(fn ($state) => FormatHelper::days($state)),
                                 TextEntry::make('buffer_after')
                                     ->label('Buffer Sesudah Sewa')
-                                    ->formatStateUsing(fn ($state) => "{$state} hari"),
+                                    ->extraAttributes(['class' => 'tabular-nums'])
+                                    ->formatStateUsing(fn ($state) => FormatHelper::days($state)),
                             ]),
                     ]),
 

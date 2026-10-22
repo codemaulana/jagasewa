@@ -108,10 +108,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-surface border border-border-subtle rounded-xl p-5 shadow-xs space-y-1">
                     <span class="text-xs font-medium text-text-secondary">Total Omzet Sewa</span>
-                    <p class="text-xl sm:text-2xl font-bold font-mono text-text-main tabular-nums">
-                        Rp {{ number_format((int) $data['totalRevenue'], 0, ',', '.') }}
+                    <p class="text-xl sm:text-2xl font-bold text-text-main tabular-nums">
+                        {{ \App\Helpers\FormatHelper::rupiah($data['totalRevenue']) }}
                     </p>
-                    <p class="text-[11px] text-text-muted">Total pemasukan transaksi valid dalam periode</p>
+                    <p class="text-[11px] text-text-muted">Total pemasukan transaksi valid dalam periode (Disetujui, Aktif, Selesai)</p>
                 </div>
 
                 <div class="bg-surface border border-border-subtle rounded-xl p-5 shadow-xs space-y-1">
@@ -125,7 +125,7 @@
                 <div class="bg-surface border border-border-subtle rounded-xl p-5 shadow-xs space-y-1">
                     <span class="text-xs font-medium text-text-secondary">Total Hari Tersewa</span>
                     <p class="text-xl sm:text-2xl font-bold text-text-main tabular-nums">
-                        {{ $data['totalRentedDays'] }} Hari
+                        {{ \App\Helpers\FormatHelper::days($data['totalRentedDays']) }}
                     </p>
                     <p class="text-[11px] text-text-muted">Akumulasi hari pemakaian dari seluruh unit</p>
                 </div>
@@ -172,14 +172,14 @@
                                             {{ $item['category'] }}
                                         </td>
                                         <td class="p-2.5 text-center font-bold text-text-main tabular-nums">
-                                            {{ $item['rented_days'] }} hari
+                                            {{ \App\Helpers\FormatHelper::days($item['rented_days']) }}
                                         </td>
                                         <td class="p-2.5 text-center text-text-muted tabular-nums">
-                                            {{ $item['idle_days'] }} hari
+                                            {{ \App\Helpers\FormatHelper::days($item['idle_days']) }}
                                         </td>
                                         <td class="p-2.5 text-center">
                                             <div class="inline-flex items-center gap-1.5">
-                                                <span class="inline-block w-12 text-right font-bold text-text-main tabular-nums font-mono">
+                                                <span class="inline-block w-12 text-right font-bold text-text-main tabular-nums">
                                                     {{ $item['utilization_rate'] }}%
                                                 </span>
                                                 <div class="w-16 h-2 rounded-full bg-surface-subtle border border-border-subtle overflow-hidden hidden sm:block">
@@ -187,8 +187,8 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td class="p-2.5 text-right font-mono font-bold text-text-main tabular-nums">
-                                            Rp {{ number_format((int) $item['revenue'], 0, ',', '.') }}
+                                        <td class="p-2.5 text-right font-bold text-text-main tabular-nums">
+                                            {{ \App\Helpers\FormatHelper::rupiah($item['revenue']) }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -240,8 +240,8 @@
                                         <td class="p-2.5 text-center font-bold text-text-main tabular-nums">
                                             {{ $renter['bookings_count'] }} kali
                                         </td>
-                                        <td class="p-2.5 text-right font-mono font-bold text-text-main tabular-nums">
-                                            Rp {{ number_format((int) $renter['total_spent'], 0, ',', '.') }}
+                                        <td class="p-2.5 text-right font-bold text-text-main tabular-nums">
+                                            {{ \App\Helpers\FormatHelper::rupiah($renter['total_spent']) }}
                                         </td>
                                     </tr>
                                 @endforeach

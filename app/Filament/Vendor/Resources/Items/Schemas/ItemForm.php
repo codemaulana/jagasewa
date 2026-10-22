@@ -2,6 +2,8 @@
 
 namespace App\Filament\Vendor\Resources\Items\Schemas;
 
+use App\Enums\ItemStatus;
+use App\Filament\Support\Components\RupiahInput;
 use App\Models\Item;
 use App\Services\Billing\EntitlementService;
 use Filament\Forms\Components\FileUpload;
@@ -76,13 +78,8 @@ class ItemForm
                                     ->helperText('Pengenal unik URL barang di etalase toko'),
                                 Select::make('unit_status')
                                     ->label('Status Operasional Unit')
-                                    ->options([
-                                        Item::UNIT_STATUS_AVAILABLE => 'Tersedia (Siap Sewa)',
-                                        Item::UNIT_STATUS_RENTED => 'Sedang Disewa',
-                                        Item::UNIT_STATUS_LAUNDRY => 'Laundry / Pembersihan',
-                                        Item::UNIT_STATUS_MAINTENANCE => 'Perbaikan / Maintenance',
-                                    ])
-                                    ->default(Item::UNIT_STATUS_AVAILABLE)
+                                    ->options(collect(ItemStatus::cases())->mapWithKeys(fn (ItemStatus $s) => [$s->value => $s->getLabel()]))
+                                    ->default(ItemStatus::AVAILABLE->value)
                                     ->required(),
                             ]),
                         Textarea::make('description')
@@ -148,39 +145,31 @@ class ItemForm
                     ->schema([
                         Grid::make(4)
                             ->schema([
-                                TextInput::make('price_per_day')
+                                RupiahInput::make('price_per_day')
                                     ->label('Tarif / Hari')
                                     ->required()
-                                    ->numeric()
                                     ->integer()
                                     ->minValue(1)
-                                    ->prefix('Rp')
                                     ->helperText('Wajib > 0'),
-                                TextInput::make('package_price_3d')
+                                RupiahInput::make('package_price_3d')
                                     ->label('Tarif Paket 3 Hari (Opsional)')
-                                    ->numeric()
                                     ->integer()
                                     ->minValue(0)
-                                    ->prefix('Rp')
                                     ->placeholder('Contoh: 180000')
                                     ->helperText('Diskon sewa weekend / 3 hari'),
-                                TextInput::make('deposit_amount')
+                                RupiahInput::make('deposit_amount')
                                     ->label('Deposit Jaminan')
                                     ->required()
-                                    ->numeric()
                                     ->integer()
                                     ->minValue(0)
                                     ->default(0)
-                                    ->prefix('Rp')
                                     ->helperText('Jaminan pengaman kerusakan'),
-                                TextInput::make('fine_per_day')
+                                RupiahInput::make('fine_per_day')
                                     ->label('Denda Telat / Hari')
                                     ->required()
-                                    ->numeric()
                                     ->integer()
                                     ->minValue(0)
                                     ->default(0)
-                                    ->prefix('Rp')
                                     ->helperText('Denda per hari keterlambatan'),
                             ]),
                     ]),

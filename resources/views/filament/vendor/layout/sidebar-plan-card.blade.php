@@ -22,7 +22,11 @@
             </div>
             <p class="text-[11px] text-text-muted leading-tight">
                 @if($isPro)
-                    Berlaku s/d {{ $expiresAt ? $expiresAt->format('d M Y') : 'Aktif' }}
+                    @if($expiresAt)
+                        Aktif sampai {{ $expiresAt->locale('id')->translatedFormat('d M Y') }}
+                    @else
+                        Paket Pro Aktif
+                    @endif
                 @else
                     Maks. 15 barang aktif
                 @endif

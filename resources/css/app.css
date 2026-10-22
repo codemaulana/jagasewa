@@ -1,5 +1,16 @@
 @import 'tailwindcss';
 
+@import '../../vendor/filament/support/resources/css/index.css';
+@import '../../vendor/filament/actions/resources/css/index.css';
+@import '../../vendor/filament/forms/resources/css/index.css';
+@import '../../vendor/filament/infolists/resources/css/index.css';
+@import '../../vendor/filament/notifications/resources/css/index.css';
+@import '../../vendor/filament/schemas/resources/css/index.css';
+@import '../../vendor/filament/tables/resources/css/index.css';
+@import '../../vendor/filament/widgets/resources/css/index.css';
+@import '../../vendor/filament/filament/resources/css/index.css';
+
+@source '../../vendor/filament/**/*.blade.php';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -432,7 +443,7 @@ table,
 }
 
 /* ==========================================================================
-   Filament Vendor App Shell (Single Light Theme - Phase 2)
+   Filament Vendor App Shell (Single Light Theme - Official Theme Rules)
    ========================================================================== */
 
 .fi-body {
@@ -441,124 +452,144 @@ table,
 
 /* Topbar Header (64px, --surface, 1px bottom border, no black bar) */
 .fi-topbar {
-    background-color: var(--surface) !important;
-    border-bottom: 1px solid var(--border) !important;
-    box-shadow: none !important;
-    outline: none !important;
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: none;
+    outline: none;
 }
 
 .fi-topbar > nav {
-    background-color: var(--surface) !important;
-    box-shadow: none !important;
+    background-color: var(--surface);
+    box-shadow: none;
 }
 
 /* Logo Contrast */
 .fi-logo {
-    filter: none !important;
-    opacity: 1 !important;
-    max-height: 2.25rem !important;
+    filter: none;
+    opacity: 1;
+    max-height: 2.25rem;
 }
 
 /* Sidebar Shell (248px, Collapsible to 72px, --bg background) */
 .fi-sidebar {
-    background-color: var(--bg) !important;
-    border-right: 1px solid var(--border) !important;
-    --sidebar-width: 248px !important;
-    --collapsed-sidebar-width: 72px !important;
+    background-color: var(--bg);
+    border-right: 1px solid var(--border);
 }
 
 .fi-sidebar-header {
-    background-color: var(--bg) !important;
-    border-bottom: 1px solid var(--border) !important;
-    height: 4rem !important;
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--border);
+    height: 4rem;
 }
 
+/* Sidebar Navigation with 12px horizontal padding and thin scrollbar */
 .fi-sidebar-nav {
-    background-color: var(--bg) !important;
-    padding-left: 0.75rem !important;
-    padding-right: 0.75rem !important;
+    background-color: var(--bg);
+    padding-left: 12px;
+    padding-right: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
 }
 
-/* Sidebar Navigation Group Labels (Operasional, Pelanggan & Keamanan, Bisnis) */
+.fi-sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 9999px;
+}
+
+/* Compact Vertical Spacing to fit 1366x768 screens without vertical scrolling */
+.fi-sidebar-nav-groups {
+    gap: 1.25rem;
+}
+
+.fi-sidebar-group {
+    gap: 0.125rem;
+}
+
 .fi-sidebar-group-label {
-    font-size: 0.6875rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.06em !important;
-    text-transform: uppercase !important;
-    color: var(--text-muted) !important;
-    padding-left: 0.5rem !important;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding-left: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
 /* Sidebar Inactive Navigation Item */
 .fi-sidebar-item-btn {
-    border-radius: 0.5rem !important;
-    color: var(--text-muted) !important;
-    font-size: 0.8125rem !important;
-    font-weight: 500 !important;
-    transition: background-color 0.15s ease, color 0.15s ease !important;
+    border-radius: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    padding: 0.375rem 0.625rem;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .fi-sidebar-item-btn:hover {
-    background-color: var(--surface) !important;
-    color: var(--text) !important;
+    background-color: var(--surface);
+    color: var(--text);
 }
 
 .fi-sidebar-item-btn > .fi-icon {
-    color: var(--text-muted) !important;
-    transition: color 0.15s ease !important;
+    color: var(--text-muted);
+    transition: color 0.15s ease;
 }
 
 .fi-sidebar-item-btn:hover > .fi-icon {
-    color: var(--text) !important;
+    color: var(--text);
 }
 
 .fi-sidebar-item-label {
-    color: inherit !important;
+    color: inherit;
 }
 
 /* Sidebar Active Navigation Item (Pill --primary with white text) */
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
-    background-color: var(--primary) !important;
-    color: var(--primary-text) !important;
-    box-shadow: var(--shadow-subtle) !important;
+    background-color: var(--primary);
+    color: var(--primary-text);
+    box-shadow: var(--shadow-subtle);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
-    color: var(--primary-text) !important;
+    color: var(--primary-text);
 }
 
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label {
-    color: var(--primary-text) !important;
-    font-weight: 600 !important;
+    color: var(--primary-text);
+    font-weight: 600;
 }
 
 /* Sidebar Footer & Bottom Plan Card */
 .fi-sidebar-footer {
-    background-color: var(--bg) !important;
-    border-top: 1px solid var(--border) !important;
-    padding: 0.75rem !important;
-    margin: 0 !important;
+    background-color: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem;
+    margin: 0;
 }
 
 /* Collapsed Sidebar Behavior for Plan Card */
 .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-plan-card-expanded {
-    display: none !important;
+    display: none;
 }
 
 .fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-plan-card-collapsed {
-    display: flex !important;
+    display: flex;
 }
 
 /* Mobile Drawer Responsive (<768px) */
 @media (max-width: 767.98px) {
     .fi-sidebar {
-        background-color: var(--bg) !important;
-        width: min(85vw, 300px) !important;
+        background-color: var(--bg);
+        width: min(85vw, 300px);
     }
 
     .fi-sidebar-close-overlay {
-        background-color: rgba(27, 27, 25, 0.4) !important;
-        backdrop-filter: blur(2px) !important;
+        background-color: rgba(27, 27, 25, 0.4);
+        backdrop-filter: blur(2px);
     }
 }
 

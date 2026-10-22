@@ -1,0 +1,17 @@
+{
+    "Create": "Tambah",
+    "Create :label": "Tambah :label",
+    "New :label": "Tambah :label",
+    "New Barang": "Tambah Barang",
+    "View": "Detail",
+    "View :label": "Detail :label",
+    "Edit": "Ubah",
+    "Edit :label": "Ubah :label",
+    "Delete": "Hapus",
+    "Cancel": "Batal",
+    "Save": "Simpan",
+    "Save changes": "Simpan perubahan",
+    "Create & create another": "Simpan & tambah lagi",
+    "Drag & Drop your files or Browse": "Tarik foto ke sini atau pilih dari perangkat",
+    "Drag & Drop your files or <span class=\"filepond--label-action\">Browse</span>": "Tarik foto ke sini atau <span class=\"filepond--label-action\">pilih dari perangkat</span>"
+}

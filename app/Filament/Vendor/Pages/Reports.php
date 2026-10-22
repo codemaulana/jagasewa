@@ -2,11 +2,12 @@
 
 namespace App\Filament\Vendor\Pages;
 
+use App\Helpers\FormatHelper;
 use App\Models\Booking;
 use App\Models\Item;
 use App\Models\Vendor;
+use App\Services\VendorMetricsService;
 use BackedEnum;
-use Carbon\Carbon;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 
@@ -94,9 +95,7 @@ class Reports extends Page
             ];
         }
 
-        $start = Carbon::parse($this->startDate, 'Asia/Jakarta')->startOfDay();
-        $end = Carbon::parse($this->endDate, 'Asia/Jakarta')->endOfDay();
-        $totalPeriodDays = max(1, $start->diffInDays($end) + 1);
+        $totalPeriodDays = FormatHelper::calculatePeriodDays($this->startDate, $this->endDate);
 
         // 1. Bookings in period
         $bookings = Booking::where('vendor_id', $vendor->id)
@@ -104,14 +103,9 @@ class Reports extends Page
             ->with(['item', 'renter'])
             ->get();
 
-        $validBookings = $bookings->whereIn('status', [
-            Booking::STATUS_APPROVED,
-            Booking::STATUS_ACTIVE,
-            Booking::STATUS_RETURNED,
-            Booking::STATUS_CLOSED,
-        ]);
+        $validBookings = $bookings->whereIn('status', VendorMetricsService::VALID_REVENUE_STATUSES);
 
-        $totalRevenue = (int) $validBookings->sum('total_price');
+        $totalRevenue = app(VendorMetricsService::class)->getRevenueForPeriod($vendor, $this->startDate, $this->endDate);
         $totalBookingsCount = $validBookings->count();
         $totalRentedDays = (int) $validBookings->sum('total_days');
 
