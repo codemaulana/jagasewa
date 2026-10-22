@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="pt-4">
-                    <a href="{{ route('vendor.billing.index') }}" class="inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-lg bg-primary hover:bg-neutral-800 text-white font-semibold text-xs transition shadow-xs">
+                    <a href="{{ route('vendor.billing.index') }}" class="inline-flex items-center justify-center min-h-[44px] px-6 py-2.5 rounded-lg bg-primary hover:opacity-90 text-primary-text font-semibold text-xs transition shadow-xs">
                         Lihat Pilihan Paket Pro
                     </a>
                 </div>
@@ -49,28 +49,28 @@
                     <button
                         type="button"
                         wire:click="setPreset('this_month')"
-                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'this_month' ? 'bg-primary text-white border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
+                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'this_month' ? 'bg-primary text-primary-text border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
                     >
                         Bulan Ini
                     </button>
                     <button
                         type="button"
                         wire:click="setPreset('last_30_days')"
-                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'last_30_days' ? 'bg-primary text-white border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
+                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'last_30_days' ? 'bg-primary text-primary-text border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
                     >
                         30 Hari Terakhir
                     </button>
                     <button
                         type="button"
                         wire:click="setPreset('last_7_days')"
-                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'last_7_days' ? 'bg-primary text-white border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
+                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'last_7_days' ? 'bg-primary text-primary-text border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
                     >
                         7 Hari Terakhir
                     </button>
                     <button
                         type="button"
                         wire:click="setPreset('last_month')"
-                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'last_month' ? 'bg-primary text-white border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
+                        class="min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border transition {{ $preset === 'last_month' ? 'bg-primary text-primary-text border-primary' : 'bg-surface text-text-main border-border-subtle hover:bg-surface-subtle' }}"
                     >
                         Bulan Lalu
                     </button>
@@ -94,7 +94,7 @@
 
                     <a
                         href="{{ $data['exportUrl'] }}"
-                        class="inline-flex items-center justify-center min-h-[44px] px-4 text-xs font-semibold rounded-lg bg-primary hover:bg-neutral-800 text-white transition gap-1.5 shadow-xs"
+                        class="inline-flex items-center justify-center min-h-[44px] px-4 text-xs font-semibold rounded-lg bg-primary hover:opacity-90 text-primary-text transition gap-1.5 shadow-xs"
                     >
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

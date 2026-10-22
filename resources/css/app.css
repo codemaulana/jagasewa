@@ -9,11 +9,12 @@
 |--------------------------------------------------------------------------
 | JagaSewa Unified Design Tokens (Single Source of Truth)
 |--------------------------------------------------------------------------
-| Warm neutral SaaS aesthetic for rental operations.
-| Background #FAF9F6, Surface #FFFFFF, Border #E7E5E0, Text #141414, Secondary Text #6B6860.
-| Primary CTA #111111 (white text), Subtle Lime Accent #C6F432 (dark text only).
-| Semantic statuses: Success #067647, Warning #B54708, Danger #D92D20, Info #026AA2.
-| Typography: Plus Jakarta Sans (fallback system-ui).
+| Semantic light theme for rental operations.
+| Canvas --bg #F6F3EC, Surface --surface #FFFFFF, Border --border #E7E5E0.
+| Text --text #1B1B19, Text Muted --text-muted #5F5C55 (WCAG AA >= 4.5:1 on both bg & surface).
+| Primary CTA --primary #1B1B19 (white text), Accent --accent #C6F432 (dark text only), --accent-soft #EEF9C4.
+| Semantic statuses: Success #067647 on #ECFDF3, Warning #B54708 on #FFFAEB, Danger #B42318 on #FEE4E2, Info #026AA2 on #F0F9FF.
+| Typography: Plus Jakarta Sans (fallback system-ui), tabular-nums on numbers.
 | Radii: 6px (sm), 8px (md), 12px (lg), 9999px (full).
 | Single subtle shadow level.
 */
@@ -24,28 +25,34 @@
     --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
 
     /* Base Surfaces & Backgrounds */
-    --color-bg-base: #FAF9F6;
+    --color-bg: #F6F3EC;
+    --color-bg-base: #F6F3EC;
     --color-surface: #FFFFFF;
-    --color-surface-subtle: #F5F4F0;
+    --color-surface-subtle: #F6F3EC;
+    --color-border: #E7E5E0;
     --color-border-subtle: #E7E5E0;
     --color-border-hover: #D5D3CC;
 
     /* Text Colors */
-    --color-text-main: #141414;
-    --color-text-secondary: #6B6860;
-    --color-text-muted: #8F8C84;
+    --color-text: #1B1B19;
+    --color-text-main: #1B1B19;
+    --color-text-muted: #5F5C55;
+    --color-text-secondary: #5F5C55;
 
-    /* Primary Action: Solid Black CTA (#111111) */
-    --color-primary: #111111;
-    --color-primary-hover: #262626;
-    --color-primary-active: #000000;
+    /* Primary Action: Solid Dark CTA (#1B1B19) */
+    --color-primary: #1B1B19;
+    --color-primary-hover: #2E2E2B;
+    --color-primary-active: #0F0F0E;
     --color-primary-text: #FFFFFF;
 
-    /* Brand Accent: Single Accent Lime (#C6F432) - Dark Text Only */
+    /* Brand Accent: Single Accent Lime (#C6F432) & Soft Accent (#EEF9C4) */
+    --color-accent: #C6F432;
+    --color-accent-soft: #EEF9C4;
+    --color-accent-text: #1B1B19;
     --color-accent-lime: #C6F432;
     --color-accent-lime-hover: #B8E825;
-    --color-accent-lime-text: #141414;
-    --color-accent-lime-subtle: #F3FDE0;
+    --color-accent-lime-text: #1B1B19;
+    --color-accent-lime-subtle: #EEF9C4;
 
     /* Semantic Status Tokens (Soft background + Crisp border + High-contrast text) */
     --color-success: #067647;
@@ -56,22 +63,22 @@
     --color-warning-bg: #FFFAEB;
     --color-warning-border: #FEDF89;
 
-    --color-danger: #D92D20;
-    --color-danger-bg: #FEF3F2;
+    --color-danger: #B42318;
+    --color-danger-bg: #FEE4E2;
     --color-danger-border: #FECDCA;
 
     --color-info: #026AA2;
     --color-info-bg: #F0F9FF;
     --color-info-border: #B9E6FE;
 
-    --color-neutral-status-bg: #F5F4F0;
-    --color-neutral-status-text: #6B6860;
+    --color-neutral-status-bg: #F6F3EC;
+    --color-neutral-status-text: #5F5C55;
     --color-neutral-status-border: #E7E5E0;
 
     /* Buffer Zone Calendar Specific */
-    --color-buffer-bg: #F5F4F0;
+    --color-buffer-bg: #F6F3EC;
     --color-buffer-border: #E7E5E0;
-    --color-buffer-text: #6B6860;
+    --color-buffer-text: #5F5C55;
 
     /* Channel WhatsApp Brand Color */
     --color-brand-whatsapp: #25D366;
@@ -91,25 +98,31 @@
 }
 
 :root {
-    --bg-base: #FAF9F6;
+    --bg: #F6F3EC;
+    --bg-base: #F6F3EC;
     --surface: #FFFFFF;
-    --surface-subtle: #F5F4F0;
+    --surface-subtle: #F6F3EC;
+    --border: #E7E5E0;
     --border-subtle: #E7E5E0;
     --border-hover: #D5D3CC;
 
-    --text-main: #141414;
-    --text-secondary: #6B6860;
-    --text-muted: #8F8C84;
+    --text: #1B1B19;
+    --text-main: #1B1B19;
+    --text-muted: #5F5C55;
+    --text-secondary: #5F5C55;
 
-    --primary: #111111;
-    --primary-hover: #262626;
-    --primary-active: #000000;
+    --primary: #1B1B19;
+    --primary-hover: #2E2E2B;
+    --primary-active: #0F0F0E;
     --primary-text: #FFFFFF;
 
+    --accent: #C6F432;
+    --accent-soft: #EEF9C4;
+    --accent-text: #1B1B19;
     --accent-lime: #C6F432;
     --accent-lime-hover: #B8E825;
-    --accent-lime-text: #141414;
-    --accent-lime-subtle: #F3FDE0;
+    --accent-lime-text: #1B1B19;
+    --accent-lime-subtle: #EEF9C4;
 
     --success: #067647;
     --success-bg: #ECFDF3;
@@ -119,21 +132,21 @@
     --warning-bg: #FFFAEB;
     --warning-border: #FEDF89;
 
-    --danger: #D92D20;
-    --danger-bg: #FEF3F2;
+    --danger: #B42318;
+    --danger-bg: #FEE4E2;
     --danger-border: #FECDCA;
 
     --info: #026AA2;
     --info-bg: #F0F9FF;
     --info-border: #B9E6FE;
 
-    --neutral-status-bg: #F5F4F0;
-    --neutral-status-text: #6B6860;
+    --neutral-status-bg: #F6F3EC;
+    --neutral-status-text: #5F5C55;
     --neutral-status-border: #E7E5E0;
 
-    --buffer-bg: #F5F4F0;
+    --buffer-bg: #F6F3EC;
     --buffer-border: #E7E5E0;
-    --buffer-text: #6B6860;
+    --buffer-text: #5F5C55;
 
     --brand-whatsapp: #25D366;
     --brand-whatsapp-hover: #20BA5A;
@@ -152,14 +165,18 @@
 
 body {
     font-family: var(--font-family-sans);
-    background-color: var(--bg-base);
-    color: var(--text-main);
+    background-color: var(--bg);
+    color: var(--text);
     -webkit-tap-highlight-color: transparent;
 }
 
 /* ==========================================================================
    Utility Classes mapped to Design Tokens
    ========================================================================== */
+
+.bg-bg {
+    background-color: var(--bg);
+}
 
 .bg-base {
     background-color: var(--bg-base);
@@ -173,8 +190,16 @@ body {
     background-color: var(--surface-subtle);
 }
 
+.border-border {
+    border-color: var(--border);
+}
+
 .border-subtle {
     border-color: var(--border-subtle);
+}
+
+.text-text {
+    color: var(--text);
 }
 
 .text-main {
@@ -187,6 +212,12 @@ body {
 
 .text-muted {
     color: var(--text-muted);
+}
+
+.tabular-nums,
+table,
+[data-tabular-nums] {
+    font-variant-numeric: tabular-nums;
 }
 
 /* Status Badges */
@@ -220,9 +251,15 @@ body {
     border-color: var(--danger-border);
 }
 
-.badge-accent-lime {
-    background-color: var(--accent-lime);
-    color: var(--accent-lime-text);
+.badge-accent-lime,
+.badge-accent {
+    background-color: var(--accent);
+    color: var(--accent-text);
+}
+
+.badge-accent-soft {
+    background-color: var(--accent-soft);
+    color: var(--accent-text);
 }
 
 /* Buffer Zone Calendar Striping */

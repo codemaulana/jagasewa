@@ -88,7 +88,7 @@
                     </svg>
                     <span><strong>Smart Buffer Calendar Aktif:</strong> Jeda waktu pembersihan laundry dan pengiriman terkunci otomatis untuk mencegah pesanan bentrok.</span>
                 </div>
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-success text-white">PRO</span>
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-accent text-accent-text">PRO</span>
             </div>
         @else
             <!-- Teaser Smart Buffer (Free) -->
@@ -99,7 +99,7 @@
                     </svg>
                     <span><strong>Smart Buffer per Kategori:</strong> Upgrade ke Pro untuk mengatur otomatis jeda pengiriman dan laundry berbeda untuk tiap kategori barang.</span>
                 </div>
-                <a href="{{ route('vendor.billing.index') }}" class="min-h-[36px] px-3 py-1.5 bg-primary hover:bg-neutral-800 text-white text-[11px] font-semibold rounded-lg transition whitespace-nowrap inline-flex items-center justify-center">
+                <a href="{{ route('vendor.billing.index') }}" class="min-h-[36px] px-3 py-1.5 bg-primary hover:opacity-90 text-primary-text text-[11px] font-semibold rounded-lg transition whitespace-nowrap inline-flex items-center justify-center">
                     Lihat Paket Pro
                 </a>
             </div>
@@ -173,7 +173,7 @@
                                     <!-- Tanggal -->
                                     <div class="flex items-center justify-between mb-1">
                                         <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-semibold rounded-full
-                                            {{ $isToday ? 'bg-primary text-white' : '' }}
+                                            {{ $isToday ? 'bg-primary text-primary-text' : '' }}
                                         ">
                                             {{ $day['day'] }}
                                         </span>

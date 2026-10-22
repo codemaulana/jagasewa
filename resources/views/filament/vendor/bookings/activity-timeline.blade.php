@@ -97,7 +97,7 @@
         <div class="relative">
             <!-- Bullet Dot -->
             <div class="absolute -left-6 top-1 w-5 h-5 rounded-full border-2 flex items-center justify-center
-                {{ $event['status'] === 'completed' ? 'bg-success text-white border-white ring-2 ring-success-border' : ($event['status'] === 'cancelled' ? 'bg-danger text-white border-white ring-2 ring-danger-border' : 'bg-surface text-text-muted border-border-subtle') }}
+                {{ $event['status'] === 'completed' ? 'bg-success text-primary-text border-surface ring-2 ring-success-border' : ($event['status'] === 'cancelled' ? 'bg-danger text-primary-text border-surface ring-2 ring-danger-border' : 'bg-surface text-text-muted border-border-subtle') }}
             ">
                 @if($event['status'] === 'completed')
                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>

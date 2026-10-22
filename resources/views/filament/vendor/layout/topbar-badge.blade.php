@@ -24,12 +24,12 @@
             href="{{ route('vendor.billing.index') }}" 
             class="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full text-xs font-semibold border transition shadow-subtle {{
                 $isPro 
-                    ? 'bg-accent-lime text-accent-lime-text border-transparent hover:opacity-90' 
-                    : 'bg-surface-subtle text-text-secondary border-border-subtle hover:border-border-hover'
+                    ? 'bg-accent text-accent-text border-transparent hover:opacity-90' 
+                    : 'bg-surface-subtle text-text-muted border-border-subtle hover:border-border-hover'
             }}"
             title="Kelola langganan & kuota toko"
         >
-            <span class="w-1.5 h-1.5 rounded-full {{ $isPro ? 'bg-text-main' : 'bg-text-secondary' }} flex-shrink-0"></span>
+            <span class="w-1.5 h-1.5 rounded-full {{ $isPro ? 'bg-text-main' : 'bg-text-muted' }} flex-shrink-0"></span>
             <span>{{ $isPro ? 'Paket Pro' : 'Paket Free' }}</span>
         </a>
     </div>

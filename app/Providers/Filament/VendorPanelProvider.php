@@ -45,13 +45,14 @@ class VendorPanelProvider extends PanelProvider
             ->login()
             ->registration(Register::class)
             ->colors([
-                'primary' => Color::Zinc,
+                'primary' => Color::hex('#1B1B19'),
             ])
             ->font('Plus Jakarta Sans')
             ->sidebarCollapsibleOnDesktop()
             ->renderHook(PanelsRenderHook::HEAD_END, fn () => Blade::render("@vite(['resources/css/app.css', 'resources/js/app.js'])"))
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn () => view('filament.vendor.layout.topbar-badge'))
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.vendor.layout.bottom-nav'))
+            ->darkMode(false)
             ->defaultThemeMode(ThemeMode::Light)
             ->discoverResources(in: app_path('Filament/Vendor/Resources'), for: 'App\Filament\Vendor\Resources')
             ->discoverPages(in: app_path('Filament/Vendor/Pages'), for: 'App\Filament\Vendor\Pages')

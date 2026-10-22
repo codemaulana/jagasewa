@@ -81,7 +81,7 @@
                 <div class="space-y-4">
                     <div class="p-3.5 bg-surface-subtle border border-border-subtle rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                         <div class="flex items-center gap-3">
-                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-white font-bold text-xs">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-text font-bold text-xs">
                                 1
                             </span>
                             <div>
@@ -111,7 +111,7 @@
                                 Buka peringkat lengkap seluruh barang, kalkulasi durasi sewa terakumulasi, dan analisis utilisasi inventaris untuk menentukan barang yang paling menghasilkan profit.
                             </p>
                         </div>
-                        <a href="{{ route('vendor.billing.index') }}" class="min-h-[44px] px-4 py-2 bg-primary hover:bg-neutral-800 text-white text-xs font-semibold rounded-lg transition whitespace-nowrap inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
+                        <a href="{{ route('vendor.billing.index') }}" class="min-h-[44px] px-4 py-2 bg-primary hover:opacity-90 text-primary-text text-xs font-semibold rounded-lg transition whitespace-nowrap inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
                             Lihat Paket Pro
                         </a>
                     </div>
