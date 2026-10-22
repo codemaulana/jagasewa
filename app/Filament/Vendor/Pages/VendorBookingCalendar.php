@@ -6,8 +6,10 @@ use App\Filament\Vendor\Resources\Bookings\BookingResource;
 use App\Models\Booking;
 use App\Models\Item;
 use App\Models\Vendor;
+use App\Services\Billing\EntitlementService;
 use BackedEnum;
 use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Icons\Heroicon;
 
@@ -31,6 +33,8 @@ class VendorBookingCalendar extends Page
 
     public ?string $selectedDate = null;
 
+    public string $viewMode = 'month'; // 'month' or 'week'
+
     public function mount(): void
     {
         $now = now('Asia/Jakarta');
@@ -43,18 +47,37 @@ class VendorBookingCalendar extends Page
         return auth('vendor')->user()?->vendor;
     }
 
+    public function setViewMode(string $mode): void
+    {
+        $this->viewMode = in_array($mode, ['month', 'week'], true) ? $mode : 'month';
+    }
+
     public function previousMonth(): void
     {
-        $this->selectedMonth = Carbon::parse($this->selectedMonth.'-01', 'Asia/Jakarta')
-            ->subMonth()
-            ->format('Y-m');
+        if ($this->viewMode === 'week') {
+            $this->selectedDate = Carbon::parse($this->selectedDate ?: now('Asia/Jakarta')->toDateString(), 'Asia/Jakarta')
+                ->subWeek()
+                ->toDateString();
+            $this->selectedMonth = Carbon::parse($this->selectedDate, 'Asia/Jakarta')->format('Y-m');
+        } else {
+            $this->selectedMonth = Carbon::parse($this->selectedMonth.'-01', 'Asia/Jakarta')
+                ->subMonth()
+                ->format('Y-m');
+        }
     }
 
     public function nextMonth(): void
     {
-        $this->selectedMonth = Carbon::parse($this->selectedMonth.'-01', 'Asia/Jakarta')
-            ->addMonth()
-            ->format('Y-m');
+        if ($this->viewMode === 'week') {
+            $this->selectedDate = Carbon::parse($this->selectedDate ?: now('Asia/Jakarta')->toDateString(), 'Asia/Jakarta')
+                ->addWeek()
+                ->toDateString();
+            $this->selectedMonth = Carbon::parse($this->selectedDate, 'Asia/Jakarta')->format('Y-m');
+        } else {
+            $this->selectedMonth = Carbon::parse($this->selectedMonth.'-01', 'Asia/Jakarta')
+                ->addMonth()
+                ->format('Y-m');
+        }
     }
 
     public function goToCurrentMonth(): void
@@ -83,7 +106,49 @@ class VendorBookingCalendar extends Page
             9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
         ];
 
-        return ($months[$carbon->month] ?? $carbon->format('F')).' '.$carbon->year;
+        $baseLabel = ($months[$carbon->month] ?? $carbon->format('F')).' '.$carbon->year;
+
+        if ($this->viewMode === 'week') {
+            $date = Carbon::parse($this->selectedDate ?: now('Asia/Jakarta')->toDateString(), 'Asia/Jakarta');
+            $startOfWeek = $date->copy()->startOfWeek(Carbon::MONDAY);
+            $endOfWeek = $date->copy()->endOfWeek(Carbon::SUNDAY);
+
+            return "Minggu {$startOfWeek->format('d M')} - {$endOfWeek->format('d M Y')}";
+        }
+
+        return $baseLabel;
+    }
+
+    public function saveCategoryBuffer(string $category, int $before, int $after): void
+    {
+        $vendor = $this->getVendor();
+        if (! $vendor) {
+            return;
+        }
+
+        if (! app(EntitlementService::class)->isPro($vendor)) {
+            Notification::make()
+                ->title('Fitur Khusus Paket Pro')
+                ->body('Pengaturan jeda Smart Buffer per kategori hanya tersedia untuk pelanggan paket Pro.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        $settings = $vendor->category_buffer_settings ?? [];
+        $settings[$category] = [
+            'buffer_before' => max(0, $before),
+            'buffer_after' => max(0, $after),
+        ];
+
+        $vendor->update(['category_buffer_settings' => $settings]);
+
+        Notification::make()
+            ->title('Jeda Buffer Kategori Disimpan')
+            ->body("Jeda untuk kategori {$category} diatur: {$before} hari sebelum, {$after} hari sesudah.")
+            ->success()
+            ->send();
     }
 
     protected function getViewData(): array
@@ -94,20 +159,29 @@ class VendorBookingCalendar extends Page
             return [];
         }
 
+        $isPro = app(EntitlementService::class)->isPro($vendor);
+
         $items = Item::where('vendor_id', $vendor->id)
             ->orderBy('name')
             ->get();
 
         $monthDate = Carbon::parse($this->selectedMonth.'-01', 'Asia/Jakarta');
-        $startOfMonth = $monthDate->copy()->startOfMonth()->startOfDay();
-        $endOfMonth = $monthDate->copy()->endOfMonth()->startOfDay();
 
-        // ISO Day of Week: Monday = 1, Sunday = 7
-        $startOfWeekDay = $startOfMonth->isoWeekday();
-        $calendarStart = $startOfMonth->copy()->subDays($startOfWeekDay - 1);
+        if ($this->viewMode === 'week') {
+            $refDate = Carbon::parse($this->selectedDate ?: now('Asia/Jakarta')->toDateString(), 'Asia/Jakarta');
+            $calendarStart = $refDate->copy()->startOfWeek(Carbon::MONDAY)->startOfDay();
+            $calendarEnd = $refDate->copy()->endOfWeek(Carbon::SUNDAY)->startOfDay();
+        } else {
+            $startOfMonth = $monthDate->copy()->startOfMonth()->startOfDay();
+            $endOfMonth = $monthDate->copy()->endOfMonth()->startOfDay();
 
-        $endOfWeekDay = $endOfMonth->isoWeekday();
-        $calendarEnd = $endOfMonth->copy()->addDays(7 - $endOfWeekDay);
+            // ISO Day of Week: Monday = 1, Sunday = 7
+            $startOfWeekDay = $startOfMonth->isoWeekday();
+            $calendarStart = $startOfMonth->copy()->subDays($startOfWeekDay - 1);
+
+            $endOfWeekDay = $endOfMonth->isoWeekday();
+            $calendarEnd = $endOfMonth->copy()->addDays(7 - $endOfWeekDay);
+        }
 
         $bufferMargin = 14;
         $queryStart = $calendarStart->copy()->subDays($bufferMargin)->toDateString();
@@ -132,8 +206,9 @@ class VendorBookingCalendar extends Page
 
         $bookings = $bookingsQuery->get();
 
-        // Map events by date
+        // Map events by date and check clashes
         $eventsByDate = [];
+        $clashes = [];
 
         foreach ($bookings as $booking) {
             $viewUrl = BookingResource::getUrl('view', ['record' => $booking->id]);
@@ -237,6 +312,8 @@ class VendorBookingCalendar extends Page
 
         return [
             'vendor' => $vendor,
+            'isPro' => $isPro,
+            'viewMode' => $this->viewMode,
             'items' => $items,
             'monthLabel' => $this->getMonthLabel(),
             'weeks' => $weeks,

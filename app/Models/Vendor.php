@@ -31,6 +31,7 @@ class Vendor extends Model
         'address',
         'bank_account_info',
         'custom_wa_templates',
+        'category_buffer_settings',
         'is_active',
     ];
 
@@ -63,6 +64,7 @@ class Vendor extends Model
             'wa_number' => 'encrypted',
             'is_active' => 'boolean',
             'custom_wa_templates' => 'array',
+            'category_buffer_settings' => 'array',
         ];
     }
 
@@ -112,6 +114,27 @@ class Vendor extends Model
                 return Storage::disk('public')->url($this->banner_path);
             }
         }
+    }
+
+    /**
+     * Get configured default buffer before and after for a specific category.
+     *
+     * @return array{buffer_before: int, buffer_after: int}
+     */
+    public function getCategoryBuffer(string $category): array
+    {
+        $settings = $this->category_buffer_settings ?? [];
+        if (isset($settings[$category]) && is_array($settings[$category])) {
+            return [
+                'buffer_before' => (int) ($settings[$category]['buffer_before'] ?? 1),
+                'buffer_after' => (int) ($settings[$category]['buffer_after'] ?? 1),
+            ];
+        }
+
+        return [
+            'buffer_before' => 1,
+            'buffer_after' => 1,
+        ];
     }
 
     /**

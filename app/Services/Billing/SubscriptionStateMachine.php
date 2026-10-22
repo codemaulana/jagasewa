@@ -23,6 +23,7 @@ class SubscriptionStateMachine
         Subscription::STATUS_PENDING_PAYMENT => [
             Subscription::STATUS_ACTIVE => ['invoice.paid'],
             Subscription::STATUS_EXPIRED => ['timeout', 'invoice.expired'],
+            Subscription::STATUS_CANCELLED => ['vendor_cancelled'],
         ],
         Subscription::STATUS_PAST_DUE => [
             Subscription::STATUS_ACTIVE => ['invoice.paid'],
@@ -69,18 +70,41 @@ class SubscriptionStateMachine
 
         $subscription->status = $to;
 
-        // If activating to Pro via payment
+        // If activating to Pro via payment (initial activation or seamless renewal)
         if ($to === Subscription::STATUS_ACTIVE && $trigger === 'invoice.paid') {
             $subscription->plan = Subscription::PLAN_PRO;
-            $subscription->current_period_start = Carbon::now('Asia/Jakarta');
 
             $cycle = $context['billing_cycle'] ?? $subscription->billing_cycle ?? Subscription::CYCLE_MONTHLY;
             $subscription->billing_cycle = $cycle;
 
+            // Per Section 2b: Perpanjangan harus menyambung dari tanggal berakhir, bukan dari tanggal bayar.
+            $existingActive = Subscription::where('vendor_id', $subscription->vendor_id)
+                ->where('plan', Subscription::PLAN_PRO)
+                ->where('status', Subscription::STATUS_ACTIVE)
+                ->where('id', '!=', $subscription->id)
+                ->where(function ($q) {
+                    $q->whereNull('current_period_end')
+                        ->orWhere('current_period_end', '>', now('Asia/Jakarta'));
+                })
+                ->latest('id')
+                ->first();
+
+            $existingEnd = $existingActive?->current_period_end;
+            $baseDate = ($existingEnd && Carbon::parse($existingEnd)->isFuture())
+                ? Carbon::parse($existingEnd)->timezone('Asia/Jakarta')
+                : Carbon::now('Asia/Jakarta');
+
+            if ($existingActive) {
+                $subscription->current_period_start = $existingActive->current_period_start ?? Carbon::now('Asia/Jakarta');
+                $existingActive->update(['status' => Subscription::STATUS_CANCELLED]);
+            } elseif (! $subscription->current_period_start) {
+                $subscription->current_period_start = Carbon::now('Asia/Jakarta');
+            }
+
             $subscription->current_period_end = match ($cycle) {
-                Subscription::CYCLE_QUARTERLY => Carbon::now('Asia/Jakarta')->addMonths(3),
-                Subscription::CYCLE_ANNUALLY => Carbon::now('Asia/Jakarta')->addYear(),
-                default => Carbon::now('Asia/Jakarta')->addMonth(),
+                Subscription::CYCLE_QUARTERLY => $baseDate->copy()->addMonths(3),
+                Subscription::CYCLE_ANNUALLY => $baseDate->copy()->addYear(),
+                default => $baseDate->copy()->addMonth(),
             };
 
             if (! empty($context['gateway_subscription_id'])) {
@@ -96,6 +120,10 @@ class SubscriptionStateMachine
             $subscription->plan = Subscription::PLAN_FREE;
             $subscription->status = Subscription::STATUS_ACTIVE;
             $subscription->current_period_end = null;
+
+            if ($subscription->vendor) {
+                app(EntitlementService::class)->applyDowngrade($subscription->vendor);
+            }
         }
 
         $subscription->save();

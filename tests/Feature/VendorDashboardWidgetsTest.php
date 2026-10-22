@@ -62,8 +62,9 @@ class VendorDashboardWidgetsTest extends TestCase
         $response->assertSee('Tautan Etalase Toko Publik');
         $response->assertSee('/b/koleksi-kostum-cantik');
         $response->assertSee('Status Langganan');
-        $response->assertSee('Pesanan Menunggu');
-        $response->assertSee('Barang Sedang Disewa');
+        $response->assertSee('Tugas Hari Ini');
+        $response->assertSee('Pendapatan Bulan Ini');
+        $response->assertSee('Menunggu Konfirmasi');
         $response->assertSee('Panduan Memulai Toko Rental');
 
         // Default Filament widgets are removed
@@ -99,18 +100,19 @@ class VendorDashboardWidgetsTest extends TestCase
 
         $component = Livewire::test(RentalStatsOverviewWidget::class)
             ->assertSuccessful()
-            ->assertSee('Pesanan Menunggu')
-            ->assertSee('Barang Sedang Disewa')
-            ->assertSee('Pengembalian Perlu Dicek');
+            ->assertSee('Tugas Hari Ini')
+            ->assertSee('Pendapatan Bulan Ini')
+            ->assertSee('Menunggu Konfirmasi');
 
         /** @var RentalStatsOverviewWidget $widget */
         $widget = $component->instance();
         $stats = $widget->getStats();
 
-        // Vendor A counts: 2 pending, 1 active, 1 returned/settlement
-        $this->assertEquals(2, $stats[0]->getValue());
-        $this->assertEquals(1, $stats[1]->getValue());
-        $this->assertEquals(1, $stats[2]->getValue());
+        // Vendor A counts: 0 today tasks (start/end not today), revenue string, 2 pending
+        $this->assertEquals('Tugas Hari Ini', $stats[0]->getLabel());
+        $this->assertEquals('Pendapatan Bulan Ini', $stats[1]->getLabel());
+        $this->assertEquals('Menunggu Konfirmasi', $stats[2]->getLabel());
+        $this->assertEquals(2, $stats[2]->getValue());
     }
 
     /**

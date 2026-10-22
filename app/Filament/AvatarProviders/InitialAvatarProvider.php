@@ -21,8 +21,8 @@ class InitialAvatarProvider implements AvatarProvider
         $initial = strtoupper(mb_substr(trim($name ?: 'U'), 0, 1));
 
         $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">'
-            .'<rect width="40" height="40" rx="8" fill="#18181b"/>'
-            .'<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#f4f4f5" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700">'
+            .'<rect width="40" height="40" rx="8" fill="rgb(17, 17, 17)"/>'
+            .'<text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="rgb(255, 255, 255)" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700">'
             .htmlspecialchars($initial)
             .'</text></svg>';
 

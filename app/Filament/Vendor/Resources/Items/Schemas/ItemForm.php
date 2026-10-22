@@ -3,7 +3,9 @@
 namespace App\Filament\Vendor\Resources\Items\Schemas;
 
 use App\Models\Item;
+use App\Services\Billing\EntitlementService;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
@@ -12,6 +14,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class ItemForm
@@ -20,13 +23,24 @@ class ItemForm
     {
         return $schema
             ->components([
-                Section::make('Informasi Utama')
-                    ->description('Detail nama, pengenal URL, dan deskripsi barang rental.')
+                Placeholder::make('over_limit_notice')
+                    ->hiddenLabel()
+                    ->content(new HtmlString('
+                        <div class="p-4 bg-warning-bg border border-warning-border rounded-lg text-text-main text-sm">
+                            <span class="font-bold">Barang Berstatus Read-Only:</span>
+                            Barang ini melebihi batas kuota 15 barang aktif pada paket Free Anda. Data Anda tersimpan aman dan tidak dihapus, namun tidak dapat diubah hingga Anda memperpanjang atau upgrade ke paket Pro.
+                        </div>
+                    '))
+                    ->visible(fn (?Item $record) => $record && app(EntitlementService::class)->isItemReadOnly(auth('vendor')->user()?->vendor, $record))
+                    ->columnSpanFull(),
+
+                Section::make('Informasi Utama & Inventaris')
+                    ->description('Detail nama, kategori, kode inventaris, dan status operasional barang.')
                     ->schema([
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('name')
-                                    ->label('Nama Barang / Kostum')
+                                    ->label('Nama Barang / Unit')
                                     ->required()
                                     ->maxLength(255)
                                     ->live(onBlur: true)
@@ -35,6 +49,20 @@ class ItemForm
                                             $set('slug', Str::slug($state));
                                         }
                                     }),
+                                Select::make('category')
+                                    ->label('Kategori Barang')
+                                    ->options(Item::CATEGORIES)
+                                    ->required()
+                                    ->default('Lainnya')
+                                    ->searchable(),
+                                TextInput::make('item_code')
+                                    ->label('Kode Barang / Barcode')
+                                    ->placeholder('Contoh: CAM-001 / KOS-02')
+                                    ->maxLength(50)
+                                    ->helperText('Kode unik internal inventaris toko'),
+                            ]),
+                        Grid::make(2)
+                            ->schema([
                                 TextInput::make('slug')
                                     ->label('Slug URL')
                                     ->required()
@@ -45,25 +73,35 @@ class ItemForm
                                         ignorable: fn (?Item $record) => $record,
                                         modifyRuleUsing: fn ($rule) => $rule->where('vendor_id', auth('vendor')->user()?->vendor_id ?? session('vendor_id'))
                                     )
-                                    ->helperText('Pengenal unik URL barang, contoh: genshin-raiden-shogun-m'),
+                                    ->helperText('Pengenal unik URL barang di etalase toko'),
+                                Select::make('unit_status')
+                                    ->label('Status Operasional Unit')
+                                    ->options([
+                                        Item::UNIT_STATUS_AVAILABLE => 'Tersedia (Siap Sewa)',
+                                        Item::UNIT_STATUS_RENTED => 'Sedang Disewa',
+                                        Item::UNIT_STATUS_LAUNDRY => 'Laundry / Pembersihan',
+                                        Item::UNIT_STATUS_MAINTENANCE => 'Perbaikan / Maintenance',
+                                    ])
+                                    ->default(Item::UNIT_STATUS_AVAILABLE)
+                                    ->required(),
                             ]),
                         Textarea::make('description')
                             ->label('Deskripsi Barang')
                             ->rows(3)
                             ->columnSpanFull(),
                         Toggle::make('is_active')
-                            ->label('Status Aktif (Tampil di Katalog Publik)')
+                            ->label('Tampilkan di Katalog Publik Toko')
                             ->default(true)
                             ->required(),
                     ]),
 
-                Section::make('Atribut Rental (Cosplay / Kamera / Pakaian)')
-                    ->description('Spesifikasi ukuran, kelengkapan komponen sewa, dan petunjuk perawatan.')
+                Section::make('Atribut Rental (Varian, Kondisi & Kelengkapan)')
+                    ->description('Spesifikasi ukuran/varian, kondisi fisik terkini, dan kelengkapan aksesoris.')
                     ->schema([
-                        Grid::make(2)
+                        Grid::make(3)
                             ->schema([
                                 Select::make('size')
-                                    ->label('Ukuran / Size')
+                                    ->label('Ukuran / Varian')
                                     ->options([
                                         'S' => 'S',
                                         'M' => 'M',
@@ -76,8 +114,13 @@ class ItemForm
                                     ])
                                     ->searchable()
                                     ->placeholder('Pilih ukuran jika ada'),
+                                Select::make('condition')
+                                    ->label('Kondisi Fisik Barang')
+                                    ->options(Item::CONDITIONS)
+                                    ->default('Sangat Baik')
+                                    ->required(),
                                 TagsInput::make('included_items')
-                                    ->label('Kelengkapan Set (Included Items)')
+                                    ->label('Kelengkapan Komponen (Included)')
                                     ->placeholder('Ketik komponen lalu Enter')
                                     ->suggestions([
                                         'Kostum',
@@ -89,46 +132,56 @@ class ItemForm
                                         'Baterai Cadangan',
                                         'Lensa Kit',
                                         'Memory Card',
+                                        'Charger',
+                                        'Hardcase',
                                     ]),
                             ]),
                         Textarea::make('care_instructions')
-                            ->label('Instruksi Perawatan & Cuci')
-                            ->placeholder('Contoh: Dry clean only, wig jangan disisir kasar saat basah, simpan di tempat kering.')
+                            ->label('Petunjuk Penggunaan & Perawatan')
+                            ->placeholder('Contoh: Dry clean only, lensa jangan disentuh kaca langsung, simpan di dry box.')
                             ->rows(2)
                             ->columnSpanFull(),
                     ]),
 
                 Section::make('Ketentuan Finansial (Integer Rupiah)')
-                    ->description('Tarif sewa harian, deposit jaminan, dan denda keterlambatan per hari.')
+                    ->description('Tarif sewa harian, paket durasi, nilai uang jaminan deposit, dan denda.')
                     ->schema([
-                        Grid::make(3)
+                        Grid::make(4)
                             ->schema([
                                 TextInput::make('price_per_day')
-                                    ->label('Harga Sewa / Hari')
+                                    ->label('Tarif / Hari')
                                     ->required()
                                     ->numeric()
                                     ->integer()
                                     ->minValue(1)
                                     ->prefix('Rp')
-                                    ->helperText('Tarif per hari (wajib > 0)'),
+                                    ->helperText('Wajib > 0'),
+                                TextInput::make('package_price_3d')
+                                    ->label('Tarif Paket 3 Hari (Opsional)')
+                                    ->numeric()
+                                    ->integer()
+                                    ->minValue(0)
+                                    ->prefix('Rp')
+                                    ->placeholder('Contoh: 180000')
+                                    ->helperText('Diskon sewa weekend / 3 hari'),
                                 TextInput::make('deposit_amount')
-                                    ->label('Uang Jaminan / Deposit')
+                                    ->label('Deposit Jaminan')
                                     ->required()
                                     ->numeric()
                                     ->integer()
                                     ->minValue(0)
                                     ->default(0)
                                     ->prefix('Rp')
-                                    ->helperText('Deposit pengaman kerusakan/keterlambatan'),
+                                    ->helperText('Jaminan pengaman kerusakan'),
                                 TextInput::make('fine_per_day')
-                                    ->label('Denda Keterlambatan / Hari')
+                                    ->label('Denda Telat / Hari')
                                     ->required()
                                     ->numeric()
                                     ->integer()
                                     ->minValue(0)
                                     ->default(0)
                                     ->prefix('Rp')
-                                    ->helperText('Denda per hari jika terlambat'),
+                                    ->helperText('Denda per hari keterlambatan'),
                             ]),
                     ]),
 
@@ -167,6 +220,7 @@ class ItemForm
                             ->openable()
                             ->downloadable()
                             ->image()
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->disk(config('filesystems.disks.s3.key') || app()->environment('testing') ? 's3' : 'public')
                             ->directory('item_photos')
                             ->visibility('private')

@@ -20,11 +20,13 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class VendorPanelProvider extends PanelProvider
@@ -45,7 +47,11 @@ class VendorPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Zinc,
             ])
-            ->font('Inter Tight')
+            ->font('Plus Jakarta Sans')
+            ->sidebarCollapsibleOnDesktop()
+            ->renderHook(PanelsRenderHook::HEAD_END, fn () => Blade::render("@vite(['resources/css/app.css', 'resources/js/app.js'])"))
+            ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn () => view('filament.vendor.layout.topbar-badge'))
+            ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.vendor.layout.bottom-nav'))
             ->defaultThemeMode(ThemeMode::Light)
             ->discoverResources(in: app_path('Filament/Vendor/Resources'), for: 'App\Filament\Vendor\Resources')
             ->discoverPages(in: app_path('Filament/Vendor/Pages'), for: 'App\Filament\Vendor\Pages')
@@ -53,6 +59,11 @@ class VendorPanelProvider extends PanelProvider
                 Dashboard::class,
             ])
             ->navigationItems([
+                NavigationItem::make('Ekspor Laporan CSV')
+                    ->url(fn () => route('vendor.reports.export'))
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->visible(fn () => auth('vendor')->user()?->vendor?->isPro() ?? false)
+                    ->sort(85),
                 NavigationItem::make('Paket & Kuota Toko')
                     ->url(fn () => route('vendor.billing.index'))
                     ->icon('heroicon-o-sparkles')
@@ -64,7 +75,7 @@ class VendorPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 MenuItem::make()
-                    ->label(fn () => (auth('vendor')->user()?->vendor?->isPro() ? '💎 Paket Pro' : '🟢 Paket Free').' — Kelola')
+                    ->label(fn () => (auth('vendor')->user()?->vendor?->isPro() ? 'Paket Pro' : 'Paket Free').' — Kelola')
                     ->url(fn () => route('vendor.billing.index'))
                     ->icon('heroicon-o-credit-card'),
                 MenuItem::make()

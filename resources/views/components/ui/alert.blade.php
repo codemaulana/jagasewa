@@ -8,19 +8,19 @@
     $configs = [
         'info' => [
             'classes' => 'badge-status-info border',
-            'titleColor' => 'text-[#0369a1]',
+            'titleColor' => 'text-info',
         ],
         'warning' => [
             'classes' => 'badge-status-warning border',
-            'titleColor' => 'text-[#92400e]',
+            'titleColor' => 'text-warning',
         ],
         'danger' => [
             'classes' => 'badge-status-danger border',
-            'titleColor' => 'text-[#991b1b]',
+            'titleColor' => 'text-danger',
         ],
         'success' => [
             'classes' => 'badge-status-success border',
-            'titleColor' => 'text-[#166534]',
+            'titleColor' => 'text-success',
         ],
     ];
 

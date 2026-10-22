@@ -37,6 +37,12 @@ class BillingController extends Controller
         $isPro = $this->entitlement->isPro($vendor);
         $activeItemsCount = Item::where('vendor_id', $vendor->id)->where('is_active', true)->count();
         $blacklistCount = $vendor->blacklistEntries()->count();
+        $entitlements = $this->entitlement->getEntitlements($vendor);
+        $paymentHistory = $vendor->subscriptions()
+            ->with('manualActivations')
+            ->orderBy('id', 'desc')
+            ->take(10)
+            ->get();
 
         $data = [
             'vendor' => $vendor,
@@ -44,6 +50,11 @@ class BillingController extends Controller
             'active_subscription' => $activeSubscription,
             'pending_subscription' => $pendingSubscription,
             'is_pro' => $isPro,
+            'in_grace_period' => $this->entitlement->isInGracePeriod($vendor),
+            'is_near_expiration' => $this->entitlement->isNearExpiration($vendor),
+            'days_until_expiration' => $this->entitlement->getDaysUntilExpiration($vendor),
+            'entitlements' => $entitlements,
+            'payment_history' => $paymentHistory,
             'limits' => [
                 'active_items' => [
                     'used' => $activeItemsCount,
@@ -70,6 +81,34 @@ class BillingController extends Controller
         }
 
         return view('vendor.billing.index', $data);
+    }
+
+    /**
+     * Return current vendor entitlement, limits, and usage (Single Source of Truth for frontend).
+     */
+    public function myEntitlements(Request $request)
+    {
+        $vendor = auth('vendor')->user()?->vendor;
+
+        if (! $vendor) {
+            abort(403, 'Unauthorized');
+        }
+
+        return response()->json($this->entitlement->getEntitlements($vendor));
+    }
+
+    /**
+     * Display upgrade confirmation screen showing unlocked Pro features.
+     */
+    public function success(Request $request)
+    {
+        $vendor = auth('vendor')->user()?->vendor;
+
+        return view('vendor.billing.finish', [
+            'vendor' => $vendor,
+            'is_pro' => $vendor ? $this->entitlement->isPro($vendor) : false,
+            'entitlements' => $vendor ? $this->entitlement->getEntitlements($vendor) : [],
+        ]);
     }
 
     /**
@@ -126,10 +165,12 @@ class BillingController extends Controller
      * Initiate checkout for Pro subscription tier via Mayar.id (Pilihan A).
      * Protected by pessimistic locking and single-active-subscription rule (T-45 / BUG-01).
      */
-    public function checkout(Request $request, MayarPaymentService $paymentService): RedirectResponse
+    public function checkout(Request $request, MayarPaymentService $paymentService)
     {
         $request->validate([
             'cycle' => ['required', 'string', 'in:monthly,quarterly,annually'],
+            'is_renewal' => ['nullable', 'boolean'],
+            'action' => ['nullable', 'string'],
         ]);
 
         $user = auth('vendor')->user();
@@ -138,20 +179,28 @@ class BillingController extends Controller
         }
 
         $cycle = $request->input('cycle');
+        $isRenewal = $request->boolean('is_renewal') || $request->input('action') === 'extend';
 
-        return DB::transaction(function () use ($user, $cycle, $paymentService) {
+        return DB::transaction(function () use ($user, $cycle, $isRenewal, $paymentService, $request) {
             /** @var Vendor $vendor */
             $vendor = Vendor::where('id', $user->vendor_id)->lockForUpdate()->firstOrFail();
 
-            // 1. Guard against double subscription if already Pro
-            if ($this->entitlement->isPro($vendor)) {
+            // 1. Guard against double subscription if already Pro (unless explicitly renewing)
+            if ($this->entitlement->isPro($vendor) && ! $isRenewal) {
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json([
+                        'error' => 'ALREADY_SUBSCRIBED',
+                        'message' => 'Toko Anda sudah aktif berlangganan Paket Pro. Gunakan tombol perpanjangan langganan.',
+                    ], 409);
+                }
+
                 $activeSub = $vendor->activeSubscription;
                 $expiryText = $activeSub?->current_period_end
                     ? $activeSub->current_period_end->translatedFormat('d F Y')
                     : 'Aktif';
 
                 return redirect()->route('vendor.billing.index')
-                    ->with('error', "Toko Anda sudah aktif berlangganan Paket Pro (berlaku hingga {$expiryText}). Pembelian ganda tidak diizinkan.");
+                    ->with('error', "Toko Anda sudah aktif berlangganan Paket Pro (berlaku hingga {$expiryText}). Pembelian ganda tidak diizinkan. Silakan pilih perpanjang.");
             }
 
             // 2. Guard against duplicate pending subscriptions
@@ -164,6 +213,14 @@ class BillingController extends Controller
             if ($pendingSub) {
                 // If the pending order is the exact same billing cycle, reuse payment or avoid duplicate
                 if ($pendingSub->billing_cycle === $cycle) {
+                    if ($request->expectsJson() || $request->is('api/*')) {
+                        return response()->json([
+                            'error' => 'PENDING_ORDER_EXISTS',
+                            'message' => 'Anda sudah memiliki tagihan pending untuk paket ini. Silakan selesaikan pembayaran.',
+                            'subscription_ulid' => $pendingSub->ulid,
+                        ], 409);
+                    }
+
                     $mockInvoiceId = $pendingSub->gateway_subscription_id;
                     $paymentUrl = $mockInvoiceId && str_starts_with($mockInvoiceId, 'pay_mock_')
                         ? "https://sandbox.mayar.id/pay/{$mockInvoiceId}"
@@ -183,21 +240,39 @@ class BillingController extends Controller
                 ]);
             }
 
+            // Calculate start date: if renewal of active sub, connect seamlessly from current_period_end
+            $activeSub = $vendor->activeSubscription;
+            $periodStart = ($isRenewal && $activeSub && $activeSub->current_period_end && $activeSub->current_period_end->isFuture())
+                ? $activeSub->current_period_end
+                : now('Asia/Jakarta');
+
             /** @var Subscription $subscription */
             $subscription = Subscription::create([
                 'vendor_id' => $vendor->id,
                 'plan' => Subscription::PLAN_PRO,
                 'status' => Subscription::STATUS_PENDING_PAYMENT,
                 'billing_cycle' => $cycle,
-                'current_period_start' => now('Asia/Jakarta'),
+                'current_period_start' => $periodStart,
             ]);
 
             try {
                 $result = $paymentService->createPaymentLink($subscription, $user);
 
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json([
+                        'status' => 'success',
+                        'payment_url' => $result['payment_url'],
+                        'subscription_ulid' => $subscription->ulid,
+                    ]);
+                }
+
                 return redirect()->away($result['payment_url']);
             } catch (\Exception $e) {
                 $subscription->delete();
+
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json(['error' => $e->getMessage()], 500);
+                }
 
                 return redirect()->route('vendor.billing.index')->with('error', $e->getMessage());
             }

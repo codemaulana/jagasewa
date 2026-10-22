@@ -4,7 +4,10 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                 <div>
                     <h3 class="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
-                        <span>🚀 Panduan Memulai Toko Rental</span>
+                        <svg class="w-4 h-4 text-zinc-700 dark:text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span>Panduan Memulai Toko Rental</span>
                         @if($completedSteps === 3)
                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                                 Siap Beroperasi!

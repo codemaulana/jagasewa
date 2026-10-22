@@ -1,13 +1,13 @@
 @props([
     'padding' => 'p-4 sm:p-5',
-    'rounded' => 'rounded-xl',
+    'rounded' => 'rounded-lg',
     'hoverable' => false,
 ])
 
 @php
-    $hoverClasses = $hoverable ? 'hover:border-neutral-300 transition duration-150' : '';
+    $hoverClasses = $hoverable ? 'hover:border-border-hover transition duration-150' : '';
 @endphp
 
-<div {{ $attributes->merge(['class' => "bg-white border border-neutral-200 shadow-xs {$rounded} {$padding} {$hoverClasses}"]) }}>
+<div {{ $attributes->merge(['class' => "bg-surface border border-border-subtle shadow-subtle {$rounded} {$padding} {$hoverClasses}"]) }}>
     {{ $slot }}
 </div>

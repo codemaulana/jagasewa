@@ -22,43 +22,55 @@ class RentalStatsOverviewWidget extends BaseWidget
         }
 
         $today = now(FineCalculatorService::TIMEZONE)->toDateString();
+        $startOfMonth = now(FineCalculatorService::TIMEZONE)->startOfMonth()->toDateString();
+        $endOfMonth = now(FineCalculatorService::TIMEZONE)->endOfMonth()->toDateString();
 
+        // 1. Tugas Hari Ini: Pengambilan, Pengembalian, Terlambat
+        $pickupsToday = Booking::where('vendor_id', $vendor->id)
+            ->whereIn('status', [Booking::STATUS_APPROVED, Booking::STATUS_PENDING])
+            ->whereDate('start_date', $today)
+            ->count();
+
+        $returnsToday = Booking::where('vendor_id', $vendor->id)
+            ->where('status', Booking::STATUS_ACTIVE)
+            ->whereDate('end_date', $today)
+            ->count();
+
+        $overdueReturns = Booking::where('vendor_id', $vendor->id)
+            ->where('status', Booking::STATUS_ACTIVE)
+            ->whereDate('end_date', '<', $today)
+            ->count();
+
+        $totalTodayTasks = $pickupsToday + $returnsToday + $overdueReturns;
+
+        // 2. Pendapatan Bulan Ini
+        $monthlyRevenue = (int) Booking::where('vendor_id', $vendor->id)
+            ->whereIn('status', [Booking::STATUS_ACTIVE, Booking::STATUS_RETURNED, Booking::STATUS_CLOSED])
+            ->whereBetween('start_date', [$startOfMonth, $endOfMonth])
+            ->sum('total_price');
+
+        // 3. Booking Menunggu Konfirmasi
         $pendingCount = Booking::where('vendor_id', $vendor->id)
             ->where('status', Booking::STATUS_PENDING)
             ->count();
 
-        $activeCount = Booking::where('vendor_id', $vendor->id)
-            ->where('status', Booking::STATUS_ACTIVE)
-            ->count();
-
-        $returnsDueTodayCount = Booking::where('vendor_id', $vendor->id)
-            ->where('status', Booking::STATUS_ACTIVE)
-            ->whereDate('end_date', '<=', $today)
-            ->count();
-
-        $returnedNeedSettlementCount = Booking::where('vendor_id', $vendor->id)
-            ->where('status', Booking::STATUS_RETURNED)
-            ->count();
-
-        $totalReturnsAttention = $returnsDueTodayCount + $returnedNeedSettlementCount;
-
         return [
-            Stat::make('Pesanan Menunggu', $pendingCount)
-                ->description($pendingCount > 0 ? 'Perlu tindakan verifikasi & persetujuan' : 'Semua pesanan telah diproses')
+            Stat::make('Tugas Hari Ini', $totalTodayTasks)
+                ->description("{$pickupsToday} Pengambilan · {$returnsToday} Pengembalian · {$overdueReturns} Terlambat")
+                ->descriptionIcon($overdueReturns > 0 ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-calendar-days')
+                ->color($overdueReturns > 0 ? 'danger' : ($totalTodayTasks > 0 ? 'warning' : 'success'))
+                ->url(url('/vendor/bookings')),
+
+            Stat::make('Pendapatan Bulan Ini', 'Rp '.number_format($monthlyRevenue, 0, ',', '.'))
+                ->description('Omzet transaksi sewa bulan '.now(FineCalculatorService::TIMEZONE)->translatedFormat('F Y'))
+                ->descriptionIcon('heroicon-m-banknotes')
+                ->color('success')
+                ->url(url('/vendor/bookings')),
+
+            Stat::make('Menunggu Konfirmasi', $pendingCount)
+                ->description($pendingCount > 0 ? "{$pendingCount} pesanan baru perlu diverifikasi" : 'Semua permohonan telah diproses')
                 ->descriptionIcon('heroicon-m-clock')
                 ->color($pendingCount > 0 ? 'warning' : 'gray')
-                ->url(url('/vendor/bookings')),
-
-            Stat::make('Barang Sedang Disewa', $activeCount)
-                ->description('Unit aktif di tangan penyewa')
-                ->descriptionIcon('heroicon-m-truck')
-                ->color($activeCount > 0 ? 'info' : 'gray')
-                ->url(url('/vendor/bookings')),
-
-            Stat::make('Pengembalian Perlu Dicek', $totalReturnsAttention)
-                ->description($totalReturnsAttention > 0 ? "{$returnsDueTodayCount} jatuh tempo, {$returnedNeedSettlementCount} siap denda/settlement" : 'Tidak ada pengembalian mendesak')
-                ->descriptionIcon('heroicon-m-arrow-path')
-                ->color($totalReturnsAttention > 0 ? 'danger' : 'success')
                 ->url(url('/vendor/bookings')),
         ];
     }

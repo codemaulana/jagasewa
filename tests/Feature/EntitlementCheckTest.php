@@ -101,9 +101,9 @@ class EntitlementCheckTest extends TestCase
     }
 
     /**
-     * Batas kuota barang aktif pada paket Free maksimal 5 item
+     * Batas kuota barang aktif pada paket Free maksimal 15 item (Prompt Gelombang 1)
      */
-    public function test_free_vendor_active_item_limit_enforced_at_5(): void
+    public function test_free_vendor_active_item_limit_enforced_at_15(): void
     {
         $vendor = Vendor::factory()->create();
         $service = app(EntitlementService::class);
@@ -113,22 +113,22 @@ class EntitlementCheckTest extends TestCase
             'plan' => Subscription::PLAN_FREE,
         ]);
 
-        // Create 4 active items -> can still add
-        Item::factory()->count(4)->create([
+        // Create 14 active items -> can still add
+        Item::factory()->count(14)->create([
             'vendor_id' => $vendor->id,
             'is_active' => true,
         ]);
         $this->assertTrue($service->canAddActiveItem($vendor));
 
-        // Create 5th active item -> at limit
+        // Create 15th active item -> at limit
         Item::factory()->create([
             'vendor_id' => $vendor->id,
             'is_active' => true,
         ]);
-        // Now 5 active items, cannot add 6th
+        // Now 15 active items, cannot add 16th
         $this->assertFalse($service->canAddActiveItem($vendor));
 
-        // Inactive items do not count towards the 5 limit
+        // Inactive items do not count towards the 15 limit
         Item::factory()->create([
             'vendor_id' => $vendor->id,
             'is_active' => false,

@@ -37,6 +37,7 @@ class StoreLinkAndPlanWidget extends Widget
         $totalItems = Item::where('vendor_id', $vendor->id)->count();
         $blacklistCount = BlacklistEntry::where('vendor_id', $vendor->id)->count();
         $activeSubscription = $vendor->activeSubscription()->first();
+        $pendingSubscription = $vendor->pendingSubscription()->first();
 
         return [
             'vendor' => $vendor,
@@ -48,6 +49,10 @@ class StoreLinkAndPlanWidget extends Widget
             'blacklistCount' => $blacklistCount,
             'maxBlacklist' => $isPro ? 'Tanpa Batas' : EntitlementService::MAX_FREE_BLACKLIST_ENTRIES,
             'activeSubscription' => $activeSubscription,
+            'pendingSubscription' => $pendingSubscription,
+            'inGracePeriod' => $entitlement->isInGracePeriod($vendor),
+            'isNearExpiration' => $entitlement->isNearExpiration($vendor),
+            'daysUntilExpiration' => $entitlement->getDaysUntilExpiration($vendor),
         ];
     }
 }

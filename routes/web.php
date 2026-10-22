@@ -57,10 +57,20 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
         ->middleware('auth:vendor')
         ->name('billing.finish');
 
+    // Vendor Billing Confirmation Screen
+    Route::get('/billing/success', [BillingController::class, 'success'])
+        ->middleware('auth:vendor')
+        ->name('billing.success');
+
     // Vendor Billing & Plans Overview (T-43)
     Route::get('/billing', [BillingController::class, 'index'])
         ->middleware('auth:vendor')
         ->name('billing.index');
+
+    // Vendor Entitlements Single Source of Truth Endpoint
+    Route::get('/entitlements', [BillingController::class, 'myEntitlements'])
+        ->middleware('auth:vendor')
+        ->name('entitlements');
 
     // Vendor Billing Checkout Initiation via Mayar (Pilihan A)
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])
@@ -74,7 +84,7 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
 
     // Pro-Only Feature: Export CSV Report (T-43 / SEC-25)
     Route::get('/reports/export', [BillingController::class, 'exportReports'])
-        ->middleware(['auth:vendor', 'vendor.pro'])
+        ->middleware(['auth:vendor', 'vendor.pro:export_reports'])
         ->name('reports.export');
 });
 

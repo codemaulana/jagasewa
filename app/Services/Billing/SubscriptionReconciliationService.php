@@ -235,15 +235,16 @@ class SubscriptionReconciliationService
                 }
             }
 
-            // CASE 3: Past Due with Grace Period Expired (7 days)
+            // CASE 3: Past Due with Grace Period Expired (3 days per config)
             if ($locked->status === Subscription::STATUS_PAST_DUE && $locked->current_period_end) {
-                $gracePeriodEnd = Carbon::parse($locked->current_period_end)->timezone('Asia/Jakarta')->addDays(7);
+                $graceDays = (int) config('plans.grace_period_days', 3);
+                $gracePeriodEnd = Carbon::parse($locked->current_period_end)->timezone('Asia/Jakarta')->addDays($graceDays);
 
                 if ($now->greaterThan($gracePeriodEnd)) {
                     $this->stateMachine->transition($locked, Subscription::STATUS_CANCELLED, 'grace_period_expired');
                     $this->stateMachine->transition($locked, Subscription::PLAN_FREE, 'downgrade');
 
-                    $msg = "Subscription [{$locked->ulid}] melewati masa tenggang 7 hari, di-downgrade ke FREE.";
+                    $msg = "Subscription [{$locked->ulid}] melewati masa tenggang {$graceDays} hari, di-downgrade ke FREE.";
                     Log::warning($msg);
                     $this->errorMonitoring->captureMessage($msg, ['subscription_id' => $locked->id]);
 

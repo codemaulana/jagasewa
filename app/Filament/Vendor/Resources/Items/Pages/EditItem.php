@@ -25,6 +25,14 @@ class EditItem extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $vendor = auth('vendor')->user()?->vendor;
+
+        // Enforce read-only state for over-limit items on Free tier
+        if ($vendor && app(EntitlementService::class)->isItemReadOnly($vendor, $this->record)) {
+            throw ValidationException::withMessages([
+                'data.name' => 'Barang ini berstatus read-only karena melebihi kuota 5 barang aktif pada paket Free. Upgrade ke Pro untuk mengedit barang ini kembali.',
+            ]);
+        }
+
         $isActive = (bool) ($data['is_active'] ?? true);
         $wasActive = (bool) ($this->record->is_active ?? false);
 

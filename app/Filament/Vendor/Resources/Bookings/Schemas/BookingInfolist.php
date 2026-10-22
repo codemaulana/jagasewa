@@ -2,7 +2,6 @@
 
 namespace App\Filament\Vendor\Resources\Bookings\Schemas;
 
-use App\Helpers\WaNotificationHelper;
 use App\Models\BlacklistEntry;
 use App\Models\Booking;
 use App\Models\IdentityDocument;
@@ -10,6 +9,7 @@ use App\Services\BlacklistService;
 use App\Services\IdentityDocumentService;
 use Carbon\Carbon;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -49,6 +49,15 @@ class BookingInfolist
                             ->columnSpanFull(),
                     ])
                     ->visible(fn (Booking $record): bool => app(BlacklistService::class)->isBookingBlacklisted($record)),
+
+                Section::make('Linimasa Aktivitas Pesanan')
+                    ->description('Tahapan riwayat alur dari permohonan hingga selesai.')
+                    ->schema([
+                        ViewEntry::make('activity_timeline')
+                            ->hiddenLabel()
+                            ->view('filament.vendor.bookings.activity-timeline')
+                            ->columnSpanFull(),
+                    ]),
 
                 Section::make('Ringkasan Permohonan Sewa')
                     ->schema([
@@ -128,8 +137,8 @@ class BookingInfolist
                                     ->label('Nama Barang')
                                     ->weight('bold'),
 
-                                TextEntry::make('item.size')
-                                    ->label('Ukuran / Size')
+                                TextEntry::make('item.category')
+                                    ->label('Kategori')
                                     ->badge()
                                     ->placeholder('-'),
 
@@ -160,6 +169,89 @@ class BookingInfolist
                                     ->visible(fn (Booking $record): bool => $record->fine_amount > 0),
                             ]),
                     ]),
+
+                Section::make('Pencatatan Pembayaran (DP & Pelunasan)')
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                TextEntry::make('payment_status_summary')
+                                    ->label('Status Pembayaran')
+                                    ->badge()
+                                    ->state(function (Booking $record): string {
+                                        if ($record->is_paid_in_full) {
+                                            return 'Lunas Penuh';
+                                        }
+                                        if ($record->is_dp_paid) {
+                                            return 'DP Terbayar (Rp '.number_format($record->down_payment_amount, 0, ',', '.').')';
+                                        }
+
+                                        return 'Belum Ada Pembayaran Tercatat';
+                                    })
+                                    ->color(fn (Booking $record): string => $record->is_paid_in_full ? 'success' : ($record->is_dp_paid ? 'info' : 'warning')),
+
+                                TextEntry::make('dp_paid_at')
+                                    ->label('Waktu Bayar DP')
+                                    ->dateTime('d M Y H:i')
+                                    ->placeholder('-'),
+
+                                TextEntry::make('paid_in_full_at')
+                                    ->label('Waktu Pelunasan')
+                                    ->dateTime('d M Y H:i')
+                                    ->placeholder('-'),
+                            ]),
+                        Grid::make(2)
+                            ->schema([
+                                TextEntry::make('payment_proof_link')
+                                    ->label('Bukti Pembayaran')
+                                    ->state(fn (Booking $record): string => $record->payment_proof_path ? 'Buka Bukti Transfer' : 'Tidak dilampirkan')
+                                    ->url(fn (Booking $record): ?string => $record->payment_proof_url)
+                                    ->openUrlInNewTab()
+                                    ->badge()
+                                    ->color(fn (Booking $record): string => $record->payment_proof_path ? 'info' : 'gray'),
+                                TextEntry::make('payment_notes')
+                                    ->label('Catatan Pembayaran')
+                                    ->placeholder('-'),
+                            ]),
+                    ]),
+
+                Section::make('Informasi Serah-Terima (Handover)')
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                TextEntry::make('handover_method')
+                                    ->label('Metode Pengambilan')
+                                    ->state(fn (Booking $record): string => match ($record->handover_method) {
+                                        'pickup' => 'Ambil Sendiri di Toko',
+                                        'instant_courier' => 'Kurir Instan (GoSend/Grab)',
+                                        'delivery_courier' => 'Ekspedisi (Paxel/JNE/J&T)',
+                                        default => $record->handover_method ?: '-',
+                                    })
+                                    ->badge(),
+                                TextEntry::make('tracking_number')
+                                    ->label('Nomor Resi / Tautan Lacak')
+                                    ->placeholder('-')
+                                    ->copyable(),
+                                TextEntry::make('handover_checklist')
+                                    ->label('Checklist Kondisi Awal')
+                                    ->badge()
+                                    ->placeholder('Tidak ada catatan checklist'),
+                            ]),
+                        TextEntry::make('handover_notes')
+                            ->label('Catatan Kondisi Saat Penyerahan')
+                            ->placeholder('Tidak ada catatan khusus saat penyerahan.')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn (Booking $record): bool => ! empty($record->activated_at) || ! empty($record->handover_method)),
+
+                Section::make('Foto Dokumentasi & Inspeksi Fisik (Sebelum & Sesudah Sewa)')
+                    ->description('Dokumentasi foto kondisi unit saat penyerahan dan saat diterima kembali.')
+                    ->schema([
+                        ViewEntry::make('inspection_photos')
+                            ->hiddenLabel()
+                            ->view('filament.vendor.bookings.inspection-photos')
+                            ->columnSpanFull(),
+                    ])
+                    ->visible(fn (Booking $record): bool => ! empty($record->activated_at) || ! empty($record->handover_photos) || ! empty($record->return_photos)),
 
                 Section::make('Data Identitas & Kontak Penyewa')
                     ->schema([
@@ -286,21 +378,6 @@ class BookingInfolist
                                 return "Disetujui (Versi {$doc->consent_version}) pada {$time} WIB";
                             }),
                     ]),
-
-                Section::make('Komunikasi WhatsApp')
-                    ->schema([
-                        TextEntry::make('wa_link')
-                            ->label('Tautan Chat Langsung (wa.me)')
-                            ->state(fn () => 'Buka Obrolan WhatsApp dengan Penyewa')
-                            ->url(fn (Booking $record): ?string => WaNotificationHelper::generateRenterChatUrl(
-                                $record,
-                                $record->status === Booking::STATUS_CLOSED ? 'settled' : 'approved'
-                            ))
-                            ->openUrlInNewTab()
-                            ->badge()
-                            ->color('success'),
-                    ])
-                    ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE, Booking::STATUS_CLOSED])),
 
                 Section::make('Hasil Penyelesaian Sewa & Denda (Settlement)')
                     ->icon(Heroicon::OutlinedReceiptPercent)

@@ -169,7 +169,7 @@ class VendorDoubleSubscriptionTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Status: Paket Pro Aktif');
-        $response->assertSee('✓ Paket Aktif Saat Ini');
+        $response->assertSee('Paket Aktif Saat Ini');
         $response->assertDontSee('Pilih Bulanan');
     }
 

@@ -12,34 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS CDN (100% Support PHP Shared Hosting / cPanel) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', '"Inter Tight"', 'system-ui', 'sans-serif'],
-                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-                    },
-                    colors: {
-                        brand: {
-                            gold: '#A27B5C',
-                            goldLight: '#E8D5C4',
-                            goldAccent: '#C79D66',
-                            goldDark: '#8C6546',
-                            cream: '#F6F4EE',
-                            creamDark: '#ECE8DD',
-                            dark: '#141312',
-                            darkCard: '#1E1C1A',
-                            muted: '#616161',
-                            border: '#C8B7A6'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- GSAP & ScrollTrigger (Local First with CDN Fallback) -->
     <script src="{{ asset('js/gsap.min.js') }}"></script>
@@ -50,215 +23,13 @@
             document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>');
         }
     </script>
-
-    <style>
-        /* ========================================================
-           GLOBAL SYSTEM & COMPATIBILITY (Shared Hosting Friendly)
-           ======================================================== */
-        :root {
-            --color-dark: #191919;
-            --color-gold: #A27B5C;
-            --color-border: #C8B7A6;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', 'Inter Tight', system-ui, sans-serif;
-            background-color: #F6F4EE;
-            color: var(--color-dark);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
-            will-change: background-color;
-        }
-
-        .font-luxury {
-            font-family: 'Cormorant Garamond', Georgia, serif;
-        }
-
-        /* ========================================================
-           RESPONSIVE BUTTONS & HOVER FILL ANIMATION
-           (Fill from Left to Right, 60fps GPU-Accelerated)
-           ======================================================== */
-        .btn-fill-dark,
-        .btn-fill-outline,
-        .btn-fill-light,
-        .btn-fill-outline-light {
-            position: relative;
-            overflow: hidden;
-            isolation: isolate;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-radius: 9999px;
-            transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                        box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .btn-fill-dark:active,
-        .btn-fill-outline:active,
-        .btn-fill-light:active,
-        .btn-fill-outline-light:active {
-            transform: scale(0.97);
-        }
-
-        /* Pseudo-element fill layer */
-        .btn-fill-dark::before,
-        .btn-fill-outline::before,
-        .btn-fill-light::before,
-        .btn-fill-outline-light::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            transform: scaleX(0);
-            transform-origin: left center;
-            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: -1;
-            border-radius: 9999px;
-        }
-
-        .btn-fill-dark:hover::before,
-        .btn-fill-outline:hover::before,
-        .btn-fill-light:hover::before,
-        .btn-fill-outline-light:hover::before {
-            transform: scaleX(1);
-        }
-
-        .btn-fill-dark > *,
-        .btn-fill-outline > *,
-        .btn-fill-light > *,
-        .btn-fill-outline-light > * {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Varian 1 (Tombol Gelap) */
-        .btn-fill-dark {
-            background-color: #191919;
-            color: #FFFFFF;
-        }
-        .btn-fill-dark::before {
-            background-color: #A27B5C;
-        }
-        .btn-fill-dark:hover {
-            color: #FFFFFF;
-            box-shadow: 0 12px 28px -6px rgba(162, 123, 92, 0.45);
-        }
-
-        /* Varian 2 (Tombol Outline Gelap) */
-        .btn-fill-outline {
-            background-color: transparent;
-            color: #191919;
-            border: 2px solid #C8B7A6;
-        }
-        .btn-fill-outline::before {
-            background-color: #191919;
-        }
-        .btn-fill-outline:hover {
-            color: #FFFFFF;
-            border-color: #191919;
-            box-shadow: 0 12px 28px -6px rgba(25, 25, 25, 0.22);
-        }
-
-        /* Varian 3 (Tombol Putih di Curtain Reveal) */
-        .btn-fill-light {
-            background-color: #FFFFFF;
-            color: #141312;
-        }
-        .btn-fill-light::before {
-            background-color: #C79D66;
-        }
-        .btn-fill-light:hover {
-            color: #FFFFFF;
-            box-shadow: 0 14px 32px -6px rgba(199, 157, 102, 0.5);
-        }
-
-        /* Varian 4 (Tombol Outline Terang di Curtain Reveal) */
-        .btn-fill-outline-light {
-            background-color: transparent;
-            color: #FFFFFF;
-            border: 2px solid rgba(255, 255, 255, 0.45);
-        }
-        .btn-fill-outline-light::before {
-            background-color: #FFFFFF;
-        }
-        .btn-fill-outline-light:hover {
-            color: #141312;
-            border-color: #FFFFFF;
-        }
-
-        /* ========================================================
-           CARD ELEVATION & EDITORIAL GLASS
-           ======================================================== */
-        .card-editorial {
-            background: rgba(255, 255, 255, 0.88);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(200, 183, 166, 0.45);
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-                        border-color 0.3s ease;
-        }
-        .card-editorial:hover {
-            border-color: #A27B5C;
-            box-shadow: 0 20px 40px -12px rgba(162, 123, 92, 0.2);
-            transform: translateY(-5px);
-        }
-
-        .pedestal-stage {
-            background: radial-gradient(circle at 50% 120%, #EFE8DC 0%, #F6F4EE 70%);
-            border: 1px solid rgba(200, 183, 166, 0.35);
-        }
-
-        .shadow-ground {
-            filter: drop-shadow(0 22px 32px rgba(0, 0, 0, 0.34));
-        }
-
-        .shadow-mannequin {
-            filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.18));
-        }
-
-        /* Active Nav Marker */
-        .nav-link.active-nav {
-            color: #A27B5C;
-            font-weight: 700;
-        }
-        .nav-link.active-nav .nav-indicator {
-            width: 100% !important;
-        }
-
-        /* ========================================================
-           ENTRANCE & SCROLL REVEAL BOUNCE ANIMATION CLASSES
-           Default: Elemen terlihat normal agar teks tidak pernah hilang.
-           GSAP akan menganimasikannya secara dinamis saat halaman dimuat.
-           ======================================================== */
-        .reveal-bounce-left {
-            will-change: transform, opacity;
-        }
-
-        .hero-bounce-line-1,
-        .hero-bounce-line-2,
-        .hero-bounce-sub,
-        .hero-bounce-cta {
-            will-change: transform, opacity;
-        }
-
-        /* ========================================================
-           STICKY STACKING CARDS ENHANCEMENTS
-           ======================================================== */
-        .sticky-card {
-            will-change: transform, opacity, filter;
-            transition: box-shadow 0.3s ease;
-        }
-    </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-[#A27B5C] selection:text-white">
+<body class="min-h-screen flex flex-col justify-between selection:bg-accent-lime selection:text-white">
 
     <!-- ========================================================
          NAVBAR / HEADER (Tersinkronisasi Urutan: Katalog -> Panggung Mitra -> Cara Kerja -> Keunggulan)
          ======================================================== -->
-    <header id="site-header" class="w-full border-b border-[#E8E2D5]/70 bg-[#F6F4EE]/90 backdrop-blur-md sticky top-0 z-50 transition-colors duration-500">
+    <header id="site-header" class="w-full border-b border-border-subtle/70 bg-bg-base/90 backdrop-blur-md sticky top-0 z-50 transition-colors duration-500">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
             <!-- Logo JagaSewa -->
@@ -269,35 +40,35 @@
             </a>
 
             <!-- Navigasi Menu Tengah (Berurutan Tepat Sesuai Alur Halaman) -->
-            <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-sm font-medium text-[#1A1A1A]">
+            <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-sm font-medium text-text-main">
                 <!-- 1. Katalog (#jelajahi-rental) -->
-                <a href="#jelajahi-rental" id="nav-katalog" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                <a href="#jelajahi-rental" id="nav-katalog" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Katalog</span>
-                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
                 <!-- 2. Panggung Mitra Curtain Reveal (#reveal-showcase) -->
-                <a href="#reveal-showcase" id="nav-mitra" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                <a href="#reveal-showcase" id="nav-mitra" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Panggung Mitra</span>
-                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
                 <!-- 3. Cara Kerja (#cara-kerja) -->
-                <a href="#cara-kerja" id="nav-cara-kerja" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                <a href="#cara-kerja" id="nav-cara-kerja" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Cara Kerja</span>
-                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
                 <!-- 4. Keunggulan (#keunggulan) -->
-                <a href="#keunggulan" id="nav-keunggulan" class="nav-link hover:text-[#A27B5C] transition-colors py-2 relative group">
+                <a href="#keunggulan" id="nav-keunggulan" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Keunggulan</span>
-                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-[#A27B5C] transition-all duration-300 group-hover:w-full"></span>
+                    <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
             </nav>
 
             <!-- Tombol Aksi Kanan (Masuk Vendor) -->
             <div class="flex items-center gap-3">
-                <a href="{{ url('/vendor/login') }}" class="btn-fill-dark btn-magnetic text-xs sm:text-sm font-semibold h-11 px-5 sm:px-6 rounded-full inline-flex items-center gap-2 text-white bg-[#191919] shadow-sm">
+                <a href="{{ url('/vendor/login') }}" class="btn-fill-dark btn-magnetic text-xs sm:text-sm font-semibold h-11 px-5 sm:px-6 rounded-full inline-flex items-center gap-2 text-white bg-primary shadow-sm">
                     <svg class="w-4 h-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
@@ -307,7 +78,7 @@
                 <!-- Mobile Hamburger Button -->
                 <button type="button" 
                         onclick="document.getElementById('mobile-menu').classList.toggle('hidden')"
-                        class="md:hidden p-2 rounded-xl text-neutral-700 hover:text-neutral-900 hover:bg-[#ECE8DD] transition"
+                        class="md:hidden p-2 rounded-xl text-neutral-700 hover:text-neutral-900 hover:bg-surface-subtle transition"
                         aria-label="Toggle Menu">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -317,25 +88,25 @@
         </div>
 
         <!-- Mobile Drawer Menu (Sesuai Urutan Section) -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-[#E8E2D5] bg-[#F6F4EE]/95 backdrop-blur-md px-4 pt-3 pb-5 space-y-2">
+        <div id="mobile-menu" class="hidden md:hidden border-t border-border-subtle bg-bg-base/95 backdrop-blur-md px-4 pt-3 pb-5 space-y-2">
             <a href="#jelajahi-rental" 
                onclick="document.getElementById('mobile-menu').classList.add('hidden')"
-               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-text-main rounded-lg hover:bg-neutral-100">
                Katalog
             </a>
             <a href="#reveal-showcase" 
                onclick="document.getElementById('mobile-menu').classList.add('hidden')"
-               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-text-main rounded-lg hover:bg-neutral-100">
                Panggung Mitra
             </a>
             <a href="#cara-kerja" 
                onclick="document.getElementById('mobile-menu').classList.add('hidden')"
-               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-text-main rounded-lg hover:bg-neutral-100">
                Cara Kerja
             </a>
             <a href="#keunggulan" 
                onclick="document.getElementById('mobile-menu').classList.add('hidden')"
-               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-[#A27B5C] rounded-lg hover:bg-neutral-100">
+               class="block px-3 py-2 text-sm font-medium text-neutral-800 hover:text-text-main rounded-lg hover:bg-neutral-100">
                Keunggulan
             </a>
         </div>
@@ -354,11 +125,11 @@
                 <svg id="hero-ribbon-svg" class="w-full h-full min-w-[1100px] opacity-85" viewBox="0 0 1600 850" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="goldRibbon" x1="0%" y1="20%" x2="100%" y2="80%">
-                            <stop offset="0%" stop-color="#EED7A1" stop-opacity="0.85"/>
-                            <stop offset="30%" stop-color="#C79D66" stop-opacity="1"/>
-                            <stop offset="60%" stop-color="#EACD96" stop-opacity="0.9"/>
-                            <stop offset="85%" stop-color="#A57D48" stop-opacity="0.85"/>
-                            <stop offset="100%" stop-color="#D8B57E" stop-opacity="0.8"/>
+                            <stop offset="0%" stop-color="rgb(220, 218, 210)" stop-opacity="0.85"/>
+                            <stop offset="30%" stop-color="rgb(200, 195, 185)" stop-opacity="1"/>
+                            <stop offset="60%" stop-color="rgb(215, 212, 202)" stop-opacity="0.9"/>
+                            <stop offset="85%" stop-color="rgb(190, 185, 175)" stop-opacity="0.85"/>
+                            <stop offset="100%" stop-color="rgb(210, 205, 195)" stop-opacity="0.8"/>
                         </linearGradient>
                         <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
                             <feGaussianBlur stdDeviation="2.5" result="blur" />
@@ -382,26 +153,26 @@
                     <!-- SISI KIRI: Headline dengan Animasi Muncul dari Kiri dengan Bounce -->
                     <div class="lg:col-span-5 space-y-6 text-left hero-text-block">
                         <div class="space-y-2 overflow-hidden">
-                            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold text-[#191919] tracking-tight leading-[1.12]">
+                            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold text-text-main tracking-tight leading-[1.12]">
                                 <span class="hero-bounce-line-1 block">Barang yang kamu butuhkan.</span>
-                                <span class="hero-bounce-line-2 font-luxury italic font-normal text-[#A27B5C] block text-4xl sm:text-5xl md:text-6xl lg:text-[62px] mt-1">Waktu yang kamu tentukan.</span>
+                                <span class="hero-bounce-line-2 font-luxury italic font-normal text-text-main block text-4xl sm:text-5xl md:text-6xl lg:text-[62px] mt-1">Waktu yang kamu tentukan.</span>
                             </h1>
                         </div>
                         
-                        <p class="hero-bounce-sub text-base sm:text-lg text-[#5A5854] max-w-lg leading-relaxed font-normal">
+                        <p class="hero-bounce-sub text-base sm:text-lg text-text-secondary max-w-lg leading-relaxed font-normal">
                             Temukan dan booking barang rental dari berbagai bisnis, tanpa perlu membuat akun.
                         </p>
 
                         <!-- Tombol Aksi Hero Responsif (Pill Buttons) -->
                         <div class="hero-bounce-cta flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2 w-full max-w-md sm:max-w-none">
                             <!-- Primary CTA -->
-                            <a href="#jelajahi-rental" class="btn-fill-dark btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 rounded-full text-sm sm:text-base font-bold inline-flex items-center justify-center gap-2.5 text-white bg-[#191919] shadow-md group">
+                            <a href="#jelajahi-rental" class="btn-fill-dark btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 rounded-full text-sm sm:text-base font-bold inline-flex items-center justify-center gap-2.5 text-white bg-primary shadow-md group">
                                 <span>Jelajahi Rental</span>
                                 <span class="text-lg leading-none transition-transform duration-300 group-hover:translate-x-1.5">&rarr;</span>
                             </a>
 
                             <!-- Secondary CTA -->
-                            <a href="{{ url('/vendor/register') }}" class="btn-fill-outline btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-7 rounded-full text-xs sm:text-sm font-semibold inline-flex items-center justify-center text-center text-[#191919] border-2 border-[#C8B7A6] bg-transparent">
+                            <a href="{{ url('/vendor/register') }}" class="btn-fill-outline btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-7 rounded-full text-xs sm:text-sm font-semibold inline-flex items-center justify-center text-center text-text-main border-2 border-border-subtle bg-transparent">
                                 <span>Gabung sebagai<br class="hidden sm:inline"> Pemilik Rental</span>
                             </a>
                         </div>
@@ -462,19 +233,19 @@
 
         <!-- ========================================================
              2. KATALOG KATEGORI RENTAL POPULER
-             (Scrubbed Background: Transisi ke Warm Linen #F0EAE0)
+             (Scrubbed Background: Transisi ke Warm Linen rgb(245, 244, 240))
              ======================================================== -->
-        <section id="jelajahi-rental" class="py-16 sm:py-24 border-t border-[#E8E2D5]/70 relative overflow-hidden bg-transparent">
+        <section id="jelajahi-rental" class="py-16 sm:py-24 border-t border-border-subtle/70 relative overflow-hidden bg-transparent">
             
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 
                 <div class="kategori-header flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-4">
                     <div class="space-y-2">
-                        <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#E8D5C4]/70 text-[#8C6546] border border-[#C8B7A6]/40">
-                            <span class="w-1.5 h-1.5 rounded-full bg-[#A27B5C]"></span>
+                        <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-surface-subtle/70 text-text-secondary border border-border-subtle/40">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
                             <span>Katalog Pilihan JagaSewa</span>
                         </span>
-                        <h2 class="reveal-bounce-left text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#191919] tracking-tight">
+                        <h2 class="reveal-bounce-left text-2xl sm:text-3xl md:text-4xl font-extrabold text-text-main tracking-tight">
                             Jelajahi Berdasarkan Kategori
                         </h2>
                         <p class="reveal-bounce-left text-sm sm:text-base text-neutral-600 max-w-xl">
@@ -482,7 +253,7 @@
                         </p>
                     </div>
 
-                    <a href="{{ url('/vendor/register') }}" class="reveal-bounce-left text-xs sm:text-sm font-semibold text-[#8C6546] hover:text-[#191919] inline-flex items-center gap-1.5 transition">
+                    <a href="{{ url('/vendor/register') }}" class="reveal-bounce-left text-xs sm:text-sm font-semibold text-text-secondary hover:text-text-main inline-flex items-center gap-1.5 transition">
                         <span>Punya inventaris rental? Pasang di sini</span>
                         <span>&rarr;</span>
                     </a>
@@ -495,10 +266,10 @@
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
-                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
-                                    ⭐ Paling Laris
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary text-white shadow-xs z-10">
+                                    Paling Diminati
                                 </span>
-                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-text-secondary">
                                     Rp 75rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
                                 </span>
                                 <img src="{{ asset('cosplay.png') }}" 
@@ -507,7 +278,7 @@
                             </div>
                             
                             <div class="space-y-1.5">
-                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                <h3 class="text-base font-bold text-text-main group-hover:text-text-main transition-colors">
                                     Kostum Cosplay Anime
                                 </h3>
                                 <p class="text-xs text-neutral-500 leading-relaxed">
@@ -516,16 +287,16 @@
                             </div>
 
                             <div class="flex flex-wrap gap-1.5 pt-3">
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Wig Styled</span>
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Laundry Steril</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Wig Styled</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Laundry Steril</span>
                             </div>
                         </div>
 
-                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
-                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                        <div class="mt-5 pt-3.5 border-t border-border-subtle/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-text-main inline-flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
                             </span>
-                            <a href="{{ url('/b/tokyo-cosplay/frieren-fullset-m') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                            <a href="{{ url('/b/tokyo-cosplay/frieren-fullset-m') }}" class="text-xs font-semibold text-text-main group-hover:underline inline-flex items-center gap-1">
                                 Pilih Jadwal &rarr;
                             </a>
                         </div>
@@ -535,10 +306,10 @@
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
-                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
-                                    📷 Pro Gear
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary text-white shadow-xs z-10">
+                                    Peralatan Profesional
                                 </span>
-                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-text-secondary">
                                     Rp 250rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
                                 </span>
                                 <img src="{{ asset('kamera.png') }}" 
@@ -547,7 +318,7 @@
                             </div>
                             
                             <div class="space-y-1.5">
-                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                <h3 class="text-base font-bold text-text-main group-hover:text-text-main transition-colors">
                                     Kamera & Lensa Mirrorless
                                 </h3>
                                 <p class="text-xs text-neutral-500 leading-relaxed">
@@ -556,16 +327,16 @@
                             </div>
 
                             <div class="flex flex-wrap gap-1.5 pt-3">
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Sensor Bersih</span>
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Memory Pro</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Sensor Bersih</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Memory Pro</span>
                             </div>
                         </div>
 
-                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
-                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                        <div class="mt-5 pt-3.5 border-t border-border-subtle/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-text-main inline-flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
                             </span>
-                            <a href="{{ url('/b/tokyo-cosplay/sony-a7-iii-kit') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                            <a href="{{ url('/b/tokyo-cosplay/sony-a7-iii-kit') }}" class="text-xs font-semibold text-text-main group-hover:underline inline-flex items-center gap-1">
                                 Pilih Jadwal &rarr;
                             </a>
                         </div>
@@ -575,10 +346,10 @@
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
-                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
-                                    🌸 Brokat Modern Halus
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary text-white shadow-xs z-10">
+                                    Brokat Modern Halus
                                 </span>
-                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-text-secondary">
                                     Rp 120rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
                                 </span>
                                 <img src="{{ asset('kebaya.png') }}" 
@@ -587,7 +358,7 @@
                             </div>
                             
                             <div class="space-y-1.5">
-                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                <h3 class="text-base font-bold text-text-main group-hover:text-text-main transition-colors">
                                     Kebaya Modern & Wisuda
                                 </h3>
                                 <p class="text-xs text-neutral-500 leading-relaxed">
@@ -596,16 +367,16 @@
                             </div>
 
                             <div class="flex flex-wrap gap-1.5 pt-3">
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Fitting Rapih</span>
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Bros Susun Emas</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Fitting Rapih</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Bros Susun Emas</span>
                             </div>
                         </div>
 
-                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
-                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                        <div class="mt-5 pt-3.5 border-t border-border-subtle/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-text-main inline-flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
                             </span>
-                            <a href="{{ url('/b/tokyo-cosplay/kebaya-kutubaru-maroon') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                            <a href="{{ url('/b/tokyo-cosplay/kebaya-kutubaru-maroon') }}" class="text-xs font-semibold text-text-main group-hover:underline inline-flex items-center gap-1">
                                 Pilih Jadwal &rarr;
                             </a>
                         </div>
@@ -615,10 +386,10 @@
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
-                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-[#191919] text-white shadow-xs z-10">
-                                    👑 Warisan Nusantara
+                                <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary text-white shadow-xs z-10">
+                                    Warisan Nusantara
                                 </span>
-                                <span class="absolute top-3 right-3 text-[11px] font-bold text-[#8C6546]">
+                                <span class="absolute top-3 right-3 text-[11px] font-bold text-text-secondary">
                                     Rp 180rb<span class="text-[9px] font-normal text-neutral-500">/hr</span>
                                 </span>
                                 <img src="{{ asset('adat.png') }}" 
@@ -627,7 +398,7 @@
                             </div>
                             
                             <div class="space-y-1.5">
-                                <h3 class="text-base font-bold text-[#191919] group-hover:text-[#A27B5C] transition-colors">
+                                <h3 class="text-base font-bold text-text-main group-hover:text-text-main transition-colors">
                                     Busana Adat Tradisional
                                 </h3>
                                 <p class="text-xs text-neutral-500 leading-relaxed">
@@ -636,16 +407,16 @@
                             </div>
 
                             <div class="flex flex-wrap gap-1.5 pt-3">
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Aksesori Komplit</span>
-                                <span class="px-2 py-0.5 rounded-md bg-[#F4EFE6] text-[10px] font-medium text-neutral-600">Kain Asli Tenun</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Aksesori Komplit</span>
+                                <span class="px-2 py-0.5 rounded-md bg-surface-subtle text-[10px] font-medium text-neutral-600">Kain Asli Tenun</span>
                             </div>
                         </div>
 
-                        <div class="mt-5 pt-3.5 border-t border-[#E8E2D5]/60 flex items-center justify-between">
-                            <span class="text-[11px] font-medium text-[#A27B5C] inline-flex items-center gap-1">
+                        <div class="mt-5 pt-3.5 border-t border-border-subtle/60 flex items-center justify-between">
+                            <span class="text-[11px] font-medium text-text-main inline-flex items-center gap-1">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Siap Booking
                             </span>
-                            <a href="{{ url('/b/tokyo-cosplay/baju-adat-jawa-pria') }}" class="text-xs font-semibold text-[#191919] group-hover:underline inline-flex items-center gap-1">
+                            <a href="{{ url('/b/tokyo-cosplay/baju-adat-jawa-pria') }}" class="text-xs font-semibold text-text-main group-hover:underline inline-flex items-center gap-1">
                                 Pilih Jadwal &rarr;
                             </a>
                         </div>
@@ -659,27 +430,27 @@
         <!-- ========================================================
              3. CURTAIN REVEAL SHOWCASE
              (Posisi Tepat Setelah Kategori — Panggung Pinned & Tirai Membuka)
-             (Scrubbed Background: Transisi ke Deep Obsidian #141312)
+             (Scrubbed Background: Transisi ke Deep Obsidian rgb(17, 17, 17))
              ======================================================== -->
-        <section id="reveal-showcase" class="relative overflow-hidden w-full min-h-screen flex items-center justify-center bg-[#141312]">
+        <section id="reveal-showcase" class="relative overflow-hidden w-full min-h-screen flex items-center justify-center bg-primary">
 
-            <!-- THE INNER STAGE: Teater Gelap Mewah Obsidian #141312 yang Terbuka -->
-            <div id="curtain-stage" class="relative w-full min-h-screen py-20 sm:py-28 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center bg-[#141312] text-white z-10 overflow-hidden">
+            <!-- THE INNER STAGE: Teater Gelap Mewah Obsidian rgb(17, 17, 17) yang Terbuka -->
+            <div id="curtain-stage" class="relative w-full min-h-screen py-20 sm:py-28 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center bg-primary text-white z-10 overflow-hidden">
                 
                 <!-- Ambient Glowing Orbs -->
-                <div class="curtain-glow-1 absolute -top-32 -right-32 w-96 h-96 bg-[#A27B5C]/35 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="curtain-glow-2 absolute -bottom-32 -left-32 w-96 h-96 bg-[#C79D66]/25 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="curtain-glow-1 absolute -top-32 -right-32 w-96 h-96 bg-primary/35 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="curtain-glow-2 absolute -bottom-32 -left-32 w-96 h-96 bg-[rgb(200, 195, 185)]/25 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div class="curtain-content relative z-20 max-w-4xl mx-auto space-y-7 sm:space-y-8 w-full">
                     
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#A27B5C]/25 border border-[#A27B5C]/40 text-[#E8D5C4] tracking-wider uppercase">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#C79D66] animate-pulse"></span>
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold bg-primary/25 border border-border-hover/40 text-surface-subtle tracking-wider uppercase">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[rgb(200, 195, 185)] animate-pulse"></span>
                         <span>Panggung Eksklusif Mitra Rental</span>
                     </div>
 
                     <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12]">
                         Waktunya Toko Rental Anda <br class="hidden sm:inline">
-                        <span class="font-luxury italic font-normal text-[#C79D66] block mt-1">Bebas dari Drama Bentrok Jadwal</span>
+                        <span class="font-luxury italic font-normal text-text-main block mt-1">Bebas dari Drama Bentrok Jadwal</span>
                     </h2>
 
                     <p class="text-sm sm:text-base md:text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed font-normal">
@@ -688,20 +459,20 @@
 
                     <!-- 3 Kartu Metrik Keunggulan -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 max-w-3xl mx-auto pt-2 text-left w-full">
-                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-[#A27B5C]/60 transition">
-                            <div class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">0%</div>
+                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-border-hover/60 transition">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-text-main">0%</div>
                             <div class="text-sm font-bold text-white">Double Booking</div>
                             <p class="text-xs text-neutral-400">Pessimistic locking database mengunci slot secara atomik.</p>
                         </div>
 
-                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-[#A27B5C]/60 transition">
-                            <div class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">100%</div>
+                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-border-hover/60 transition">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-text-main">100%</div>
                             <div class="text-sm font-bold text-white">Kepatuhan UU PDP</div>
                             <p class="text-xs text-neutral-400">Watermark dinamis otomatis & pemusnahan berkas 7 hari.</p>
                         </div>
 
-                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-[#A27B5C]/60 transition">
-                            <div class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">24 Jam</div>
+                        <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-border-hover/60 transition">
+                            <div class="text-2xl sm:text-3xl font-extrabold text-text-main">24 Jam</div>
                             <div class="text-sm font-bold text-white">Auto-Release Slot</div>
                             <p class="text-xs text-neutral-400">Booking tak berbayar otomatis dibatalkan, kalender bebas lagi.</p>
                         </div>
@@ -726,17 +497,17 @@
             </div>
 
             <!-- DUA TIRAI TEATER MEWAH (Membuka ke Kiri & Kanan saat di-scroll) -->
-            <div id="curtain-left" class="absolute inset-y-0 left-0 w-1/2 bg-[#F0EAE0] border-r-2 border-[#C8B7A6]/60 z-30 flex items-center justify-end pr-6 sm:pr-12 pointer-events-none shadow-2xl">
+            <div id="curtain-left" class="absolute inset-y-0 left-0 w-1/2 bg-[rgb(245, 244, 240)] border-r-2 border-border-subtle/60 z-30 flex items-center justify-end pr-6 sm:pr-12 pointer-events-none shadow-2xl">
                 <div class="text-right space-y-2 opacity-85">
-                    <span class="text-xs uppercase tracking-widest text-[#8C6546] font-semibold block">Platform Terpadu</span>
-                    <div class="h-0.5 w-16 bg-[#A27B5C] ml-auto"></div>
+                    <span class="text-xs uppercase tracking-widest text-text-secondary font-semibold block">Platform Terpadu</span>
+                    <div class="h-0.5 w-16 bg-primary ml-auto"></div>
                 </div>
             </div>
 
-            <div id="curtain-right" class="absolute inset-y-0 right-0 w-1/2 bg-[#F0EAE0] border-l-2 border-[#C8B7A6]/60 z-30 flex items-center justify-start pl-6 sm:pl-12 pointer-events-none shadow-2xl">
+            <div id="curtain-right" class="absolute inset-y-0 right-0 w-1/2 bg-[rgb(245, 244, 240)] border-l-2 border-border-subtle/60 z-30 flex items-center justify-start pl-6 sm:pl-12 pointer-events-none shadow-2xl">
                 <div class="text-left space-y-2 opacity-85">
-                    <span class="text-xs uppercase tracking-widest text-[#8C6546] font-semibold block">Solusi Rental</span>
-                    <div class="h-0.5 w-16 bg-[#A27B5C]"></div>
+                    <span class="text-xs uppercase tracking-widest text-text-secondary font-semibold block">Solusi Rental</span>
+                    <div class="h-0.5 w-16 bg-primary"></div>
                 </div>
             </div>
 
@@ -745,18 +516,18 @@
 
         <!-- ========================================================
              4. CARA KERJA (ARCHITECTURAL STEP DESIGN)
-             (Scrubbed Background: Transisi ke Artisan Sand #E7DFCE)
+             (Scrubbed Background: Transisi ke Artisan Sand rgb(245, 244, 240))
              ======================================================== -->
-        <section id="cara-kerja" class="py-16 sm:py-24 border-t border-[#E8E2D5]/70 relative overflow-hidden bg-transparent">
+        <section id="cara-kerja" class="py-16 sm:py-24 border-t border-border-subtle/70 relative overflow-hidden bg-transparent">
             
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
                 
                 <div class="cara-kerja-header max-w-2xl mx-auto space-y-2">
-                    <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#E8D5C4]/70 text-[#8C6546] border border-[#C8B7A6]/40">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#A27B5C]"></span>
+                    <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-surface-subtle/70 text-text-secondary border border-border-subtle/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
                         <span>Alur Singkat Tanpa Repot</span>
                     </span>
-                    <h2 class="reveal-bounce-left text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#191919] tracking-tight">
+                    <h2 class="reveal-bounce-left text-2xl sm:text-3xl md:text-4xl font-extrabold text-text-main tracking-tight">
                         Cara Mudah Sewa Barang di JagaSewa
                     </h2>
                     <p class="reveal-bounce-left text-sm sm:text-base text-neutral-600 mt-2">
@@ -770,12 +541,12 @@
                     <!-- Langkah 1 -->
                     <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
                         <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-2xl bg-[#191919] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                            <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-base shadow-sm">
                                 01
                             </div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-[#A27B5C]">Langkah Pertama</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-text-main">Langkah Pertama</span>
                         </div>
-                        <h3 class="text-lg font-bold text-[#191919]">Pilih Barang & Cek Kalender</h3>
+                        <h3 class="text-lg font-bold text-text-main">Pilih Barang & Cek Kalender</h3>
                         <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
                             Pilih tanggal pada <strong>Smart Buffer Calendar</strong>. Sistem otomatis mengunci jeda pengiriman barang dan waktu laundry/cuci, memastikan tanggal sewa Anda tidak bentrok.
                         </p>
@@ -790,12 +561,12 @@
                     <!-- Langkah 2 -->
                     <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
                         <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-2xl bg-[#191919] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                            <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-base shadow-sm">
                                 02
                             </div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-[#A27B5C]">Langkah Kedua</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-text-main">Langkah Kedua</span>
                         </div>
-                        <h3 class="text-lg font-bold text-[#191919]">Isi Data & Upload KTP Aman</h3>
+                        <h3 class="text-lg font-bold text-text-main">Isi Data & Upload KTP Aman</h3>
                         <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
                             Cukup masukkan nama dan nomor WhatsApp. Unggah foto KTP yang langsung dilindungi dengan <strong>watermark otomatis</strong> dan disimpan di storage privat terenkripsi.
                         </p>
@@ -810,12 +581,12 @@
                     <!-- Langkah 3 -->
                     <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
                         <div class="flex items-center justify-between">
-                            <div class="w-12 h-12 rounded-2xl bg-[#191919] text-white flex items-center justify-center font-bold text-base shadow-sm">
+                            <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-base shadow-sm">
                                 03
                             </div>
-                            <span class="text-xs font-bold uppercase tracking-wider text-[#A27B5C]">Langkah Terakhir</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-text-main">Langkah Terakhir</span>
                         </div>
-                        <h3 class="text-lg font-bold text-[#191919]">Konfirmasi via WhatsApp</h3>
+                        <h3 class="text-lg font-bold text-text-main">Konfirmasi via WhatsApp</h3>
                         <p class="text-xs sm:text-sm text-neutral-600 leading-relaxed">
                             Satu klik membuka percakapan ke admin toko di WhatsApp dengan nomor referensi dan total sewa yang terisi otomatis. Konfirmasi DP/lunas langsung ke pemilik rental.
                         </p>
@@ -834,18 +605,18 @@
 
         <!-- ========================================================
              5. KEUNGGULAN (STICKY STACKING CARDS ARCHITECTURE)
-             (Scrubbed Background: Transisi ke Soft Linen #EDE7DC)
+             (Scrubbed Background: Transisi ke Soft Linen rgb(250, 249, 246))
              ======================================================== -->
-        <section id="keunggulan" class="py-20 sm:py-28 border-t border-[#E8E2D5]/70 relative bg-transparent">
+        <section id="keunggulan" class="py-20 sm:py-28 border-t border-border-subtle/70 relative bg-transparent">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
                 <!-- Header Keunggulan dengan Bounce Reveal dari Kiri -->
                 <div class="keunggulan-header text-center max-w-2xl mx-auto mb-14 sm:mb-20 space-y-3">
-                    <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#E8D5C4]/70 text-[#8C6546] border border-[#C8B7A6]/40">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#A27B5C]"></span>
+                    <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-surface-subtle/70 text-text-secondary border border-border-subtle/40">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
                         <span>Infrastruktur Terpercaya</span>
                     </span>
-                    <h2 class="reveal-bounce-left text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#191919] tracking-tight">
+                    <h2 class="reveal-bounce-left text-3xl sm:text-4xl md:text-5xl font-extrabold text-text-main tracking-tight">
                         Dirancang Khusus untuk Bisnis Rental Modern
                     </h2>
                     <p class="reveal-bounce-left text-sm sm:text-base text-neutral-600 max-w-lg mx-auto">
@@ -857,27 +628,36 @@
                 <div class="sticky-stack-wrapper relative space-y-6 sm:space-y-8 pb-16">
                     
                     <!-- STACK CARD 1: Smart Buffer Calendar -->
-                    <div class="sticky-card sticky top-24 sm:top-28 z-10 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-[#C8B7A6]/50 shadow-xl transition-all duration-300">
+                    <div class="sticky-card sticky top-24 sm:top-28 z-10 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-border-subtle/50 shadow-xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#E8D5C4] text-[#8C6546]">Pilar 01</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-surface-subtle text-text-secondary">Pilar 01</span>
                                     <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Kalender Cerdas</span>
                                 </div>
-                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#191919]">
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-text-main">
                                     Smart Buffer Calendar Otomatis
                                 </h3>
                                 <p class="text-sm sm:text-base text-neutral-600 leading-relaxed">
                                     Secara otomatis mengunci jeda pengiriman (<em>buffer before</em>) dan waktu cuci/laundry/inspeksi (<em>buffer after</em>) saat pesanan masuk. Tidak akan ada lagi kostum atau kamera yang belum dicuci atau belum kembali saat penyewa berikutnya datang.
                                 </p>
                                 <div class="flex flex-wrap gap-2 pt-2">
-                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Buffer Before & After</span>
-                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Sinkronisasi Real-Time</span>
-                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Kalender Visual Interaktif</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-base border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Buffer Before & After
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-base border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Sinkronisasi Real-Time
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-base border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Kalender Visual Interaktif
+                                    </span>
                                 </div>
                             </div>
                             <div class="md:col-span-4 flex items-center justify-center">
-                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-[#E8D5C4] to-[#F6F4EE] border border-[#C8B7A6]/60 flex items-center justify-center text-[#8C6546] shadow-inner">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-surface-subtle to-bg-base border border-border-subtle/60 flex items-center justify-center text-text-secondary shadow-inner">
                                     <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.253 3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                     </svg>
@@ -887,27 +667,36 @@
                     </div>
 
                     <!-- STACK CARD 2: Kepatuhan UU PDP & Watermark -->
-                    <div class="sticky-card sticky top-28 sm:top-36 z-20 bg-[#FAF7F2] backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-[#C8B7A6]/60 shadow-xl transition-all duration-300">
+                    <div class="sticky-card sticky top-28 sm:top-36 z-20 bg-surface-subtle backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-border-subtle/60 shadow-xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#E8D5C4] text-[#8C6546]">Pilar 02</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-surface-subtle text-text-secondary">Pilar 02</span>
                                     <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Keamanan Data Pribadi</span>
                                 </div>
-                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#191919]">
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-text-main">
                                     Kepatuhan Penuh UU PDP No. 27/2022
                                 </h3>
                                 <p class="text-sm sm:text-base text-neutral-600 leading-relaxed">
                                     Foto KTP & identitas penyewa otomatis dibubuhi watermark dinamis ("VERIFIKASI JAGASEWA - [VENDOR] - [TANGGAL]"), metadata EXIF dihapus tuntas, file disimpan di storage privat S3 Backblaze B2, dan dimusnahkan secara otomatis setelah sewa selesai.
                                 </p>
                                 <div class="flex flex-wrap gap-2 pt-2">
-                                    <span class="px-3 py-1 rounded-lg bg-[#EFE9DE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Watermark Dinamis Otomatis</span>
-                                    <span class="px-3 py-1 rounded-lg bg-[#EFE9DE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Auto-Delete Berkas 7 Hari</span>
-                                    <span class="px-3 py-1 rounded-lg bg-[#EFE9DE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Private S3 Storage (Signed URL)</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface-subtle border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Watermark Dinamis Otomatis
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface-subtle border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Auto-Delete Berkas 7 Hari
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface-subtle border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Private S3 Storage (Signed URL)
+                                    </span>
                                 </div>
                             </div>
                             <div class="md:col-span-4 flex items-center justify-center">
-                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-[#E8D5C4] to-[#F6F4EE] border border-[#C8B7A6]/60 flex items-center justify-center text-[#8C6546] shadow-inner">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-surface-subtle to-bg-base border border-border-subtle/60 flex items-center justify-center text-text-secondary shadow-inner">
                                     <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                                     </svg>
@@ -917,27 +706,36 @@
                     </div>
 
                     <!-- STACK CARD 3: Pessimistic Row Locking -->
-                    <div class="sticky-card sticky top-32 sm:top-44 z-30 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-[#C8B7A6]/60 shadow-xl transition-all duration-300">
+                    <div class="sticky-card sticky top-32 sm:top-44 z-30 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-border-subtle/60 shadow-xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#E8D5C4] text-[#8C6546]">Pilar 03</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-surface-subtle text-text-secondary">Pilar 03</span>
                                     <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Integritas Transaksi</span>
                                 </div>
-                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#191919]">
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-text-main">
                                     Pessimistic Locking Database (Zero Double-Booking)
                                 </h3>
                                 <p class="text-sm sm:text-base text-neutral-600 leading-relaxed">
                                     Setiap reservasi dieksekusi dalam transaksi ACID database dengan perintah <code class="px-1.5 py-0.5 rounded bg-neutral-100 text-xs text-neutral-800 font-mono">lockForUpdate()</code>. Dua pelanggan yang mengklik tombol sewa di milidetik yang sama tidak akan pernah bisa mendapatkan slot yang sama.
                                 </p>
                                 <div class="flex flex-wrap gap-2 pt-2">
-                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ SELECT ... FOR UPDATE</span>
-                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Database ACID Transaction</span>
-                                    <span class="px-3 py-1 rounded-lg bg-[#F6F4EE] border border-[#C8B7A6]/40 text-xs font-medium text-neutral-700">✓ Race-Condition Immunity</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-base border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        SELECT ... FOR UPDATE
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-base border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Database ACID Transaction
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-bg-base border border-border-subtle/40 text-xs font-medium text-neutral-700">
+                                        <svg class="w-3.5 h-3.5 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Race-Condition Immunity
+                                    </span>
                                 </div>
                             </div>
                             <div class="md:col-span-4 flex items-center justify-center">
-                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-[#E8D5C4] to-[#F6F4EE] border border-[#C8B7A6]/60 flex items-center justify-center text-[#8C6546] shadow-inner">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-gradient-to-br from-surface-subtle to-bg-base border border-border-subtle/60 flex items-center justify-center text-text-secondary shadow-inner">
                                     <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                                     </svg>
@@ -947,27 +745,36 @@
                     </div>
 
                     <!-- STACK CARD 4: Kalkulator Denda Pasti & Auto-Release -->
-                    <div class="sticky-card sticky top-36 sm:top-52 z-40 bg-[#1E1C1A] text-white rounded-3xl p-6 sm:p-10 border border-[#C79D66]/40 shadow-2xl transition-all duration-300">
+                    <div class="sticky-card sticky top-36 sm:top-52 z-40 bg-primary text-white rounded-3xl p-6 sm:p-10 border border-[rgb(200, 195, 185)]/40 shadow-2xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
                                 <div class="flex items-center gap-3">
-                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-[#A27B5C] text-white">Pilar 04</span>
+                                    <span class="px-3 py-1 rounded-full text-xs font-bold bg-primary text-white">Pilar 04</span>
                                     <span class="text-xs font-semibold uppercase tracking-wider text-neutral-400">Proteksi Finansial</span>
                                 </div>
-                                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#C79D66]">
+                                <h3 class="text-2xl sm:text-3xl font-extrabold text-text-main">
                                     Kalkulator Denda Pasti & Auto-Release 24 Jam
                                 </h3>
                                 <p class="text-sm sm:text-base text-neutral-300 leading-relaxed">
                                     Aritmatika bilangan bulat murni (integer rupiah tanpa floating point) menghitung denda keterlambatan dan deposit secara transparan. Booking tanpa konfirmasi pembayaran otomatis dibatalkan dalam 24 jam sehingga kalender barang kembali terbuka.
                                 </p>
                                 <div class="flex flex-wrap gap-2 pt-2">
-                                    <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">✓ Zero Float Precision Error</span>
-                                    <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">✓ Auto-Cancel Pending Unpaid</span>
-                                    <span class="px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">✓ WhatsApp Format Otomatis</span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">
+                                        <svg class="w-3.5 h-3.5 text-accent-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Zero Float Precision Error
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">
+                                        <svg class="w-3.5 h-3.5 text-accent-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        Auto-Cancel Pending Unpaid
+                                    </span>
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/10 border border-white/10 text-xs font-medium text-neutral-200">
+                                        <svg class="w-3.5 h-3.5 text-accent-lime" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        WhatsApp Format Otomatis
+                                    </span>
                                 </div>
                             </div>
                             <div class="md:col-span-4 flex items-center justify-center">
-                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white/5 border border-[#C79D66]/50 flex items-center justify-center text-[#C79D66] shadow-inner">
+                                <div class="w-24 h-24 sm:w-32 sm:h-32 rounded-3xl bg-white/5 border border-[rgb(200, 195, 185)]/50 flex items-center justify-center text-text-main shadow-inner">
                                     <svg class="w-12 h-12 sm:w-16 sm:h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6H2.25m0 0H3m-1.5 0h1.5m0 0a60.07 60.07 0 0115.797-2.101c.727-.198 1.453.342 1.453 1.096V6m-1.5 0H18m1.5 0H21m-1.5 0v.75" />
                                     </svg>
@@ -987,18 +794,18 @@
     <!-- ========================================================
          6. FOOTER
          ======================================================== -->
-    <footer id="site-footer" class="border-t border-[#E8E2D5]/70 py-10 transition-colors duration-500 bg-[#141312] text-neutral-400">
+    <footer id="site-footer" class="border-t border-border-subtle/70 py-10 transition-colors duration-500 bg-primary text-neutral-400">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs">
             <div class="flex items-center gap-3">
                 <img src="{{ asset('jagasewa_logo1.png') }}" alt="JagaSewa" class="h-8 w-auto object-contain brightness-110">
                 <span class="border-l border-neutral-700 pl-3 font-normal text-neutral-400">Platform booking rental mobile-first</span>
             </div>
             <div class="flex items-center gap-6 text-neutral-300">
-                <a href="#jelajahi-rental" class="hover:text-[#C79D66] transition">Katalog</a>
-                <a href="#reveal-showcase" class="hover:text-[#C79D66] transition">Panggung Mitra</a>
-                <a href="#cara-kerja" class="hover:text-[#C79D66] transition">Cara Kerja</a>
-                <a href="#keunggulan" class="hover:text-[#C79D66] transition">Keunggulan</a>
-                <a href="{{ url('/vendor/login') }}" class="hover:text-[#C79D66] transition">Portal Vendor</a>
+                <a href="#jelajahi-rental" class="hover:text-text-main transition">Katalog</a>
+                <a href="#reveal-showcase" class="hover:text-text-main transition">Panggung Mitra</a>
+                <a href="#cara-kerja" class="hover:text-text-main transition">Cara Kerja</a>
+                <a href="#keunggulan" class="hover:text-text-main transition">Keunggulan</a>
+                <a href="{{ url('/vendor/login') }}" class="hover:text-text-main transition">Portal Vendor</a>
             </div>
             <div>
                 &copy; {{ date('Y') }} JagaSewa. Hak cipta dilindungi undang-undang.
@@ -1025,9 +832,9 @@
                1. PERPINDAHAN BACKGROUND SECARA HALUS (CONTINUOUS SCRUB)
                (Hero -> Katalog -> Curtain Showcase -> Cara Kerja -> Keunggulan)
                ==================================================== */
-            // Hero -> Katalog (#F6F4EE -> #F0EAE0)
+            // Hero -> Katalog (rgb(250, 249, 246) -> rgb(245, 244, 240))
             gsap.to('body', {
-                backgroundColor: '#F0EAE0',
+                backgroundColor: 'rgb(245, 244, 240)',
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '#jelajahi-rental',
@@ -1037,9 +844,9 @@
                 }
             });
 
-            // Katalog -> Curtain Showcase (#F0EAE0 -> #141312)
+            // Katalog -> Curtain Showcase (rgb(245, 244, 240) -> rgb(17, 17, 17))
             gsap.to('body', {
-                backgroundColor: '#141312',
+                backgroundColor: 'rgb(17, 17, 17)',
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '#reveal-showcase',
@@ -1049,9 +856,9 @@
                 }
             });
 
-            // Curtain Showcase -> Cara Kerja (#141312 -> #E7DFCE)
+            // Curtain Showcase -> Cara Kerja (rgb(17, 17, 17) -> rgb(245, 244, 240))
             gsap.to('body', {
-                backgroundColor: '#E7DFCE',
+                backgroundColor: 'rgb(245, 244, 240)',
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '#cara-kerja',
@@ -1061,9 +868,9 @@
                 }
             });
 
-            // Cara Kerja -> Keunggulan (#E7DFCE -> #EDE7DC)
+            // Cara Kerja -> Keunggulan (rgb(245, 244, 240) -> rgb(250, 249, 246))
             gsap.to('body', {
-                backgroundColor: '#EDE7DC',
+                backgroundColor: 'rgb(250, 249, 246)',
                 ease: 'none',
                 scrollTrigger: {
                     trigger: '#keunggulan',

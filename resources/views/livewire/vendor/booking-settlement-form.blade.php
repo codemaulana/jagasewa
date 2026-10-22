@@ -192,7 +192,7 @@
         <div class="flex items-center justify-end gap-3 pt-2">
             <button 
                 type="submit"
-                class="min-h-[44px] h-11 px-6 text-sm font-semibold text-white bg-[#111111] hover:bg-[#262626] active:bg-black rounded-xl transition shadow-xs inline-flex items-center justify-center"
+                class="min-h-[44px] h-11 px-6 text-sm font-semibold text-primary-text bg-primary hover:bg-primary-hover active:bg-primary-active rounded-lg transition shadow-subtle inline-flex items-center justify-center"
             >
                 Konfirmasi Penyelesaian Sewa
             </button>

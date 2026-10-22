@@ -168,7 +168,7 @@ class StoreSettings extends Page
                                     ->label('Status Fitur')
                                     ->content(new HtmlString(
                                         '<div class="flex items-center justify-between p-3.5 rounded-lg border border-zinc-200 bg-zinc-50 text-xs text-zinc-700">'
-                                        .'<div><span class="font-semibold text-zinc-900">💎 Fitur Kustom Pesan WhatsApp Terkunci.</span><p class="mt-0.5 text-zinc-500">Toko Free menggunakan format pesan WhatsApp standar otomatis dari JagaSewa.</p></div>'
+                                        .'<div><span class="font-semibold text-zinc-900">Fitur Kustom Pesan WhatsApp Terkunci (Khusus Pro).</span><p class="mt-0.5 text-zinc-500">Toko Free menggunakan format pesan WhatsApp standar otomatis dari JagaSewa.</p></div>'
                                         .'<a href="'.route('vendor.billing.index').'" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs shadow-xs transition flex-shrink-0">Upgrade ke Pro</a>'
                                         .'</div>'
                                     )),

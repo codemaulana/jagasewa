@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Booking extends Model
@@ -60,6 +61,23 @@ class Booking extends Model
         'activated_at',
         'returned_at',
         'closed_at',
+        // Pembayaran DP & Lunas
+        'down_payment_amount',
+        'is_dp_paid',
+        'dp_paid_at',
+        'is_paid_in_full',
+        'paid_in_full_at',
+        'payment_proof_path',
+        'payment_notes',
+        // Serah Terima & Inspeksi
+        'handover_method',
+        'tracking_number',
+        'handover_checklist',
+        'handover_notes',
+        'handover_photos',
+        'return_checklist',
+        'return_notes',
+        'return_photos',
     ];
 
     /**
@@ -100,6 +118,15 @@ class Booking extends Model
             'total_price' => 'integer',
             'deposit_paid' => 'integer',
             'fine_amount' => 'integer',
+            'down_payment_amount' => 'integer',
+            'is_dp_paid' => 'boolean',
+            'dp_paid_at' => 'datetime',
+            'is_paid_in_full' => 'boolean',
+            'paid_in_full_at' => 'datetime',
+            'handover_checklist' => 'array',
+            'handover_photos' => 'array',
+            'return_checklist' => 'array',
+            'return_photos' => 'array',
         ];
     }
 
@@ -181,5 +208,76 @@ class Booking extends Model
     public function settlement(): HasOne
     {
         return $this->hasOne(Settlement::class);
+    }
+
+    /**
+     * Get temporary signed URL for payment proof.
+     */
+    public function getPaymentProofUrlAttribute(): ?string
+    {
+        if (empty($this->payment_proof_path)) {
+            return null;
+        }
+
+        try {
+            return Storage::disk('s3')->temporaryUrl(
+                $this->payment_proof_path,
+                now('Asia/Jakarta')->addMinutes(60)
+            );
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * Get temporary signed URLs for handover condition photos.
+     *
+     * @return list<string>
+     */
+    public function getHandoverPhotoUrlsAttribute(): array
+    {
+        if (empty($this->handover_photos) || ! is_array($this->handover_photos)) {
+            return [];
+        }
+
+        $urls = [];
+        foreach ($this->handover_photos as $path) {
+            try {
+                $urls[] = Storage::disk('s3')->temporaryUrl(
+                    $path,
+                    now('Asia/Jakarta')->addMinutes(60)
+                );
+            } catch (\Throwable) {
+                // Ignore missing or invalid storage items
+            }
+        }
+
+        return $urls;
+    }
+
+    /**
+     * Get temporary signed URLs for return inspection photos / damage evidence.
+     *
+     * @return list<string>
+     */
+    public function getReturnPhotoUrlsAttribute(): array
+    {
+        if (empty($this->return_photos) || ! is_array($this->return_photos)) {
+            return [];
+        }
+
+        $urls = [];
+        foreach ($this->return_photos as $path) {
+            try {
+                $urls[] = Storage::disk('s3')->temporaryUrl(
+                    $path,
+                    now('Asia/Jakarta')->addMinutes(60)
+                );
+            } catch (\Throwable) {
+                // Ignore missing or invalid storage items
+            }
+        }
+
+        return $urls;
     }
 }

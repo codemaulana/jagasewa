@@ -14,6 +14,31 @@ class Item extends Model
 {
     use BelongsToVendor, HasFactory, HasUlids;
 
+    public const CATEGORIES = [
+        'Cosplay' => 'Kostum Cosplay',
+        'Kamera & Lensa' => 'Kamera & Lensa',
+        'Kebaya & Gaun' => 'Kebaya & Gaun',
+        'Busana Adat' => 'Busana Adat',
+        'Elektronik & Audio' => 'Elektronik & Audio',
+        'Outdoor & Camping' => 'Outdoor & Camping',
+        'Lainnya' => 'Lainnya',
+    ];
+
+    public const UNIT_STATUS_AVAILABLE = 'available';
+
+    public const UNIT_STATUS_RENTED = 'rented';
+
+    public const UNIT_STATUS_LAUNDRY = 'laundry';
+
+    public const UNIT_STATUS_MAINTENANCE = 'maintenance';
+
+    public const CONDITIONS = [
+        'Sangat Baik' => 'Sangat Baik (Mulus / Prima)',
+        'Baik' => 'Baik (Normal Digunakan)',
+        'Ada Bekas Pakai' => 'Ada Bekas Pakai (Minor)',
+        'Perlu Perhatian' => 'Perlu Perhatian / Pemeliharaan',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,17 +47,22 @@ class Item extends Model
     protected $fillable = [
         'vendor_id',
         'name',
+        'category',
+        'item_code',
         'slug',
         'description',
         'size',
+        'condition',
         'included_items',
         'care_instructions',
         'photo_paths',
         'price_per_day',
+        'package_price_3d',
         'deposit_amount',
         'fine_per_day',
         'buffer_before',
         'buffer_after',
+        'unit_status',
         'is_active',
     ];
 
@@ -63,6 +93,7 @@ class Item extends Model
     {
         return [
             'price_per_day' => 'integer',
+            'package_price_3d' => 'integer',
             'deposit_amount' => 'integer',
             'fine_per_day' => 'integer',
             'buffer_before' => 'integer',
@@ -106,7 +137,7 @@ class Item extends Model
     }
 
     /**
-     * Get array of signed/public URLs for this item's photos.
+     * Get array of signed/public URLs for this item's photos with cache-busting.
      *
      * @return list<string>
      */
@@ -117,21 +148,34 @@ class Item extends Model
             $hasS3 = ! empty(config('filesystems.disks.s3.key')) && ! empty(config('filesystems.disks.s3.bucket'));
             $diskName = $hasS3 || app()->environment('testing') ? 's3' : 'public';
             $disk = Storage::disk($diskName);
+            $v = $this->updated_at ? $this->updated_at->timestamp : time();
 
             foreach ($this->photo_paths as $path) {
                 try {
-                    $urls[] = $disk->temporaryUrl($path, now()->addMinutes(60));
+                    $url = $disk->temporaryUrl($path, now()->addMinutes(60));
                 } catch (\Throwable) {
                     try {
-                        $urls[] = $disk->url($path);
+                        $url = $disk->url($path);
                     } catch (\Throwable) {
-                        $urls[] = Storage::disk('public')->url($path);
+                        $url = Storage::disk('public')->url($path);
                     }
                 }
+
+                $urls[] = str_contains($url, '?') ? "{$url}&v={$v}" : "{$url}?v={$v}";
             }
         }
 
         return $urls;
+    }
+
+    /**
+     * Get the primary (first) photo URL with cache-busting.
+     */
+    public function getPrimaryPhotoUrlAttribute(): ?string
+    {
+        $urls = $this->photo_urls;
+
+        return ! empty($urls) ? $urls[0] : null;
     }
 
     /**

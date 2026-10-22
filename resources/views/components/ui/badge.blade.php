@@ -4,7 +4,7 @@
 ])
 
 @php
-    // Mapping 5 Varian Semantik:
+    // Mapping 5 Varian Semantik (Anti-Slop: Teks + Titik Warna, Tanpa Emoji):
     // 1. Peringatan: pending, returned
     // 2. Info: approved, active
     // 3. Sukses: closed
@@ -14,62 +14,62 @@
         'pending' => [
             'label' => 'Menunggu persetujuan',
             'variant' => 'badge-status-warning',
-            'dot' => 'bg-[var(--color-status-warning-text)]',
+            'dot' => 'bg-warning',
         ],
         'returned' => [
             'label' => 'Dikembalikan',
             'variant' => 'badge-status-warning',
-            'dot' => 'bg-[var(--color-status-warning-text)]',
+            'dot' => 'bg-warning',
         ],
         'approved' => [
             'label' => 'Disetujui',
             'variant' => 'badge-status-info',
-            'dot' => 'bg-[var(--color-status-info-text)]',
+            'dot' => 'bg-info',
         ],
         'active' => [
             'label' => 'Sedang disewa',
             'variant' => 'badge-status-info',
-            'dot' => 'bg-[var(--color-status-info-text)]',
+            'dot' => 'bg-info',
         ],
         'closed' => [
             'label' => 'Selesai',
             'variant' => 'badge-status-success',
-            'dot' => 'bg-[var(--color-status-success-text)]',
+            'dot' => 'bg-success',
         ],
         'rejected' => [
             'label' => 'Ditolak',
             'variant' => 'badge-status-danger',
-            'dot' => 'bg-[var(--color-status-danger-text)]',
+            'dot' => 'bg-danger',
         ],
         'cancelled_timeout' => [
             'label' => 'Batal (batas waktu)',
             'variant' => 'badge-status-neutral',
-            'dot' => 'bg-[var(--color-status-neutral-text)]',
+            'dot' => 'bg-text-secondary',
         ],
         'cancelled_renter' => [
             'label' => 'Batal (penyewa)',
             'variant' => 'badge-status-neutral',
-            'dot' => 'bg-[var(--color-status-neutral-text)]',
+            'dot' => 'bg-text-secondary',
         ],
         'cancelled_vendor' => [
             'label' => 'Batal (vendor)',
             'variant' => 'badge-status-neutral',
-            'dot' => 'bg-[var(--color-status-neutral-text)]',
+            'dot' => 'bg-text-secondary',
         ],
         'cancelled' => [
             'label' => 'Batal',
             'variant' => 'badge-status-neutral',
-            'dot' => 'bg-[var(--color-status-neutral-text)]',
+            'dot' => 'bg-text-secondary',
         ],
         'expired' => [
             'label' => 'Kedaluwarsa',
             'variant' => 'badge-status-neutral',
-            'dot' => 'bg-[var(--color-status-neutral-text)]',
+            'dot' => 'bg-text-secondary',
         ],
         'accent' => [
             'label' => 'Unggulan',
             'variant' => 'badge-accent-lime font-medium border border-transparent',
-            'dot' => 'bg-[#0A0A0A]',
+            'dot' => 'bg-accent-lime-text',
         ],
     ];
 
@@ -79,7 +79,7 @@
             : [
                 'label' => ucfirst($status),
                 'variant' => 'badge-status-neutral',
-                'dot' => 'bg-[var(--color-status-neutral-text)]',
+                'dot' => 'bg-text-secondary',
             ]
     );
 
