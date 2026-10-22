@@ -168,4 +168,12 @@ class Renter extends Model
     {
         return $this->hasMany(IdentityDocument::class);
     }
+
+    /**
+     * Get vendor profiles and internal notes associated with this renter.
+     */
+    public function vendorRenters(): HasMany
+    {
+        return $this->hasMany(VendorRenter::class);
+    }
 }

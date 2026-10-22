@@ -32,6 +32,7 @@ class Vendor extends Model
         'bank_account_info',
         'custom_wa_templates',
         'category_buffer_settings',
+        'fine_rules',
         'is_active',
     ];
 
@@ -65,6 +66,7 @@ class Vendor extends Model
             'is_active' => 'boolean',
             'custom_wa_templates' => 'array',
             'category_buffer_settings' => 'array',
+            'fine_rules' => 'array',
         ];
     }
 
@@ -167,6 +169,14 @@ class Vendor extends Model
     public function blacklistEntries(): HasMany
     {
         return $this->hasMany(BlacklistEntry::class);
+    }
+
+    /**
+     * Get the customer profile relations belonging to this vendor.
+     */
+    public function vendorRenters(): HasMany
+    {
+        return $this->hasMany(VendorRenter::class);
     }
 
     /**

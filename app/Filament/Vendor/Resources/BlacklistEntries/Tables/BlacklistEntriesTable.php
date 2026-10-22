@@ -32,6 +32,41 @@ class BlacklistEntriesTable
                     })
                     ->sortable(),
 
+                TextColumn::make('masked_identity')
+                    ->label('Identitas Tersamarkan')
+                    ->fontFamily('mono')
+                    ->weight('bold')
+                    ->placeholder('******'),
+
+                TextColumn::make('scope')
+                    ->label('Cakupan')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        BlacklistEntry::SCOPE_SHARED => 'Komunitas Bersama [Pro]',
+                        default => 'Internal Toko',
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        BlacklistEntry::SCOPE_SHARED => 'success',
+                        default => 'gray',
+                    }),
+
+                TextColumn::make('verification_status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        BlacklistEntry::STATUS_VERIFIED => 'Terverifikasi',
+                        BlacklistEntry::STATUS_DISPUTED => 'Disanggah',
+                        BlacklistEntry::STATUS_PENDING => 'Menunggu Review',
+                        BlacklistEntry::STATUS_REJECTED => 'Ditolak',
+                        default => ucfirst($state),
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        BlacklistEntry::STATUS_VERIFIED => 'success',
+                        BlacklistEntry::STATUS_DISPUTED => 'warning',
+                        BlacklistEntry::STATUS_REJECTED => 'danger',
+                        default => 'gray',
+                    }),
+
                 TextColumn::make('reason')
                     ->label('Alasan')
                     ->wrap()

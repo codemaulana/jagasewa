@@ -6,7 +6,9 @@ use App\Models\Booking;
 use App\Models\IdentityDocument;
 use App\Models\Item;
 use App\Models\Renter;
+use App\Models\VendorRenter;
 use App\Services\AuditService;
+use App\Services\BlacklistService;
 use App\Services\BookingCalendarService;
 use App\Services\DocumentUploadService;
 use App\Services\IdentityHashService;
@@ -237,7 +239,22 @@ class BookingForm extends Component
                     );
                 }
 
-                // 8. Audit log (without PII)
+                // 8. Auto-check blacklist & link to vendor customer list
+                $blacklistMatches = app(BlacklistService::class)->getMatchesForRenter($renter, (int) $this->item->vendor_id);
+                if ($blacklistMatches->isNotEmpty()) {
+                    $reasons = $blacklistMatches->pluck('reason')->filter()->implode(', ');
+                    $newBooking->update([
+                        'vendor_notes' => 'PERINGATAN SISTEM: Penyewa terdeteksi di database blacklist ('.($reasons ?: 'Tanpa alasan').').',
+                    ]);
+                }
+
+                $vendorRenter = VendorRenter::firstOrCreate([
+                    'vendor_id' => $this->item->vendor_id,
+                    'renter_id' => $renter->id,
+                ]);
+                $vendorRenter->recalculateMetrics();
+
+                // 9. Audit log (without PII)
                 AuditService::log(
                     'booking_created',
                     'booking',

@@ -7,6 +7,7 @@ use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -45,6 +46,7 @@ class StoreSettings extends Page
 
         if ($vendor) {
             $templates = $vendor->custom_wa_templates ?? [];
+            $fineRules = $vendor->fine_rules ?? [];
 
             $this->data = [
                 'name' => $vendor->name,
@@ -59,6 +61,11 @@ class StoreSettings extends Page
                     'approved' => $templates['approved'] ?? null,
                     'rejected' => $templates['rejected'] ?? null,
                     'return_reminder' => $templates['return_reminder'] ?? null,
+                ],
+                'fine_rules' => [
+                    'grace_hours' => $fineRules['grace_hours'] ?? 2,
+                    'late_rate_type' => $fineRules['late_rate_type'] ?? 'daily',
+                    'hourly_rate' => $fineRules['hourly_rate'] ?? 20000,
                 ],
             ];
 
@@ -193,6 +200,58 @@ class StoreSettings extends Page
                                 ->helperText('Dikirimkan untuk mengingatkan penyewa menjelang jatuh tempo pengembalian.'),
                         ];
                     }),
+
+                Section::make('Aturan Denda Otomatis & Toleransi Pengembalian (Fitur Pro)')
+                    ->description(fn () => ($vendor = $this->getVendor()) && $vendor->isPro()
+                        ? 'Pengaturan kalkulasi otomatis denda pengembalian: toleransi jam gratis dan pilihan tarif harian/per jam.'
+                        : 'Fitur aturan denda otomatis dan toleransi waktu pengembalian merupakan fitur eksklusif Paket Pro.')
+                    ->schema(function () {
+                        $vendor = $this->getVendor();
+                        $isPro = $vendor && $vendor->isPro();
+
+                        if (! $isPro) {
+                            return [
+                                Placeholder::make('fine_rules_pro_notice')
+                                    ->label('Status Fitur Denda')
+                                    ->content(new HtmlString(
+                                        '<div class="flex items-center justify-between p-3.5 rounded-lg border border-border-subtle bg-surface-subtle text-xs text-text-secondary">'
+                                        .'<div><span class="font-semibold text-text-main">Kalkulator Denda Otomatis Terkunci (Khusus Pro).</span><p class="mt-0.5 text-text-muted">Toko Free menggunakan perhitungan manual saat pengembalian barang.</p></div>'
+                                        .'<a href="'.route('vendor.billing.index').'" class="px-3 py-1.5 rounded-lg bg-primary hover:bg-neutral-800 text-white font-medium text-xs shadow-xs transition flex-shrink-0">Upgrade ke Pro</a>'
+                                        .'</div>'
+                                    )),
+                            ];
+                        }
+
+                        return [
+                            Grid::make(3)
+                                ->schema([
+                                    TextInput::make('fine_rules.grace_hours')
+                                        ->label('Toleransi Keterlambatan (Jam Gratis)')
+                                        ->numeric()
+                                        ->integer()
+                                        ->minValue(0)
+                                        ->default(2)
+                                        ->helperText('Bebas denda jika dikembalikan dalam toleransi ini.'),
+                                    Select::make('fine_rules.late_rate_type')
+                                        ->label('Metode Perhitungan Denda')
+                                        ->options([
+                                            'daily' => 'Tarif Harian Penuh (Default)',
+                                            'hourly' => 'Tarif Per Jam (Prorata)',
+                                        ])
+                                        ->default('daily')
+                                        ->required()
+                                        ->live(),
+                                    TextInput::make('fine_rules.hourly_rate')
+                                        ->label('Tarif Denda per Jam (Rp)')
+                                        ->numeric()
+                                        ->integer()
+                                        ->minValue(0)
+                                        ->prefix('Rp')
+                                        ->visible(fn ($get) => $get('fine_rules.late_rate_type') === 'hourly')
+                                        ->helperText('Tarif denda untuk setiap jam keterlambatan setelah grace period.'),
+                                ]),
+                        ];
+                    }),
             ]);
     }
 
@@ -271,6 +330,7 @@ class StoreSettings extends Page
 
         if ($vendor->isPro()) {
             $updateData['custom_wa_templates'] = $state['custom_wa_templates'] ?? null;
+            $updateData['fine_rules'] = $state['fine_rules'] ?? null;
         }
 
         $vendor->update($updateData);

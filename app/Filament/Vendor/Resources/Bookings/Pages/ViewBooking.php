@@ -449,6 +449,22 @@ class ViewBooking extends ViewRecord
                     Booking::STATUS_CLOSED,
                     Booking::STATUS_REJECTED,
                 ])),
+
+            Action::make('invoice_doc')
+                ->label('Invoice (PDF)')
+                ->icon('heroicon-o-document-text')
+                ->color('gray')
+                ->url(fn (Booking $record): string => route('vendor.bookings.invoice', $record))
+                ->openUrlInNewTab()
+                ->visible(fn (Booking $record): bool => ! in_array($record->status, [Booking::STATUS_CANCELLED_TIMEOUT, Booking::STATUS_CANCELLED_RENTER, Booking::STATUS_CANCELLED_VENDOR])),
+
+            Action::make('agreement_doc')
+                ->label('Surat Perjanjian (PDF)')
+                ->icon('heroicon-o-document-check')
+                ->color('gray')
+                ->url(fn (Booking $record): string => route('vendor.bookings.agreement', $record))
+                ->openUrlInNewTab()
+                ->visible(fn (Booking $record): bool => in_array($record->status, [Booking::STATUS_APPROVED, Booking::STATUS_ACTIVE, Booking::STATUS_RETURNED, Booking::STATUS_CLOSED])),
         ];
     }
 }

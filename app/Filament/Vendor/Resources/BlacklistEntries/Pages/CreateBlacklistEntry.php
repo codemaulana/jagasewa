@@ -32,6 +32,14 @@ class CreateBlacklistEntry extends CreateRecord
 
         $type = $data['identity_type'] ?? BlacklistEntry::TYPE_WA;
         $rawValue = (string) ($data['identity_value'] ?? '');
+        $requestedScope = $data['scope'] ?? BlacklistEntry::SCOPE_PRIVATE;
+
+        // If requesting shared blacklist, check Pro entitlement
+        if ($requestedScope === BlacklistEntry::SCOPE_SHARED && (! $vendor || ! $vendor->isPro())) {
+            throw ValidationException::withMessages([
+                'data.scope' => 'Fitur lapor blacklist bersama komunitas hanya tersedia untuk vendor paket Pro. Silakan pilih "Internal Toko Anda Saja" atau upgrade akun.',
+            ]);
+        }
 
         $hash = IdentityHashService::hashIdentity($type, $rawValue);
 
@@ -47,7 +55,9 @@ class CreateBlacklistEntry extends CreateRecord
         }
 
         $data['identity_hash'] = $hash;
-        $data['scope'] = BlacklistEntry::SCOPE_PRIVATE;
+        $data['masked_identity'] = BlacklistEntry::maskValue($type, $rawValue);
+        $data['scope'] = $requestedScope;
+        $data['verification_status'] = BlacklistEntry::STATUS_VERIFIED;
 
         unset($data['identity_value']);
 

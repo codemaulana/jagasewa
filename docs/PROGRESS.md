@@ -156,3 +156,30 @@
 - [x] **Test Suite Gelombang 1:**
   - `tests/Feature/OperationalVendorCoreTest.php` (6 tests, 58 assertions lulus 100%).
 
+---
+
+## 6. Gelombang 2: Kepercayaan dan Uang (SELESAI & TERVERIFIKASI)
+
+- [x] **Penyewa / Pelanggan Vendor:**
+  - Resource baru `RenterResource` (`/vendor/renters`) dengan isolasi vendor ketat.
+  - Tracking profil pelanggan, total sewa, total transaksi, dan penanda reliabilitas (`trusted`, `normal`, `caution`, `problematic`).
+  - Fitur memo/catatan internal vendor yang dapat diedit langsung via modal aksi.
+  - Rekalkulasi metrik reliabilitas otomatis (`recalculateMetrics()`).
+  - Cek blacklist otomatis saat booking baru dibuat dari etalase publik (`BookingForm`).
+- [x] **Blacklist Bersama (Shared Blacklist):**
+  - Cek database blacklist lintas internal dan komunitas dengan pelindung kuota (Free: 10 cek/bulan, Pro: tanpa batas).
+  - Pelaporan ke blacklist bersama eksklusif untuk vendor Pro dengan unggah bukti pendukung ke storage S3 privat.
+  - Anonimisasi dan masking identitas (`62812****7890`, `3201**********01`) tanpa membocorkan identitas pelapor lain.
+  - Mekanisme sanggahan (*dispute*) entri blacklist.
+- [x] **Denda dan Deposit:**
+  - Kalkulator keterlambatan lanjutan: tarif per hari dan tarif per jam prorata dengan jam toleransi gratis (*grace hours*).
+  - Kalkulasi gabungan keterlambatan, kerusakan (*damage*), dan kehilangan (*loss*).
+  - Pengaturan aturan denda otomatis di halaman pengaturan toko (`StoreSettings`) untuk vendor Pro.
+- [x] **Dokumen Resmi PDF & WhatsApp Templates:**
+  - Generator PDF standar (PDF 1.4 binary) murni dalam PHP tanpa dependensi composer pihak ketiga.
+  - Download & cetak **Invoice (PDF)** dan **Surat Perjanjian Sewa (PDF)** dengan proteksi hak akses Pro.
+  - Template pesan WhatsApp dinamis dengan variabel `{nama}`, `{barang}`, `{tanggal}`, `{total}`, `{rekening_toko}` yang otomatis membuka tautan `wa.me`.
+- [x] **Test Suite Gelombang 2:**
+  - `tests/Feature/Gelombang2TrustAndMoneyTest.php` (7 tests, 91 assertions lulus 100%).
+
+

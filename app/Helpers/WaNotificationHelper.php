@@ -109,13 +109,17 @@ class WaNotificationHelper
             $template = (string) $customTemplates[$action];
             $replacements = [
                 '{nama_penyewa}' => $renterName,
+                '{nama}' => $renterName,
                 '{nama_barang}' => $itemName,
+                '{barang}' => $itemName,
                 '{kode_booking}' => $booking->reference_code,
                 '{nama_toko}' => $vendorName,
                 '{nama_vendor}' => $vendorName,
                 '{rekening_toko}' => $bankAccount,
                 '{jadwal_sewa}' => "{$startDate} s/d {$endDate}",
+                '{tanggal}' => "{$startDate} s/d {$endDate}",
                 '{total_biaya}' => "Rp {$totalPrice}",
+                '{total}' => "Rp {$totalPrice}",
                 '{total_deposit}' => "Rp {$depositAmount}",
             ];
 

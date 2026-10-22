@@ -6,6 +6,7 @@ use App\Http\Controllers\Vendor\AuthController;
 use App\Http\Controllers\Vendor\BillingController;
 use App\Http\Controllers\Vendor\BillingReturnController;
 use App\Http\Controllers\Vendor\BlacklistCheckController;
+use App\Http\Controllers\Vendor\BookingDocumentController;
 use App\Http\Controllers\Vendor\IdentityDocumentController;
 use App\Http\Controllers\Webhooks\MayarWebhookController;
 use App\Http\Controllers\Webhooks\XenditWebhookController;
@@ -86,6 +87,15 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
     Route::get('/reports/export', [BillingController::class, 'exportReports'])
         ->middleware(['auth:vendor', 'vendor.pro:export_reports'])
         ->name('reports.export');
+
+    // Pro-Only Feature: PDF Documents & Agreements
+    Route::get('/bookings/{booking}/invoice', [BookingDocumentController::class, 'invoice'])
+        ->middleware('auth:vendor')
+        ->name('bookings.invoice');
+
+    Route::get('/bookings/{booking}/agreement', [BookingDocumentController::class, 'agreement'])
+        ->middleware('auth:vendor')
+        ->name('bookings.agreement');
 });
 
 // Mayar.id Webhook Endpoint (T-42 / SEC-22..SEC-25) - CSRF-exempted
