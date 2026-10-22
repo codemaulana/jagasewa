@@ -33,6 +33,9 @@ class Vendor extends Model
         'custom_wa_templates',
         'category_buffer_settings',
         'fine_rules',
+        'custom_domain',
+        'custom_domain_verified',
+        'white_label_enabled',
         'is_active',
     ];
 
@@ -67,7 +70,17 @@ class Vendor extends Model
             'custom_wa_templates' => 'array',
             'category_buffer_settings' => 'array',
             'fine_rules' => 'array',
+            'custom_domain_verified' => 'boolean',
+            'white_label_enabled' => 'boolean',
         ];
+    }
+
+    /**
+     * Determine if white-label branding is currently active.
+     */
+    public function isWhiteLabelActive(): bool
+    {
+        return $this->white_label_enabled && $this->hasWhiteLabel();
     }
 
     /**

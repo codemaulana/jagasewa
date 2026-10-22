@@ -82,7 +82,7 @@
     </main>
 
     <!-- Footer Tenang & Terpercaya -->
-    @if(!($vendor?->hasWhiteLabel() ?? false))
+    @if(!($vendor?->isWhiteLabelActive() ?? false))
         <footer class="border-t border-border-subtle py-8 bg-surface/70 text-center text-xs text-text-secondary">
             <div class="{{ $maxWidth }} mx-auto px-4 space-y-2">
                 <div class="flex items-center justify-center gap-1.5 text-text-main font-semibold">

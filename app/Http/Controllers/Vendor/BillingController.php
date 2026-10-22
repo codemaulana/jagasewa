@@ -25,11 +25,13 @@ class BillingController extends Controller
      */
     public function index(Request $request)
     {
-        $vendor = auth('vendor')->user()?->vendor;
+        $user = auth('vendor')->user();
 
-        if (! $vendor) {
-            abort(403);
+        if (! $user || ! $user->vendor || ! $user->canManageSettings()) {
+            abort(403, 'Akses ditolak. Hanya pemilik toko (owner) yang dapat mengelola tagihan dan paket langganan.');
         }
+
+        $vendor = $user->vendor;
 
         $subscription = $vendor->currentSubscription;
         $activeSubscription = $vendor->activeSubscription;
@@ -117,43 +119,60 @@ class BillingController extends Controller
      */
     public function exportReports(Request $request): StreamedResponse
     {
-        $vendor = auth('vendor')->user()?->vendor;
+        $user = auth('vendor')->user();
 
-        if (! $vendor) {
-            abort(403);
+        if (! $user || ! $user->vendor || ! $user->canViewFinancials()) {
+            abort(403, 'Akses ditolak. Staf operasional tidak memiliki akses ke laporan finansial.');
         }
 
-        $filename = 'laporan-booking-jagasewa-'.now()->format('Ymd-His').'.csv';
+        $vendor = $user->vendor;
 
-        return response()->streamDownload(function () use ($vendor) {
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+        $suffix = ($startDate && $endDate) ? "_{$startDate}_sampai_{$endDate}" : '';
+        $filename = 'laporan-booking-jagasewa'.$suffix.'-'.now()->format('Ymd-His').'.csv';
+
+        return response()->streamDownload(function () use ($vendor, $startDate, $endDate) {
             $handle = fopen('php://output', 'w');
 
             // Header CSV
             fputcsv($handle, [
                 'Kode Booking',
+                'Nama Penyewa',
                 'Nama Barang',
                 'Tanggal Mulai',
                 'Tanggal Selesai',
+                'Durasi (Hari)',
                 'Status',
                 'Total Harga (Rp)',
                 'Deposit (Rp)',
             ]);
 
-            Booking::where('vendor_id', $vendor->id)
-                ->with('item')
-                ->chunk(100, function ($bookings) use ($handle) {
-                    foreach ($bookings as $booking) {
-                        fputcsv($handle, [
-                            $booking->reference_code,
-                            $booking->item?->name ?? '-',
-                            $booking->start_date?->format('Y-m-d'),
-                            $booking->end_date?->format('Y-m-d'),
-                            $booking->status,
-                            $booking->total_price,
-                            $booking->deposit_amount,
-                        ]);
-                    }
-                });
+            $query = Booking::where('vendor_id', $vendor->id)
+                ->with(['item', 'renter']);
+
+            if (! empty($startDate)) {
+                $query->whereDate('start_date', '>=', $startDate);
+            }
+            if (! empty($endDate)) {
+                $query->whereDate('start_date', '<=', $endDate);
+            }
+
+            $query->chunk(100, function ($bookings) use ($handle) {
+                foreach ($bookings as $booking) {
+                    fputcsv($handle, [
+                        $booking->reference_code,
+                        $booking->renter?->name ?? 'Penyewa',
+                        $booking->item?->name ?? '-',
+                        $booking->start_date?->format('Y-m-d'),
+                        $booking->end_date?->format('Y-m-d'),
+                        $booking->total_days,
+                        $booking->status,
+                        $booking->total_price,
+                        $booking->deposit_paid ?? $booking->item?->deposit_amount ?? 0,
+                    ]);
+                }
+            });
 
             fclose($handle);
         }, $filename, [
@@ -174,8 +193,8 @@ class BillingController extends Controller
         ]);
 
         $user = auth('vendor')->user();
-        if (! $user || ! $user->vendor_id) {
-            abort(403);
+        if (! $user || ! $user->vendor_id || ! $user->canManageSettings()) {
+            abort(403, 'Akses ditolak. Hanya pemilik toko (owner) yang dapat mengelola tagihan dan paket langganan.');
         }
 
         $cycle = $request->input('cycle');
@@ -285,8 +304,8 @@ class BillingController extends Controller
     public function cancelPending(Request $request): RedirectResponse
     {
         $user = auth('vendor')->user();
-        if (! $user || ! $user->vendor_id) {
-            abort(403);
+        if (! $user || ! $user->vendor_id || ! $user->canManageSettings()) {
+            abort(403, 'Akses ditolak. Hanya pemilik toko (owner) yang dapat mengelola tagihan dan paket langganan.');
         }
 
         return DB::transaction(function () use ($user) {

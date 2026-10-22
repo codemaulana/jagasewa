@@ -10,6 +10,7 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Schemas\Components\Actions;
@@ -40,6 +41,16 @@ class StoreSettings extends Page
      */
     public ?array $data = [];
 
+    /**
+     * Staf operasional tidak memiliki akses ke pengaturan toko dan rekening.
+     */
+    public static function canAccess(): bool
+    {
+        $user = auth('vendor')->user();
+
+        return $user && $user->canManageSettings();
+    }
+
     public function mount(): void
     {
         $vendor = $this->getVendor();
@@ -57,6 +68,8 @@ class StoreSettings extends Page
                 'bank_account_info' => $vendor->bank_account_info,
                 'logo_path' => $vendor->logo_path,
                 'banner_path' => $vendor->banner_path,
+                'custom_domain' => $vendor->custom_domain,
+                'white_label_enabled' => (bool) $vendor->white_label_enabled,
                 'custom_wa_templates' => [
                     'approved' => $templates['approved'] ?? null,
                     'rejected' => $templates['rejected'] ?? null,
@@ -252,6 +265,42 @@ class StoreSettings extends Page
                                 ]),
                         ];
                     }),
+
+                Section::make('Kustomisasi Domain & White-Label (Fitur Pro)')
+                    ->description(fn () => ($vendor = $this->getVendor()) && $vendor->isPro()
+                        ? 'Hubungkan domain bisnis Anda sendiri dan hilangkan branding JagaSewa pada etalase toko publik.'
+                        : 'Kustomisasi domain sendiri dan penghapusan branding JagaSewa merupakan fitur eksklusif Paket Pro.')
+                    ->schema(function () {
+                        $vendor = $this->getVendor();
+                        $isPro = $vendor && $vendor->isPro();
+
+                        if (! $isPro) {
+                            return [
+                                Placeholder::make('domain_whitelabel_pro_notice')
+                                    ->label('Status Kustomisasi')
+                                    ->content(new HtmlString(
+                                        '<div class="flex items-center justify-between p-3.5 rounded-lg border border-border-subtle bg-surface-subtle text-xs text-text-secondary">'
+                                        .'<div><span class="font-semibold text-text-main">Domain Sendiri & White-Label Terkunci (Khusus Pro).</span><p class="mt-0.5 text-text-muted">Upgrade ke Pro untuk menggunakan nama domain Anda sendiri dan menghilangkan watermark JagaSewa.</p></div>'
+                                        .'<a href="'.route('vendor.billing.index').'" class="px-3 py-1.5 rounded-lg bg-primary hover:bg-neutral-800 text-white font-medium text-xs shadow-xs transition flex-shrink-0">Upgrade ke Pro</a>'
+                                        .'</div>'
+                                    )),
+                            ];
+                        }
+
+                        return [
+                            Grid::make(2)
+                                ->schema([
+                                    TextInput::make('custom_domain')
+                                        ->label('Domain Sendiri (Custom Domain)')
+                                        ->placeholder('sewa.namabrand.com')
+                                        ->maxLength(255)
+                                        ->helperText('Arahkan CNAME domain Anda ke cname.jagasewa.com untuk etalase independen.'),
+                                    Toggle::make('white_label_enabled')
+                                        ->label('Sembunyikan Branding JagaSewa (White-Label)')
+                                        ->helperText('Hilangkan label "Didukung oleh JagaSewa" pada etalase dan halaman publik barang rental Anda.'),
+                                ]),
+                        ];
+                    }),
             ]);
     }
 
@@ -331,6 +380,8 @@ class StoreSettings extends Page
         if ($vendor->isPro()) {
             $updateData['custom_wa_templates'] = $state['custom_wa_templates'] ?? null;
             $updateData['fine_rules'] = $state['fine_rules'] ?? null;
+            $updateData['custom_domain'] = ! empty($state['custom_domain']) ? strtolower(trim($state['custom_domain'])) : null;
+            $updateData['white_label_enabled'] = (bool) ($state['white_label_enabled'] ?? false);
         }
 
         $vendor->update($updateData);

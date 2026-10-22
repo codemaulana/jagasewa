@@ -1,5 +1,5 @@
 <x-layouts.renter 
-    :title="$item->name . ' — ' . $vendor->name . ' | JagaSewa'"
+    :title="$item->name . ' — ' . $vendor->name . ($vendor->isWhiteLabelActive() ? '' : ' | JagaSewa')"
     :vendor="$vendor"
     headerTag="Detail"
     :backUrl="route('public.vendor.catalog', ['vendor_slug' => $vendor->slug])"

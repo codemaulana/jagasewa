@@ -182,4 +182,31 @@
 - [x] **Test Suite Gelombang 2:**
   - `tests/Feature/Gelombang2TrustAndMoneyTest.php` (7 tests, 91 assertions lulus 100%).
 
+---
+
+## 7. Gelombang 3: Pertumbuhan (SELESAI & TERVERIFIKASI)
+
+- [x] **Laporan & Analitik [Pro]:**
+  - Halaman `Reports` (`/vendor/reports`) dengan filter periode cepat (Bulan Ini, 7 Hari Terakhir, 30 Hari Terakhir, Bulan Lalu).
+  - Ringkasan metrik: Total Pendapatan, Total Booking Selesai, Total Hari Sewa, dan Rata-rata Rasio Utilisasi.
+  - Tabel utilisasi inventaris: Menghitung hari disewa, hari menganggur (idle), persentase rasio utilisasi, dan omzet per unit.
+  - Pemeringkatan 5 pelanggan terbaik (*top renters*) berdasarkan nominal belanja dan frekuensi sewa.
+  - Fitur ekspor CSV streaming langsung terintegrasi dengan filter tanggal aktif (`/vendor/reports/export`).
+  - Proteksi peran: Halaman disembunyikan dan diblokir untuk staf operasional.
+- [x] **Multi-Staf Toko [Pro]:**
+  - Resource `VendorUserResource` untuk manajemen staf toko dengan peran `owner` (pemilik) dan `operational` (staf operasional).
+  - Penegakan kuota staf di backend: Free maksimal 1 staf (pemilik), Pro hingga 5 staf operasional.
+  - Sensor finansial otomatis: Staf operasional tidak dapat melihat data omzet di widget dashboard (dialihkan menampilkan "Pesanan Sedang Aktif"), tidak dapat mengakses laporan finansial, dan tidak dapat mengubah pengaturan toko/rekening.
+- [x] **Kustomisasi Toko & White-Label [Pro]:**
+  - Dukungan domain kustom (*custom domain*) di tabel `vendors` yang otomatis me-resolve katalog publik via slug maupun domain (`ItemController@catalog` & `show`).
+  - Saklar kendali white-label (`white_label_enabled`) di Pengaturan Toko.
+  - Penghapusan otomatis branding/watermark "Didukung oleh JagaSewa" pada footer etalase katalog dan halaman detail barang untuk vendor Pro yang mengaktifkannya.
+  - Tampilan banner sampul toko di etalase publik (`/b/{vendor_slug}`).
+- [x] **Test Suite Gelombang 3:**
+  - `tests/Feature/Gelombang3GrowthTest.php` (5 tests, 51 assertions lulus 100%).
+- [x] **Hasil Uji Keseluruhan:**
+  - **408 tests lulus 100% (2.255 assertions)** tanpa ada tes yang gagal atau diskip.
+  - Migrasi database remote Jagoan Hosting berhasil dijalankan (`php artisan migrate --force`).
+
+
 

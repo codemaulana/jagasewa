@@ -1,5 +1,5 @@
 <x-layouts.renter 
-    :title="'Katalog ' . $vendor->name . ' | JagaSewa'"
+    :title="'Katalog ' . $vendor->name . ($vendor->isWhiteLabelActive() ? '' : ' | JagaSewa')"
     :vendor="$vendor"
     headerTag="Katalog"
     maxWidth="max-w-xl sm:max-w-2xl"
@@ -34,7 +34,7 @@
                         </p>
                     @else
                         <p class="text-xs text-text-muted">
-                            Penyedia rental terdaftar di JagaSewa
+                            {{ $vendor->isWhiteLabelActive() ? 'Penyedia rental terpercaya' : 'Penyedia rental terdaftar di JagaSewa' }}
                         </p>
                     @endif
 

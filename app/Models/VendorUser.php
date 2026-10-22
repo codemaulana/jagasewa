@@ -14,6 +14,15 @@ class VendorUser extends Authenticatable implements FilamentUser, HasName
 {
     use HasFactory, Notifiable;
 
+    public const ROLE_OWNER = 'owner';
+
+    public const ROLE_OPERATIONAL = 'operational';
+
+    public const ROLE_LABELS = [
+        self::ROLE_OWNER => 'Pemilik Toko (Akses Penuh)',
+        self::ROLE_OPERATIONAL => 'Staf Operasional (Booking & Serah Terima)',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -64,7 +73,31 @@ class VendorUser extends Authenticatable implements FilamentUser, HasName
      */
     public function isOwner(): bool
     {
-        return $this->role === 'owner';
+        return $this->role === self::ROLE_OWNER;
+    }
+
+    /**
+     * Determine if the vendor user is operational staff.
+     */
+    public function isOperational(): bool
+    {
+        return in_array($this->role, [self::ROLE_OPERATIONAL, 'staff'], true);
+    }
+
+    /**
+     * Determine if user has permission to see financial figures and revenue.
+     */
+    public function canViewFinancials(): bool
+    {
+        return $this->isOwner();
+    }
+
+    /**
+     * Determine if user has permission to alter store settings and billing.
+     */
+    public function canManageSettings(): bool
+    {
+        return $this->isOwner();
     }
 
     /**

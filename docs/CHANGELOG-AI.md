@@ -155,3 +155,65 @@ Implementasi lengkap end-to-end fitur Kepercayaan dan Uang mencakup manajemen pe
   - `test_document_generation_entitlement_and_pdf_binary`
   - `test_wa_template_tag_replacements`
 
+---
+
+## [Gelombang 3: Pertumbuhan] — 22 Oktober 2026
+
+### 1. Ringkasan Ruang Lingkup
+Implementasi lengkap end-to-end fitur Pertumbuhan sesuai roadmap `docs/audit/03-feature-gap.md`:
+1. **Laporan & Analitik [Pro]:** Pendapatan per periode, utilisasi barang (hari disewa vs menganggur/idle, rasio utilisasi %), pelanggan terbaik (*top renters*), dan ekspor data ke CSV.
+2. **Multi-Staf Toko [Pro]:** Penambahan staf operasional dengan peran terbatas (`owner` vs `operational`). Staf operasional tidak dapat melihat data omzet/finansial atau mengelola tagihan/pengaturan toko. Batasan kuota staf ditegakkan di backend: Free 1 staf (owner), Pro hingga 5 staf.
+3. **Kustomisasi Toko & White-Label [Pro]:** Banner toko, domain sendiri (*custom domain*), dan penghapusan watermark/branding "Didukung oleh JagaSewa" (*white-label*) pada etalase katalog publik dan halaman detail barang.
+
+### 2. Perubahan Database & Migrasi
+- **Migrasi:** `database/migrations/2026_10_22_000014_add_growth_features_to_vendors_table.php`
+  - **Tabel `vendors`:**
+    - `custom_domain`: Subdomain atau domain kustom toko (string 150, unique, nullable, indexed).
+    - `custom_domain_verified`: Status verifikasi DNS CNAME domain kustom (boolean, default false).
+    - `white_label_enabled`: Saklar kendali aktivasi white-label branding toko (boolean, default true).
+
+### 3. Model & Logika Bisnis
+- **`app/Models/Vendor.php`:**
+  - Menambahkan kolom `custom_domain`, `custom_domain_verified`, `white_label_enabled` ke `$fillable` dan casts boolean.
+  - Helper `isWhiteLabelActive()`: Mengembalikan `true` hanya jika vendor memiliki paket Pro dan `white_label_enabled` aktif.
+- **`app/Models/VendorUser.php`:**
+  - Menambahkan konstanta peran `ROLE_OWNER = 'owner'` dan `ROLE_OPERATIONAL = 'operational'`.
+  - Helper otorisasi: `isOperational()`, `canViewFinancials()`, `canManageSettings()`.
+- **`app/Http/Controllers/Public/ItemController.php`:**
+  - Metode `catalog` dan `show` mendukung pencarian vendor via `slug` maupun `custom_domain`.
+- **`app/Http/Controllers/Vendor/BillingController.php`:**
+  - Melindungi rute `index`, `checkout`, `cancelPending`, dan `exportReports` dari akses staf operasional (HTTP 403 Forbidden).
+  - Metode `exportReports` mendukung filter rentang tanggal (`start_date`, `end_date`), nama penyewa, durasi sewa, total harga, dan deposit.
+
+### 4. Antarmuka Vendor & Publik (UI / UX)
+- **Halaman Laporan & Analitik (`app/Filament/Vendor/Pages/Reports.php` & `reports.blade.php`):**
+  - Rute `/vendor/reports` dengan filter periode instan (Bulan Ini, 7 Hari Terakhir, 30 Hari Terakhir, Bulan Lalu).
+  - Kartu metrik: Total Pendapatan, Total Booking Selesai, Total Hari Sewa, dan Rata-rata Utilisasi Toko.
+  - Tabel Utilisasi Barang: Hari Tersewa, Hari Menganggur (Idle), Persentase Utilisasi, Total Omzet, dan Jumlah Transaksi per unit.
+  - Tabel 5 Penyewa Terbaik: Nama pelanggan, nomor kontak, jumlah booking selesai, dan total kontribusi omzet.
+  - Tautan unduh CSV streaming langsung dengan rentang tanggal aktif.
+  - Tampilan edukasi teaser Pro untuk vendor paket Free.
+- **Manajemen Multi-Staf (`VendorUserResource` & Pages):**
+  - Hak akses resource dibatasi hanya untuk pemilik toko (`owner`).
+  - Halaman Create/Edit menampilkan pilihan peran: Pemilik Toko (`owner`) vs Staf Operasional (`operational`).
+  - Penegakan kuota staf (`staff_users`) di backend: Free 1 staf, Pro hingga 5 staf.
+  - Tombol tambah staf disembunyikan otomatis jika kuota telah tercapai.
+- **Sensor Data Finansial Staf Operasional:**
+  - Widget dashboard `RentalStatsOverviewWidget` secara otomatis menyembunyikan kartu "Pendapatan Bulan Ini" dan menggantinya dengan "Pesanan Sedang Aktif" saat akun staf operasional sedang login.
+  - Akses navigasi ke halaman Laporan Finansial dan Pengaturan Toko disembunyikan bagi staf operasional via `canAccess()`.
+- **Pengaturan Toko (`StoreSettings.php`):**
+  - Section baru "Kustomisasi Domain & White-Label (Fitur Pro)".
+  - Form input CNAME domain kustom dan toggle white-label.
+- **Etalase Publik & Halaman Barang:**
+  - Halaman katalog publik (`resources/views/public/vendor/catalog.blade.php`) dan halaman detail barang (`items/show.blade.php`) secara otomatis menyembunyikan footer "Didukung oleh JagaSewa" dan watermark jika vendor Pro mengaktifkan white-label.
+
+### 5. Pengujian & Kualitas Kode
+- **Test Baru:** `tests/Feature/Gelombang3GrowthTest.php` (5 test, 51 assertions):
+  - `test_multi_staf_quota_limits_free_vs_pro`
+  - `test_pro_vendor_can_add_operational_staff`
+  - `test_operational_staff_role_financial_masking_and_access_restrictions`
+  - `test_reports_analytics_calculation_and_csv_export`
+  - `test_custom_domain_and_white_label_branding_suppression`
+- **Hasil Uji:** 408 tests lulus 100% tanpa kegagalan (2.255 assertions). Linting bersih via Laravel Pint.
+
+

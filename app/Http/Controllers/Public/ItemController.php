@@ -19,8 +19,11 @@ class ItemController extends Controller
     public function catalog(string $vendor_slug): View
     {
         /** @var Vendor $vendor */
-        $vendor = Vendor::where('slug', $vendor_slug)
-            ->where('is_active', true)
+        $vendor = Vendor::where('is_active', true)
+            ->where(function ($query) use ($vendor_slug) {
+                $query->where('slug', $vendor_slug)
+                    ->orWhere('custom_domain', $vendor_slug);
+            })
             ->firstOrFail();
 
         $items = Item::where('vendor_id', $vendor->id)
@@ -47,8 +50,11 @@ class ItemController extends Controller
     public function show(string $vendor_slug, string $item_slug): View
     {
         /** @var Vendor $vendor */
-        $vendor = Vendor::where('slug', $vendor_slug)
-            ->where('is_active', true)
+        $vendor = Vendor::where('is_active', true)
+            ->where(function ($query) use ($vendor_slug) {
+                $query->where('slug', $vendor_slug)
+                    ->orWhere('custom_domain', $vendor_slug);
+            })
             ->firstOrFail();
 
         /** @var Item $item */
