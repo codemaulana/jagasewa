@@ -430,3 +430,135 @@ table,
 .sticky-card {
     will-change: transform, opacity;
 }
+
+/* ==========================================================================
+   Filament Vendor App Shell (Single Light Theme - Phase 2)
+   ========================================================================== */
+
+.fi-body {
+    --topbar-height: 4rem;
+}
+
+/* Topbar Header (64px, --surface, 1px bottom border, no black bar) */
+.fi-topbar {
+    background-color: var(--surface) !important;
+    border-bottom: 1px solid var(--border) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.fi-topbar > nav {
+    background-color: var(--surface) !important;
+    box-shadow: none !important;
+}
+
+/* Logo Contrast */
+.fi-logo {
+    filter: none !important;
+    opacity: 1 !important;
+    max-height: 2.25rem !important;
+}
+
+/* Sidebar Shell (248px, Collapsible to 72px, --bg background) */
+.fi-sidebar {
+    background-color: var(--bg) !important;
+    border-right: 1px solid var(--border) !important;
+    --sidebar-width: 248px !important;
+    --collapsed-sidebar-width: 72px !important;
+}
+
+.fi-sidebar-header {
+    background-color: var(--bg) !important;
+    border-bottom: 1px solid var(--border) !important;
+    height: 4rem !important;
+}
+
+.fi-sidebar-nav {
+    background-color: var(--bg) !important;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+}
+
+/* Sidebar Navigation Group Labels (Operasional, Pelanggan & Keamanan, Bisnis) */
+.fi-sidebar-group-label {
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    color: var(--text-muted) !important;
+    padding-left: 0.5rem !important;
+}
+
+/* Sidebar Inactive Navigation Item */
+.fi-sidebar-item-btn {
+    border-radius: 0.5rem !important;
+    color: var(--text-muted) !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.fi-sidebar-item-btn:hover {
+    background-color: var(--surface) !important;
+    color: var(--text) !important;
+}
+
+.fi-sidebar-item-btn > .fi-icon {
+    color: var(--text-muted) !important;
+    transition: color 0.15s ease !important;
+}
+
+.fi-sidebar-item-btn:hover > .fi-icon {
+    color: var(--text) !important;
+}
+
+.fi-sidebar-item-label {
+    color: inherit !important;
+}
+
+/* Sidebar Active Navigation Item (Pill --primary with white text) */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background-color: var(--primary) !important;
+    color: var(--primary-text) !important;
+    box-shadow: var(--shadow-subtle) !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+    color: var(--primary-text) !important;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn .fi-sidebar-item-label {
+    color: var(--primary-text) !important;
+    font-weight: 600 !important;
+}
+
+/* Sidebar Footer & Bottom Plan Card */
+.fi-sidebar-footer {
+    background-color: var(--bg) !important;
+    border-top: 1px solid var(--border) !important;
+    padding: 0.75rem !important;
+    margin: 0 !important;
+}
+
+/* Collapsed Sidebar Behavior for Plan Card */
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-plan-card-expanded {
+    display: none !important;
+}
+
+.fi-sidebar:not(.fi-sidebar-open) .fi-sidebar-plan-card-collapsed {
+    display: flex !important;
+}
+
+/* Mobile Drawer Responsive (<768px) */
+@media (max-width: 767.98px) {
+    .fi-sidebar {
+        background-color: var(--bg) !important;
+        width: min(85vw, 300px) !important;
+    }
+
+    .fi-sidebar-close-overlay {
+        background-color: rgba(27, 27, 25, 0.4) !important;
+        backdrop-filter: blur(2px) !important;
+    }
+}
+

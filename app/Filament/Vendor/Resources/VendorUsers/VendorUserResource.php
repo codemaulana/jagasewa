@@ -21,6 +21,10 @@ class VendorUserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Bisnis';
+
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $navigationLabel = 'Kelola Staf';
 
     protected static ?string $modelLabel = 'Staf Toko';
@@ -28,8 +32,6 @@ class VendorUserResource extends Resource
     protected static ?string $pluralModelLabel = 'Daftar Staf Toko';
 
     protected static ?string $recordTitleAttribute = 'name';
-
-    protected static ?int $navigationSort = 85;
 
     public static function form(Schema $schema): Schema
     {

@@ -30,11 +30,13 @@ class StoreSettings extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Bisnis';
+
     protected static ?string $navigationLabel = 'Pengaturan Toko';
 
     protected static ?string $title = 'Pengaturan Profil Toko';
 
-    protected static ?int $navigationSort = 80;
+    protected static ?int $navigationSort = 3;
 
     /**
      * @var array<string, mixed> | null

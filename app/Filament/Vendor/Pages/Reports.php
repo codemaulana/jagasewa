@@ -14,11 +14,13 @@ class Reports extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Bisnis';
+
     protected static ?string $navigationLabel = 'Laporan & Analitik';
 
     protected static ?string $title = 'Laporan & Analitik Toko';
 
-    protected static ?int $navigationSort = 70;
+    protected static ?int $navigationSort = 1;
 
     protected string $view = 'filament.vendor.pages.reports';
 

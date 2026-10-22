@@ -20,6 +20,10 @@ class RenterResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Pelanggan & Keamanan';
+
+    protected static ?int $navigationSort = 1;
+
     protected static ?string $navigationLabel = 'Pelanggan';
 
     protected static ?string $modelLabel = 'Pelanggan';
@@ -27,8 +31,6 @@ class RenterResource extends Resource
     protected static ?string $pluralModelLabel = 'Daftar Pelanggan';
 
     protected static ?string $recordTitleAttribute = 'name';
-
-    protected static ?int $navigationSort = 3;
 
     public static function infolist(Schema $schema): Schema
     {

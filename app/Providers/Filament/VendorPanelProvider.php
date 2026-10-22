@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\AvatarProviders\InitialAvatarProvider;
 use App\Filament\Vendor\Pages\Auth\Register;
+use App\Filament\Vendor\Pages\Dashboard;
 use App\Filament\Vendor\Pages\StoreSettings;
 use App\Filament\Vendor\Widgets\OnboardingChecklistWidget;
 use App\Filament\Vendor\Widgets\RentalStatsOverviewWidget;
@@ -15,8 +16,6 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
-use Filament\Navigation\NavigationItem;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -52,6 +51,7 @@ class VendorPanelProvider extends PanelProvider
             ->renderHook(PanelsRenderHook::HEAD_END, fn () => Blade::render("@vite(['resources/css/app.css', 'resources/js/app.js'])"))
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn () => view('filament.vendor.layout.topbar-badge'))
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.vendor.layout.bottom-nav'))
+            ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn () => view('filament.vendor.layout.sidebar-plan-card'))
             ->darkMode(false)
             ->defaultThemeMode(ThemeMode::Light)
             ->discoverResources(in: app_path('Filament/Vendor/Resources'), for: 'App\Filament\Vendor\Resources')
@@ -59,24 +59,9 @@ class VendorPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->navigationItems([
-                NavigationItem::make('Ekspor Laporan CSV')
-                    ->url(fn () => route('vendor.reports.export'))
-                    ->icon('heroicon-o-arrow-down-tray')
-                    ->visible(fn () => auth('vendor')->user()?->vendor?->isPro() ?? false)
-                    ->sort(85),
-                NavigationItem::make('Paket & Kuota Toko')
-                    ->url(fn () => route('vendor.billing.index'))
-                    ->icon('heroicon-o-sparkles')
-                    ->badge(
-                        fn () => auth('vendor')->user()?->vendor?->isPro() ? 'PRO' : 'FREE',
-                        fn () => auth('vendor')->user()?->vendor?->isPro() ? 'success' : 'gray'
-                    )
-                    ->sort(90),
-            ])
             ->userMenuItems([
                 MenuItem::make()
-                    ->label(fn () => (auth('vendor')->user()?->vendor?->isPro() ? 'Paket Pro' : 'Paket Free').' — Kelola')
+                    ->label('Langganan Toko')
                     ->url(fn () => route('vendor.billing.index'))
                     ->icon('heroicon-o-credit-card'),
                 MenuItem::make()

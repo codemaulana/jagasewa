@@ -17,13 +17,15 @@ class VendorBookingCalendar extends Page
 {
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Operasional';
+
     protected static ?string $navigationLabel = 'Kalender Sewa';
 
     protected static ?string $title = 'Kalender Jadwal Sewa';
 
     protected static ?string $slug = 'calendar';
 
-    protected static ?int $navigationSort = 15;
+    protected static ?int $navigationSort = 3;
 
     protected string $view = 'filament.vendor.pages.vendor-booking-calendar';
 

@@ -20,6 +20,10 @@ class BlacklistEntryResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNoSymbol;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Pelanggan & Keamanan';
+
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $navigationLabel = 'Blacklist';
 
     protected static ?string $modelLabel = 'Blacklist';
@@ -27,8 +31,6 @@ class BlacklistEntryResource extends Resource
     protected static ?string $pluralModelLabel = 'Blacklist Penyewa';
 
     protected static ?string $recordTitleAttribute = 'reason';
-
-    protected static ?int $navigationSort = 3;
 
     public static function form(Schema $schema): Schema
     {

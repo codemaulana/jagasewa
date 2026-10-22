@@ -23,6 +23,10 @@ class ItemResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Operasional';
+
+    protected static ?int $navigationSort = 4;
+
     protected static ?string $navigationLabel = 'Katalog Barang';
 
     protected static ?string $modelLabel = 'Barang';

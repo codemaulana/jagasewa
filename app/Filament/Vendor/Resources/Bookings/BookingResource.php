@@ -20,6 +20,10 @@ class BookingResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendarDays;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Operasional';
+
+    protected static ?int $navigationSort = 2;
+
     protected static ?string $navigationLabel = 'Daftar Booking';
 
     protected static ?string $modelLabel = 'Booking';
