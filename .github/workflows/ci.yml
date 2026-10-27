@@ -26,11 +26,22 @@ jobs:
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, intl, gd, exif, iconv, fileinfo
           coverage: none
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
       - name: Copy .env.example
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: Install dependencies
         run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Install NPM dependencies & build assets
+        run: |
+          npm ci
+          npm run build
 
       - name: Generate application key
         run: php artisan key:generate
