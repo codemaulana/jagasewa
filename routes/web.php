@@ -16,12 +16,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Public Document Upload Route (KTP & Selfie) - Throttled 5/15min (SEC-11)
+// Public Document Upload Route (KTP & Selfie) - Throttled 5/15min
 Route::post('/booking/upload', [DocumentUploadController::class, 'upload'])
     ->middleware('throttle:booking.upload')
     ->name('public.booking.upload');
 
-// Public Booking Success Route (static segment before wildcards)
+// Public Booking Success Route
 Route::get('/b/success/{ulid}', [ItemController::class, 'bookingSuccess'])->name('public.booking.success');
 
 // Public Vendor Catalog Route
@@ -31,29 +31,29 @@ Route::get('/b/{vendor_slug}', [ItemController::class, 'catalog'])->name('public
 Route::get('/b/{vendor_slug}/{item_slug}', [ItemController::class, 'show'])->name('public.items.show');
 
 Route::prefix('vendor')->name('vendor.')->group(function () {
-    // Vendor Auth - Login Throttled 5/min (SEC-11)
+    // Vendor Auth - Login Throttled 5/min
     Route::post('/login', [AuthController::class, 'login'])
         ->middleware('throttle:login')
         ->name('login.submit');
     Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout.submit');
 
-    // Identity Documents (IDOR-03 / SEC-27) - Throttled 20/min (SEC-11)
+    // Identity Documents - Throttled 20/min
     Route::match(['GET', 'POST'], '/identity-documents/{ulid}/signed-url', [IdentityDocumentController::class, 'signedUrl'])
         ->middleware(['auth:vendor', 'throttle:signed-url'])
         ->name('identity-documents.signed-url');
 
-    // Internal Blacklist Check (SEC-11) - Throttled 30/min
+    // Internal Blacklist Check - Throttled 30/min
     Route::get('/blacklist/check', [BlacklistCheckController::class, 'check'])
         ->middleware(['auth:vendor', 'throttle:blacklist.check'])
         ->name('blacklist.check');
 
-    // Secure view / streaming with signed URL verification (TC-40)
+    // Secure view / streaming with signed URL verification
     Route::get('/identity-documents/{ulid}/secure-view', [IdentityDocumentController::class, 'secureView'])
         ->middleware('signed')
         ->name('identity-documents.secure-view');
 
-    // Vendor Billing Checkout Return (BLT-06 / SEC-22)
+    // Vendor Billing Checkout Return
     Route::get('/billing/finish', [BillingReturnController::class, 'finish'])
         ->middleware('auth:vendor')
         ->name('billing.finish');
@@ -63,7 +63,7 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
         ->middleware('auth:vendor')
         ->name('billing.success');
 
-    // Vendor Billing & Plans Overview (T-43)
+    // Vendor Billing & Plans Overview
     Route::get('/billing', [BillingController::class, 'index'])
         ->middleware('auth:vendor')
         ->name('billing.index');
@@ -73,22 +73,22 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
         ->middleware('auth:vendor')
         ->name('entitlements');
 
-    // Vendor Billing Checkout Initiation via Mayar (Pilihan A)
+    // Vendor Billing Checkout Initiation via Mayar
     Route::post('/billing/checkout', [BillingController::class, 'checkout'])
         ->middleware('auth:vendor')
         ->name('billing.checkout');
 
-    // Vendor Billing Cancel Pending Order (T-45 / BUG-01)
+    // Vendor Billing Cancel Pending Order
     Route::post('/billing/cancel-pending', [BillingController::class, 'cancelPending'])
         ->middleware('auth:vendor')
         ->name('billing.cancel-pending');
 
-    // Pro-Only Feature: Export CSV Report (T-43 / SEC-25)
+    // Pro Feature: Export CSV Report
     Route::get('/reports/export', [BillingController::class, 'exportReports'])
         ->middleware(['auth:vendor', 'vendor.pro:export_reports'])
         ->name('reports.export');
 
-    // Pro-Only Feature: PDF Documents & Agreements
+    // Pro Feature: PDF Documents & Agreements
     Route::get('/bookings/{booking}/invoice', [BookingDocumentController::class, 'invoice'])
         ->middleware('auth:vendor')
         ->name('bookings.invoice');

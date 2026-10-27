@@ -37,7 +37,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Error Monitoring Configuration (T-36)
+    | Error Monitoring Configuration
     |--------------------------------------------------------------------------
     |
     | Supports Sentry DSN (via official Sentry Store REST API) and Webhook
@@ -52,7 +52,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Mayar Payment Gateway Configuration (T-42)
+    | Mayar Payment Gateway Configuration
     |--------------------------------------------------------------------------
     */
     'mayar' => [
@@ -69,6 +69,17 @@ return [
     'xendit' => [
         'callback_token' => env('XENDIT_CALLBACK_TOKEN', 'test-xendit-callback-token'),
         'secret_key' => env('XENDIT_SECRET_KEY'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | High-Performance QRIS Engine (Golang Microservice)
+    |--------------------------------------------------------------------------
+    */
+    'qris_engine' => [
+        'url' => env('QRIS_ENGINE_URL', 'http://127.0.0.1:8081'),
+        'secret' => env('QRIS_ENGINE_SECRET', 'jagasewa-super-secret-key-2026'),
+        'enabled' => (bool) env('QRIS_ENGINE_ENABLED', false),
     ],
 
 ];

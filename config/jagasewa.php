@@ -3,7 +3,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Identity Document Retention Policy (BR-05)
+    | Identity Document Retention Policy
     |--------------------------------------------------------------------------
     |
     | Defines document retention periods for identity documents (KTP & selfie):
@@ -20,7 +20,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Temporary Signed URL TTL (SEC-27)
+    | Temporary Signed URL TTL
     |--------------------------------------------------------------------------
     |
     | Maximum TTL in minutes for vendor-signed URLs accessing private documents.
