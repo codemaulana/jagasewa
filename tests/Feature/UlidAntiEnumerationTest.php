@@ -29,7 +29,7 @@ class UlidAntiEnumerationTest extends TestCase
     }
 
     /**
-     * SEC-10 & IDOR-10: Anonymous renter attempts to enumerate bookings with sequential numeric ID.
+     * Anonymous renter attempts to enumerate bookings with sequential numeric ID.
      */
     public function test_idor_10_anonymous_renter_cannot_enumerate_bookings_with_numeric_id(): void
     {
@@ -52,7 +52,7 @@ class UlidAntiEnumerationTest extends TestCase
     }
 
     /**
-     * SEC-10: Item availability endpoint only accepts ULID and blocks sequential integer ID.
+     * Item availability endpoint only accepts ULID and blocks sequential integer ID.
      */
     public function test_item_availability_endpoint_only_accepts_ulid_and_rejects_numeric_id(): void
     {
@@ -72,7 +72,7 @@ class UlidAntiEnumerationTest extends TestCase
     }
 
     /**
-     * SEC-10 & IDOR-03: Vendor identity document endpoints reject sequential numeric ID.
+     * Vendor identity document endpoints reject sequential numeric ID.
      */
     public function test_vendor_document_endpoints_reject_numeric_id_and_only_accept_ulid(): void
     {
@@ -98,7 +98,7 @@ class UlidAntiEnumerationTest extends TestCase
     }
 
     /**
-     * SEC-10: Upload document payload accepts booking_ulid, rejects numeric booking ID.
+     * Upload document payload accepts booking_ulid, rejects numeric booking ID.
      */
     public function test_document_upload_rejects_numeric_booking_id(): void
     {
@@ -132,7 +132,7 @@ class UlidAntiEnumerationTest extends TestCase
     }
 
     /**
-     * SEC-10: All models with ULID automatically generate valid ULIDs on creation.
+     * All models with ULID automatically generate valid ULIDs on creation.
      */
     public function test_all_models_auto_generate_valid_ulid_and_define_ulid_route_key(): void
     {
@@ -192,7 +192,7 @@ class UlidAntiEnumerationTest extends TestCase
     }
 
     /**
-     * SEC-10: Public item availability API does not leak database sequential IDs in payload.
+     * Public item availability API does not leak database sequential IDs in payload.
      */
     public function test_public_item_availability_does_not_leak_database_sequential_id(): void
     {

@@ -27,3 +27,11 @@ Homestead.yaml
 Thumbs.db
 *.exe
 services/**/*.exe
+
+# AI agents & internal project documentation
+/.agents
+/.claude
+/AGENTS.md
+/CLAUDE.md
+/docs
+services/qris-engine/README.md

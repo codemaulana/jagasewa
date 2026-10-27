@@ -30,9 +30,9 @@ class MayarWebhookTest extends TestCase
     }
 
     /**
-     * BLT-08: Signature webhook salah / token tidak cocok -> HTTP 401
+     * Signature webhook salah / token tidak cocok -> HTTP 401
      */
-    public function test_blt_08_invalid_or_missing_mayar_signature_returns_401(): void
+    public function test_invalid_or_missing_mayar_signature_returns_401(): void
     {
         // 1. Missing header
         $response1 = $this->postJson(route('webhooks.mayar'), [
@@ -61,9 +61,9 @@ class MayarWebhookTest extends TestCase
     }
 
     /**
-     * BLT-02: Webhook payment.received valid dengan HMAC signature mengaktifkan Pro & mencatat event
+     * Webhook payment.received valid dengan HMAC signature mengaktifkan Pro & mencatat event
      */
-    public function test_blt_02_valid_mayar_payment_received_activates_pro_subscription(): void
+    public function test_valid_mayar_payment_received_activates_pro_subscription(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -173,9 +173,9 @@ class MayarWebhookTest extends TestCase
     }
 
     /**
-     * BLT-01 / TC-26: Webhook ganda (replay) -> HTTP 200 idempoten
+     * Webhook ganda (replay) -> HTTP 200 idempoten
      */
-    public function test_blt_01_duplicate_mayar_webhook_replay_is_idempotent(): void
+    public function test_duplicate_mayar_webhook_replay_is_idempotent(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -213,9 +213,9 @@ class MayarWebhookTest extends TestCase
     }
 
     /**
-     * BLT-04 / TC-27: Nominal kurang bayar ditolak
+     * Nominal kurang bayar ditolak
      */
-    public function test_blt_04_mayar_underpaid_amount_is_rejected(): void
+    public function test_mayar_underpaid_amount_is_rejected(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -246,9 +246,9 @@ class MayarWebhookTest extends TestCase
     }
 
     /**
-     * BLT-07: Order expired menolak invoice.paid terlambat
+     * Order expired menolak invoice.paid terlambat
      */
-    public function test_blt_07_mayar_expired_order_rejects_late_payment(): void
+    public function test_mayar_expired_order_rejects_late_payment(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->expired()->create([

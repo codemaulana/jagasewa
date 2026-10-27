@@ -85,7 +85,7 @@ class BookingCalendarService
     }
 
     /**
-     * Check if two bookings clash based on BR-01 Smart Buffer Calendar formula:
+     * Check if two bookings clash based on Smart Buffer Calendar formula:
      *
      * Rentang efektif A: [A_start - A_before, A_end + A_after]
      * Rentang efektif B: [B_start - B_before, B_end + B_after]

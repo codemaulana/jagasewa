@@ -13,12 +13,12 @@ use Illuminate\Validation\ValidationException;
 class DocumentUploadService
 {
     /**
-     * Maximum allowed file size in bytes (5 MB per SEC-29).
+     * Maximum allowed file size in bytes (5 MB).
      */
     public const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
     /**
-     * Allowed MIME types detected by magic bytes (SEC-28).
+     * Allowed MIME types detected by magic bytes.
      */
     public const ALLOWED_MIME_TYPES = [
         'image/jpeg',
@@ -48,13 +48,13 @@ class DocumentUploadService
         // 2. Validate file size (<= 5 MB)
         if ($file->getSize() > self::MAX_FILE_SIZE) {
             throw ValidationException::withMessages([
-                'file' => 'Ukuran file tidak boleh melebihi 5 MB (SEC-29).',
+                'file' => 'Ukuran file tidak boleh melebihi 5 MB.',
             ]);
         }
 
         $realPath = $file->getRealPath() ?: $file->path();
 
-        // 3. Validate file content / magic bytes via PHP finfo (SEC-28)
+        // Validate file content / magic bytes via PHP finfo
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $detectedMime = false;
         if (! empty($realPath) && file_exists($realPath)) {
@@ -113,7 +113,7 @@ class DocumentUploadService
 
         $this->applyWatermark($image, $watermarkText);
 
-        // 6. Re-encode to clean JPEG stream without original EXIF metadata (SEC-29)
+        // Re-encode to clean JPEG stream without original EXIF metadata
         ob_start();
         imagejpeg($image, null, 85);
         $encodedContent = ob_get_clean();
@@ -125,7 +125,7 @@ class DocumentUploadService
             ]);
         }
 
-        // 7. Store to private S3 bucket with random UUID filename (SEC-26, SEC-30)
+        // Store to private storage disk with random UUID filename
         $uuid = (string) Str::uuid();
         $storagePath = "identity-documents/{$uuid}.jpg";
         $storageDisk = 's3';

@@ -120,7 +120,7 @@ class IdentityDocument extends Model
     }
 
     /**
-     * Scope query to documents eligible for auto-deletion according to retention policy (BR-05).
+     * Scope query to documents eligible for auto-deletion according to privacy retention policy.
      */
     public function scopeEligibleForDeletion(Builder $query, ?Carbon $now = null): Builder
     {

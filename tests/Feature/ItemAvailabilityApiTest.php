@@ -213,7 +213,7 @@ class ItemAvailabilityApiTest extends TestCase
             'is_active' => true,
         ]);
 
-        // Via internal numeric ID -> MUST return 404 to prevent enumeration (SEC-10)
+        // Via internal numeric ID -> MUST return 404 to prevent enumeration
         $responseId = $this->getJson("/api/items/{$item->id}/availability?month=2026-10");
         $responseId->assertStatus(404);
 

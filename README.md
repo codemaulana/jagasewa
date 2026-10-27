@@ -14,7 +14,7 @@
   <a href="#cara-menjalankan">Cara Menjalankan</a> •
   <a href="#akun-demo--rute-aplikasi">Akun Demo</a> •
   <a href="#pengujian">Testing</a> •
-  <a href="#dokumentasi-proyek">Dokumentasi</a>
+  <a href="#arsitektur--keamanan">Arsitektur</a>
 </p>
 
 ---
@@ -261,19 +261,13 @@ php artisan test --filter=VendorIsolationTest
 
 ---
 
-## 📚 Dokumentasi Proyek
+## 🏛️ Arsitektur & Keamanan
 
-Dokumentasi arsitektur, keamanan, dan aturan bisnis lengkap tersedia di direktori [`docs/`](./docs/):
+JagaSewa mengusung arsitektur **Modular Monolith (Laravel 13) + High-Performance Microservice (Golang)**:
 
-| File | Deskripsi |
-| :--- | :--- |
-| [`docs/prd.md`](./docs/prd.md) | Product Requirement Document (Visi, Scope, User Persona) |
-| [`docs/business-rules.md`](./docs/business-rules.md) | Aturan bisnis Smart Buffer, siklus status booking, & denda |
-| [`docs/erd.md`](./docs/erd.md) | Rancangan Entity Relationship Diagram & kamus data |
-| [`docs/security.md`](./docs/security.md) | Standar kepatuhan UU PDP, enkripsi PII, signed URL, dan audit |
-| [`docs/user-flow.md`](./docs/user-flow.md) | Diagram alur interaksi penyewa dan vendor |
-| [`docs/tasks.md`](./docs/tasks.md) | Roadmap milestone dan task checklist pengerjaan |
-| [`AGENTS.md`](./AGENTS.md) | Panduan standar kode & konvensi bagi AI Agent |
+- **Core Monolith (Laravel 13 & Filament v5):** Menangani autentikasi, isolasi data multi-vendor, manajemen katalog, dashboard analitik, dan business logic status booking.
+- **Microservice QRIS Engine (`services/qris-engine`):** Layanan backend berbasis Go untuk pencetakan invoice dinamis QRIS, penanganan webhook secara idempoten, dan penyaluran notifikasi real-time via Server-Sent Events (SSE).
+- **Perlindungan Privasi:** Sanitasi berkas KTP otomatis (watermark dinamis + pembersihan EXIF), penyimpanan di bucket privat dengan TTL bertanda tangan, serta enkripsi PII dan pencarian blacklist berbasis blind index HMAC-SHA256.
 
 ---
 

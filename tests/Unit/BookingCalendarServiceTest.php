@@ -22,12 +22,12 @@ class BookingCalendarServiceTest extends TestCase
     }
 
     /**
-     * BT-01: Overlap langsung
+     * Overlap langsung
      * Existing: 10–12 Jan (buffer 2, 2)
      * Baru: 11–13 Jan (buffer 2, 2)
      * Hasil: BENTROK
      */
-    public function test_bt_01_direct_overlap_is_clashing(): void
+    public function test_direct_overlap_is_clashing(): void
     {
         $existing = [
             [
@@ -48,16 +48,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertFalse($available, 'BT-01: Direct overlap should clash.');
+        $this->assertFalse($available, 'Direct overlap should clash.');
     }
 
     /**
-     * BT-02: Irisan di zona buffer before
+     * Irisan di zona buffer before
      * Existing: 10–12 Jan (buffer 2, 2) → Efektif: 8–14 Jan
      * Baru: 7–9 Jan (buffer 2, 2) → Efektif: 5–11 Jan
      * Hasil: BENTROK
      */
-    public function test_bt_02_overlap_in_buffer_before_zone_is_clashing(): void
+    public function test_overlap_in_buffer_before_zone_is_clashing(): void
     {
         $existing = [
             [
@@ -78,16 +78,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertFalse($available, 'BT-02: Overlap in buffer before zone should clash.');
+        $this->assertFalse($available, 'Overlap in buffer before zone should clash.');
     }
 
     /**
-     * BT-03: Irisan di zona buffer after
+     * Irisan di zona buffer after
      * Existing: 10–12 Jan (buffer 2, 2) → Efektif: 8–14 Jan
      * Baru: 13–15 Jan (buffer 2, 2) → Efektif: 11–17 Jan
      * Hasil: BENTROK
      */
-    public function test_bt_03_overlap_in_buffer_after_zone_is_clashing(): void
+    public function test_overlap_in_buffer_after_zone_is_clashing(): void
     {
         $existing = [
             [
@@ -108,16 +108,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertFalse($available, 'BT-03: Overlap in buffer after zone should clash.');
+        $this->assertFalse($available, 'Overlap in buffer after zone should clash.');
     }
 
     /**
-     * BT-04: Back-to-back tepat di batas buffer
+     * Back-to-back tepat di batas buffer
      * Existing: 10–12 Jan (buffer 2, 2) → Efektif: 8–14 Jan
      * Baru: 15–17 Jan (buffer 2, 2) → Efektif: 13–19 Jan
      * Hasil: BENTROK (tanggal 13 & 14 beririsan)
      */
-    public function test_bt_04_back_to_back_at_buffer_boundary_is_clashing(): void
+    public function test_back_to_back_at_buffer_boundary_is_clashing(): void
     {
         $existing = [
             [
@@ -138,16 +138,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertFalse($available, 'BT-04: Back-to-back at buffer boundary should clash because effective ranges overlap on days 13-14.');
+        $this->assertFalse($available, 'Back-to-back at buffer boundary should clash because effective ranges overlap on days 13-14.');
     }
 
     /**
-     * BT-05: Aman di luar buffer
+     * Aman di luar buffer
      * Existing: 10–12 Jan (buffer 2, 2) → Efektif: 8–14 Jan
      * Baru: 17–20 Jan (buffer 2, 2) → Efektif: 15–22 Jan
      * Hasil: AMAN
      */
-    public function test_bt_05_safe_slot_outside_buffer_is_available(): void
+    public function test_safe_slot_outside_buffer_is_available(): void
     {
         $existing = [
             [
@@ -168,16 +168,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertTrue($available, 'BT-05: Slot outside buffer should be available.');
+        $this->assertTrue($available, 'Slot outside buffer should be available.');
     }
 
     /**
-     * BT-06: Rentang satu hari
+     * Rentang satu hari
      * Existing: 15 Jan–15 Jan (buffer 1, 1) → Efektif: 14–16 Jan
      * Baru: 16 Jan–16 Jan (buffer 1, 1) → Efektif: 15–17 Jan
      * Hasil: BENTROK (16 Jan dalam buffer after)
      */
-    public function test_bt_06_single_day_range_is_clashing_when_buffers_overlap(): void
+    public function test_single_day_range_is_clashing_when_buffers_overlap(): void
     {
         $existing = [
             [
@@ -198,16 +198,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertFalse($available, 'BT-06: Single day ranges with overlapping buffer should clash.');
+        $this->assertFalse($available, 'Single day ranges with overlapping buffer should clash.');
     }
 
     /**
-     * BT-07: Pergantian bulan
+     * Pergantian bulan
      * Existing: 29 Jan–2 Feb (buffer 2, 2) → Efektif: 27 Jan–4 Feb
      * Baru: 4 Feb–6 Feb (buffer 2, 2) → Efektif: 2–8 Feb
      * Hasil: BENTROK (tanggal 4 Feb beririsan)
      */
-    public function test_bt_07_month_boundary_transition_is_clashing(): void
+    public function test_month_boundary_transition_is_clashing(): void
     {
         $existing = [
             [
@@ -228,16 +228,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertFalse($available, 'BT-07: Month boundary transition with overlapping effective date must clash.');
+        $this->assertFalse($available, 'Month boundary transition with overlapping effective date must clash.');
     }
 
     /**
-     * BT-08: Pergantian tahun
+     * Pergantian tahun
      * Existing: 30 Des 2026–1 Jan 2027 (buffer 2, 2) → Efektif: 28 Des–3 Jan
      * Baru: 3 Jan 2027–5 Jan 2027 (buffer 2, 2) → Efektif: 1 Jan–7 Jan
      * Hasil: BENTROK (tanggal 3 Jan beririsan)
      */
-    public function test_bt_08_year_boundary_transition_is_clashing(): void
+    public function test_year_boundary_transition_is_clashing(): void
     {
         $existing = [
             [
@@ -258,16 +258,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertFalse($available, 'BT-08: Year boundary transition with overlapping effective date must clash.');
+        $this->assertFalse($available, 'Year boundary transition with overlapping effective date must clash.');
     }
 
     /**
-     * BT-09: Pembatalan membebaskan slot
+     * Pembatalan membebaskan slot
      * Existing: 10–12 Jan (cancelled) (buffer 2, 2)
      * Baru: 10–12 Jan (buffer 2, 2)
      * Hasil: AMAN (booking cancelled tidak mengunci kalender)
      */
-    public function test_bt_09_cancelled_booking_frees_the_slot(): void
+    public function test_cancelled_booking_frees_the_slot(): void
     {
         $existingCancelled = [
             [
@@ -309,16 +309,16 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existingCancelled
         );
 
-        $this->assertTrue($available, 'BT-09: Cancelled/rejected/closed bookings must free the slot.');
+        $this->assertTrue($available, 'Cancelled/rejected/closed bookings must free the slot.');
     }
 
     /**
-     * BT-10: Buffer = 0 back-to-back
+     * Buffer = 0 back-to-back
      * Existing: 10–12 Jan (buffer 0, 0) → Efektif: 10–12 Jan
      * Baru: 13–15 Jan (buffer 0, 0) → Efektif: 13–15 Jan
      * Hasil: AMAN (tidak beririsan)
      */
-    public function test_bt_10_zero_buffer_allows_exact_back_to_back(): void
+    public function test_zero_buffer_allows_exact_back_to_back(): void
     {
         $existing = [
             [
@@ -339,7 +339,7 @@ class BookingCalendarServiceTest extends TestCase
             existingBookings: $existing
         );
 
-        $this->assertTrue($available, 'BT-10: Buffer 0 must allow exact back-to-back booking.');
+        $this->assertTrue($available, 'Buffer 0 must allow exact back-to-back booking.');
     }
 
     /**

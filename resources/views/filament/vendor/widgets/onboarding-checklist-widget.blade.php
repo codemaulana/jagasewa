@@ -28,7 +28,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <!-- Langkah 1: Profil Toko -->
                 <div class="p-3.5 rounded-lg border {{ $hasProfile ? 'bg-success-bg/40 border-success-border' : 'bg-surface-subtle border-border-subtle' }} flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
@@ -52,7 +51,6 @@
                     </div>
                 </div>
 
-                <!-- Langkah 2: Tambah Barang -->
                 <div class="p-3.5 rounded-lg border {{ $hasItems ? 'bg-success-bg/40 border-success-border' : 'bg-surface-subtle border-border-subtle' }} flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
@@ -76,7 +74,6 @@
                     </div>
                 </div>
 
-                <!-- Langkah 3: Bagikan Link -->
                 <div class="p-3.5 rounded-lg border {{ $hasBookings ? 'bg-success-bg/40 border-success-border' : 'bg-surface-subtle border-border-subtle' }} flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-1.5">

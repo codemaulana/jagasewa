@@ -43,19 +43,19 @@ class SecurityHeadersAndCsrfTest extends TestCase
 
         $response->assertStatus(200);
 
-        // SEC-37: Anti-Clickjacking
+        // Anti-Clickjacking
         $response->assertHeader('X-Frame-Options', 'SAMEORIGIN');
 
-        // SEC-37: Prevent MIME Sniffing
+        // Prevent MIME Sniffing
         $response->assertHeader('X-Content-Type-Options', 'nosniff');
 
-        // SEC-37: Referrer Policy
+        // Referrer Policy
         $response->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
         // Permissions Policy
         $response->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
-        // Rule 12 & SEC-37: Content Security Policy with Backblaze B2 image whitelist
+        // Content Security Policy with Backblaze B2 image whitelist
         $csp = $response->headers->get('Content-Security-Policy');
         $this->assertNotNull($csp);
         $this->assertStringContainsString("default-src 'self'", $csp);

@@ -7,7 +7,6 @@
 
 <x-filament-widgets::widget>
     <div id="agenda-hari-ini" class="bg-surface border border-border-subtle rounded-xl p-5 shadow-xs space-y-4">
-        <!-- Header Widget -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
             <div>
                 <h3 class="text-sm sm:text-base font-bold text-text-main flex items-center gap-2">
@@ -93,7 +92,6 @@
                             </div>
                         </div>
 
-                        <!-- Tombol Aksi Cepat -->
                         <div class="flex items-center gap-2 flex-shrink-0">
                             @if($waUrl)
                                 <a

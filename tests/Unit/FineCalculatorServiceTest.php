@@ -25,9 +25,9 @@ class FineCalculatorServiceTest extends TestCase
     }
 
     /**
-     * TC-11 / DT-01: Tepat waktu, tanpa kerusakan -> Refund penuh.
+     * Tepat waktu, tanpa kerusakan -> Refund penuh.
      */
-    public function test_dt01_on_time_without_damage_returns_full_refund(): void
+    public function test_on_time_without_damage_returns_full_refund(): void
     {
         $result = $this->calculator->calculate(
             endDate: '2026-01-12',
@@ -52,9 +52,9 @@ class FineCalculatorServiceTest extends TestCase
     }
 
     /**
-     * TC-12 / DT-02: Terlambat 2 hari, tanpa kerusakan -> Refund berkurang.
+     * Terlambat 2 hari, tanpa kerusakan -> Refund berkurang.
      */
-    public function test_dt02_two_days_late_without_damage_deducts_late_fine(): void
+    public function test_two_days_late_without_damage_deducts_late_fine(): void
     {
         $result = $this->calculator->calculate(
             endDate: '2026-01-12',
@@ -78,9 +78,9 @@ class FineCalculatorServiceTest extends TestCase
     }
 
     /**
-     * TC-13 / DT-03: Tepat waktu, ada kerusakan -> Deposit dikurangi kerusakan.
+     * Tepat waktu, ada kerusakan -> Deposit dikurangi kerusakan.
      */
-    public function test_dt03_on_time_with_damage_deducts_damage_from_deposit(): void
+    public function test_on_time_with_damage_deducts_damage_from_deposit(): void
     {
         $result = $this->calculator->calculate(
             endDate: '2026-01-12',
@@ -104,9 +104,9 @@ class FineCalculatorServiceTest extends TestCase
     }
 
     /**
-     * TC-14 / DT-04: Terlambat 3 hari + kerusakan melebihi deposit -> Shortfall (kekurangan bayar).
+     * Terlambat 3 hari + kerusakan melebihi deposit -> Shortfall (kekurangan bayar).
      */
-    public function test_dt04_late_plus_damage_exceeding_deposit_results_in_shortfall(): void
+    public function test_late_plus_damage_exceeding_deposit_results_in_shortfall(): void
     {
         $result = $this->calculator->calculate(
             endDate: '2026-01-12',
@@ -130,9 +130,9 @@ class FineCalculatorServiceTest extends TestCase
     }
 
     /**
-     * TC-15 / DT-05: Dikembalikan sebelum jatuh tempo -> late_days = 0, refund penuh.
+     * Dikembalikan sebelum jatuh tempo -> late_days = 0, refund penuh.
      */
-    public function test_dt05_returned_early_before_end_date_has_zero_late_days(): void
+    public function test_returned_early_before_end_date_has_zero_late_days(): void
     {
         $result = $this->calculator->calculate(
             endDate: '2026-01-12',

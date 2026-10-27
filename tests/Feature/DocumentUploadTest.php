@@ -48,7 +48,7 @@ class DocumentUploadTest extends TestCase
     }
 
     /**
-     * TC-34: Upload file JPEG valid -> disimpan dengan nama UUID, EXIF dihapus, watermark dinamis tercetak.
+     * Upload file JPEG valid -> disimpan dengan nama UUID, EXIF dihapus, watermark dinamis tercetak.
      */
     public function test_can_upload_valid_document_with_uuid_name_and_watermark(): void
     {
@@ -81,7 +81,7 @@ class DocumentUploadTest extends TestCase
         $docUlid = $response->json('data.ulid');
         $document = IdentityDocument::where('ulid', $docUlid)->firstOrFail();
 
-        // 1. Stored in S3 private disk with UUID name (SEC-26, SEC-30)
+        // 1. Stored in S3 private disk with UUID name
         $this->assertEquals('s3', $document->storage_disk);
         $this->assertStringStartsWith('identity-documents/', $document->storage_path);
         $this->assertStringEndsWith('.jpg', $document->storage_path);
@@ -92,7 +92,7 @@ class DocumentUploadTest extends TestCase
         $this->assertGreaterThan(0, $document->file_size);
         $this->assertEquals('image/jpeg', $document->mime_type);
 
-        // 3. Consent and retention metadata (BR-05)
+        // 3. Consent and retention metadata
         $this->assertTrue($document->consent_given);
         $this->assertEquals('v1.0', $document->consent_version);
         $this->assertNotNull($document->consent_at);
@@ -104,7 +104,7 @@ class DocumentUploadTest extends TestCase
         $this->assertNotFalse($storedImage, 'Failed asserting that stored image is a valid GD image.');
         imagedestroy($storedImage);
 
-        // 5. EXIF stripped (GPS, camera info, device tags are gone per SEC-29)
+        // 5. EXIF stripped (GPS, camera info, device tags are gone)
         if (function_exists('exif_read_data')) {
             $exif = @exif_read_data('data://image/jpeg;base64,'.base64_encode($storedBytes));
             if (is_array($exif)) {
@@ -121,7 +121,7 @@ class DocumentUploadTest extends TestCase
     }
 
     /**
-     * TC-31: Upload file .exe dengan MIME image/jpeg -> tolak (magic bytes check).
+     * Upload file .exe dengan MIME image/jpeg -> tolak (magic bytes check).
      */
     public function test_upload_exe_file_disguised_as_jpg_is_rejected(): void
     {
@@ -146,7 +146,7 @@ class DocumentUploadTest extends TestCase
     }
 
     /**
-     * TC-32: Upload file JPEG valid ukuran > 5 MB -> tolak.
+     * Upload file JPEG valid ukuran > 5 MB -> tolak.
      */
     public function test_upload_file_exceeding_5mb_is_rejected(): void
     {
@@ -168,7 +168,7 @@ class DocumentUploadTest extends TestCase
     }
 
     /**
-     * TC-33: Upload file PHP dengan ekstensi .jpg -> tolak.
+     * Upload file PHP dengan ekstensi .jpg -> tolak.
      */
     public function test_upload_php_file_disguised_as_jpg_is_rejected(): void
     {
@@ -192,7 +192,7 @@ class DocumentUploadTest extends TestCase
     }
 
     /**
-     * TC-35: Akses direct URL ke objek S3/storage -> 403.
+     * Akses direct URL ke objek S3/storage -> 403.
      */
     public function test_direct_url_access_to_s3_storage_is_forbidden(): void
     {

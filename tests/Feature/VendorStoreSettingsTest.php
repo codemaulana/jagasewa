@@ -25,7 +25,7 @@ class VendorStoreSettingsTest extends TestCase
     }
 
     /**
-     * T-47 / BUG-04: Unauthenticated user cannot access store settings page.
+     * Unauthenticated user cannot access store settings page.
      */
     public function test_unauthenticated_user_cannot_access_store_settings(): void
     {
@@ -34,7 +34,7 @@ class VendorStoreSettingsTest extends TestCase
     }
 
     /**
-     * T-47 / BUG-04: Authenticated vendor can render and fill store settings form.
+     * Authenticated vendor can render and fill store settings form.
      */
     public function test_vendor_can_render_and_update_store_settings(): void
     {
@@ -87,7 +87,7 @@ class VendorStoreSettingsTest extends TestCase
     }
 
     /**
-     * T-47 / BUG-04: Replacing store media cleans up previous files from storage.
+     * Replacing store media cleans up previous files from storage.
      */
     public function test_replacing_store_media_cleans_up_old_storage_file(): void
     {
@@ -134,7 +134,7 @@ class VendorStoreSettingsTest extends TestCase
     }
 
     /**
-     * T-47 / BUG-04: Public catalog page reflects updated store profile and WhatsApp link.
+     * Public catalog page reflects updated store profile and WhatsApp link.
      */
     public function test_public_catalog_page_renders_updated_store_profile_and_contact(): void
     {
@@ -158,7 +158,7 @@ class VendorStoreSettingsTest extends TestCase
     }
 
     /**
-     * T-47 / SEC-08: Vendor isolation ensures changes do not affect another vendor.
+     * Vendor isolation ensures changes do not affect another vendor.
      */
     public function test_vendor_isolation_updating_settings_only_affects_own_vendor(): void
     {

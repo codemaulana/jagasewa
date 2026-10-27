@@ -66,7 +66,7 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(Login::class, UpdateVendorUserLastLogin::class);
 
-        // SEC-11: Rate Limiter Configuration (T-37)
+        // Rate Limiter Configuration
         RateLimiter::for('login', function (Request $request) {
             return Limit::perMinute(5)->by($request->ip());
         });

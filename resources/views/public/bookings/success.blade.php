@@ -5,7 +5,6 @@
     :backUrl="route('public.items.show', ['vendor_slug' => $booking->vendor->slug, 'item_slug' => $booking->item->slug])"
     backText="Kembali ke barang"
 >
-    <!-- Kartu Status Utama -->
     <x-ui.card class="text-center space-y-3 p-5 sm:p-6">
         <div class="w-12 h-12 mx-auto rounded-full badge-status-success border flex items-center justify-center text-success">
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -30,7 +29,6 @@
         </div>
     </x-ui.card>
 
-    <!-- Tombol WhatsApp Konfirmasi -->
     <x-ui.card class="space-y-3">
         <div>
             <h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">Konfirmasi ke Vendor</h2>
@@ -62,7 +60,6 @@
         @endif
     </x-ui.card>
 
-    <!-- Rincian Pesanan -->
     <x-ui.card class="space-y-3">
         <h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">Ringkasan Pesanan</h2>
 
@@ -98,7 +95,6 @@
         </div>
     </x-ui.card>
 
-    <!-- Langkah Selanjutnya -->
     <x-ui.card class="space-y-2.5">
         <h3 class="text-xs font-semibold text-text-main uppercase tracking-wider">Langkah selanjutnya</h3>
         <ol class="text-xs text-text-secondary space-y-1.5 list-decimal list-inside leading-relaxed">

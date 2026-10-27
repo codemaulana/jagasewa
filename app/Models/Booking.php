@@ -158,7 +158,7 @@ class Booking extends Model
     }
 
     /**
-     * Check if booking status blocks calendar dates (per BR-02).
+     * Check if booking status blocks calendar dates.
      */
     public function isBlockingCalendar(): bool
     {

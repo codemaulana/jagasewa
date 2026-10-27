@@ -161,7 +161,7 @@ class VendorIsolationTest extends TestCase
     }
 
     /**
-     * TC-18 / IDOR-03: Vendor A generate signed URL dokumen Vendor B -> 404
+     * Vendor A generate signed URL dokumen Vendor B -> 404
      */
     public function test_vendor_a_generate_signed_url_dokumen_vendor_b_returns_404(): void
     {

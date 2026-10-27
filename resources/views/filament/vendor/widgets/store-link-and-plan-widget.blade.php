@@ -40,7 +40,6 @@
             @endif
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <!-- Kartu Tautan Etalase Publik -->
             <div class="lg:col-span-2 bg-surface border border-border-subtle rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between gap-2 mb-2">
@@ -108,7 +107,6 @@
                 </div>
             </div>
 
-            <!-- Kartu Status Paket & Kuota -->
             <div class="bg-surface border border-border-subtle rounded-xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between gap-2 mb-2">

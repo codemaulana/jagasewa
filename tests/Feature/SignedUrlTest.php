@@ -56,7 +56,7 @@ class SignedUrlTest extends TestCase
         $this->assertNotEmpty($signedUrl);
         $this->assertStringContainsString('signature=', $signedUrl);
 
-        // Verify audit log recorded without raw path (SEC-27)
+        // Verify audit log recorded without raw path
         $this->assertDatabaseHas('audit_logs', [
             'vendor_id' => $vendor->id,
             'event' => 'identity_document_signed_url_generated',
@@ -102,7 +102,7 @@ class SignedUrlTest extends TestCase
     }
 
     /**
-     * TC-40: Signed URL sudah expired -> HTTP 403.
+     * Signed URL sudah expired -> HTTP 403.
      */
     public function test_expired_signed_url_returns_403(): void
     {
@@ -145,7 +145,7 @@ class SignedUrlTest extends TestCase
     }
 
     /**
-     * TC-18 / IDOR-03: Vendor A mengakses / generate signed URL dokumen milik Vendor B -> 404.
+     * Vendor A mengakses / generate signed URL dokumen milik Vendor B -> 404.
      */
     public function test_vendor_a_generate_signed_url_for_vendor_b_document_returns_404(): void
     {
@@ -163,7 +163,7 @@ class SignedUrlTest extends TestCase
         $response = $this->actingAs($userA, 'vendor')
             ->postJson(route('vendor.identity-documents.signed-url', ['ulid' => $documentB->ulid]));
 
-        // MUST be 404 (IDOR prevention per SEC-08, SEC-09, Rule 1)
+        // MUST be 404 to prevent IDOR
         $response->assertStatus(404);
     }
 }

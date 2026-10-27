@@ -26,7 +26,6 @@
 </head>
 <body class="min-h-full bg-bg-base text-text-main antialiased flex flex-col justify-between selection:bg-accent-lime selection:text-accent-lime-text">
 
-    <!-- Header Portal Penyewa (Bernuansa Etalase Toko, Bukan Dashboard) -->
     <header class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md border-b border-border-subtle shadow-2xs">
         <div class="{{ $maxWidth }} mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center gap-2.5 min-w-0">
@@ -76,7 +75,6 @@
         </div>
     </header>
 
-    <!-- Kontainer Konten Utama -->
     <main class="{{ $maxWidth }} mx-auto px-4 pt-4 sm:pt-6 pb-20 w-full space-y-4 flex-1">
         {{ $slot }}
     </main>

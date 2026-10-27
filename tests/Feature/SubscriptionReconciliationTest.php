@@ -26,7 +26,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44: Pending subscription synced to active when gateway confirms paid
+     * Pending subscription synced to active when gateway confirms paid
      */
     public function test_reconciliation_syncs_pending_to_active_when_gateway_paid(): void
     {
@@ -69,7 +69,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44: Xendit pending subscription synced to active when gateway confirms PAID
+     * Xendit pending subscription synced to active when gateway confirms PAID
      */
     public function test_reconciliation_syncs_xendit_pending_to_active(): void
     {
@@ -98,7 +98,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44: Pending subscription synced to expired when gateway confirms expired
+     * Pending subscription synced to expired when gateway confirms expired
      */
     public function test_reconciliation_syncs_pending_to_expired_when_gateway_expired(): void
     {
@@ -130,7 +130,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44 / SEC-25: Alert dispatched when order pending > 30 minutes without webhook
+     * Alert dispatched when order pending > 30 minutes without webhook
      */
     public function test_reconciliation_alerts_when_pending_order_stuck_longer_than_30_minutes(): void
     {
@@ -167,7 +167,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44: Active subscription past current_period_end transitions to past_due
+     * Active subscription past current_period_end transitions to past_due
      */
     public function test_reconciliation_moves_active_past_period_end_to_past_due(): void
     {
@@ -199,7 +199,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44: Past due subscription past 7 days grace period is downgraded to free
+     * Past due subscription past 7 days grace period is downgraded to free
      */
     public function test_reconciliation_downgrades_past_due_after_grace_period_to_free(): void
     {
@@ -223,7 +223,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44: Artisan command billing:reconcile runs successfully
+     * Artisan command billing:reconcile runs successfully
      */
     public function test_artisan_command_reconcile_runs_successfully(): void
     {
@@ -249,7 +249,7 @@ class SubscriptionReconciliationTest extends TestCase
     }
 
     /**
-     * T-44: SubscriptionReconciliationJob executes cleanly via queue worker
+     * SubscriptionReconciliationJob executes cleanly via queue worker
      */
     public function test_subscription_reconciliation_job_executes_cleanly(): void
     {

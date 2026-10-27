@@ -19,7 +19,7 @@ class AutoDeleteDocumentsJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * Execute the job to automatically delete expired identity documents (BR-05, SEC-31).
+     * Execute the job to automatically delete expired identity documents according to privacy retention policy.
      *
      * @return int Total number of documents purged
      */
@@ -61,7 +61,7 @@ class AutoDeleteDocumentsJob implements ShouldQueue
                 // Soft-delete the document model record
                 $lockedDoc->delete();
 
-                // Audit log event without raw storage path or PII (BR-05, SEC-31)
+                // Audit log event without raw storage path or PII
                 AuditService::log(
                     'document_deleted',
                     'identity_document',

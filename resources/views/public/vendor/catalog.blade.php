@@ -77,7 +77,6 @@
         </div>
     </x-ui.card>
 
-    <!-- Judul Bagian -->
     <div class="flex items-center justify-between px-0.5 pt-1">
         <h2 class="text-sm font-semibold text-text-main">
             Daftar barang rental
@@ -85,7 +84,6 @@
         <span class="text-xs text-text-secondary">Pilih untuk melihat jadwal</span>
     </div>
 
-    <!-- Grid Barang -->
     @if($items->count() > 0)
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             @foreach($items as $item)
@@ -134,7 +132,6 @@
                             </div>
                         </div>
 
-                        <!-- Tombol Aksi -->
                         <x-ui.button 
                             variant="secondary" 
                             size="md" 
@@ -148,7 +145,6 @@
             @endforeach
         </div>
 
-        <!-- Navigasi Halaman -->
         <div class="pt-3">
             <x-ui.pagination :paginator="$items" />
         </div>

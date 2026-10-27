@@ -23,9 +23,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-08 / TC-28: Signature webhook salah / token tidak cocok -> HTTP 401
+     * Signature webhook salah / token tidak cocok -> HTTP 401
      */
-    public function test_blt_08_invalid_or_missing_callback_token_returns_401(): void
+    public function test_invalid_or_missing_callback_token_returns_401(): void
     {
         // 1. Missing header
         $response1 = $this->postJson(route('webhooks.xendit'), [
@@ -50,9 +50,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-02 / Happy Path: Webhook PAID valid mengaktifkan subscription & mencatat event
+     * Webhook PAID valid mengaktifkan subscription & mencatat event
      */
-    public function test_blt_02_valid_invoice_paid_activates_subscription_and_records_event(): void
+    public function test_valid_invoice_paid_activates_subscription_and_records_event(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -106,9 +106,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-01 / TC-26: Webhook ganda (replay) -> HTTP 200 idempoten, tidak duplikat proses
+     * Webhook ganda (replay) -> HTTP 200 idempoten, tidak duplikat proses
      */
-    public function test_blt_01_duplicate_webhook_replay_is_idempotent(): void
+    public function test_duplicate_webhook_replay_is_idempotent(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -143,9 +143,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-05 / TC-29: Replay attack (attacker resends identical valid request)
+     * Replay attack (attacker resends identical valid request)
      */
-    public function test_blt_05_replay_attack_rejected_by_idempotency_check(): void
+    public function test_replay_attack_rejected_by_idempotency_check(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -182,9 +182,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-04 / TC-27: Nominal tidak cocok -> tolak, alert, status tetap pending_payment
+     * Nominal tidak cocok -> tolak, alert, status tetap pending_payment
      */
-    public function test_blt_04_amount_mismatch_is_rejected_and_rolls_back(): void
+    public function test_amount_mismatch_is_rejected_and_rolls_back(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -213,9 +213,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-09: Pembayaran sebagian (partial payment) ditolak
+     * Pembayaran sebagian (partial payment) ditolak
      */
-    public function test_blt_09_partial_payment_is_rejected(): void
+    public function test_partial_payment_is_rejected(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->create([
@@ -242,9 +242,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-03: Webhook out-of-order / order not found
+     * Webhook out-of-order / order not found
      */
-    public function test_blt_03_unknown_subscription_order_returns_422(): void
+    public function test_unknown_subscription_order_returns_422(): void
     {
         $payload = [
             'id' => 'inv_unknown_999',
@@ -262,9 +262,9 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-07: Order expired -> invoice.paid ditolak oleh state machine, alert admin
+     * Order expired -> invoice.paid ditolak oleh state machine, alert admin
      */
-    public function test_blt_07_expired_order_rejects_late_invoice_paid(): void
+    public function test_expired_order_rejects_late_invoice_paid(): void
     {
         $vendor = Vendor::factory()->create();
         $subscription = Subscription::factory()->expired()->create([
@@ -295,10 +295,10 @@ class XenditWebhookTest extends TestCase
     }
 
     /**
-     * BLT-06 / TC-30: Race condition antara redirect dan webhook
+     * Race condition antara redirect dan webhook
      * Redirect browser TIDAK mengubah status subscription; hanya webhook yang mengubah status.
      */
-    public function test_blt_06_tc_30_browser_redirect_never_alters_subscription_status(): void
+    public function test_browser_redirect_never_alters_subscription_status(): void
     {
         $vendor = Vendor::factory()->create();
         $user = VendorUser::factory()->create(['vendor_id' => $vendor->id]);

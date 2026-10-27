@@ -14,7 +14,7 @@ class HtaccessAndServerHardeningTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * T-40 / SEC-17: Verify public/.htaccess configuration file rules.
+     * Verify public/.htaccess configuration file rules.
      */
     public function test_htaccess_contains_all_hardening_directives(): void
     {
@@ -23,15 +23,15 @@ class HtaccessAndServerHardeningTest extends TestCase
 
         $content = file_get_contents($htaccessPath);
 
-        // SEC-40: Sensitive files blocking
+        // Sensitive files blocking
         $this->assertStringContainsString('composer\.(json|lock)', $content);
         $this->assertStringContainsString('\.env', $content);
         $this->assertStringContainsString('artisan', $content);
 
-        // SEC-17: LimitRequestBody 6MB (6291456 bytes)
+        // LimitRequestBody 6MB (6291456 bytes)
         $this->assertStringContainsString('LimitRequestBody 6291456', $content);
 
-        // SEC-38: TRACE/TRACK method blocking
+        // TRACE/TRACK method blocking
         $this->assertStringContainsString('REQUEST_METHOD} ^(TRACE|TRACK)', $content);
 
         // Directory listing disabled
@@ -43,7 +43,7 @@ class HtaccessAndServerHardeningTest extends TestCase
     }
 
     /**
-     * T-40 / SEC-17: Verify public/.user.ini file exists with required limits.
+     * Verify public/.user.ini file exists with required limits.
      */
     public function test_user_ini_contains_php_upload_and_security_limits(): void
     {
@@ -58,7 +58,7 @@ class HtaccessAndServerHardeningTest extends TestCase
     }
 
     /**
-     * T-40: Upload exceeding 5MB max validation limit is rejected by the application.
+     * Upload exceeding 5MB max validation limit is rejected by the application.
      */
     public function test_oversized_file_upload_is_rejected(): void
     {
@@ -80,7 +80,7 @@ class HtaccessAndServerHardeningTest extends TestCase
     }
 
     /**
-     * T-40 / SEC-37: HTTP responses never leak X-Powered-By header.
+     * HTTP responses never leak X-Powered-By header.
      */
     public function test_responses_do_not_contain_x_powered_by(): void
     {

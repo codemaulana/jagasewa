@@ -8,7 +8,6 @@
 </head>
 <body class="bg-bg-base text-text-main font-sans antialiased min-h-screen flex items-center justify-center p-4 sm:p-6">
     <div class="max-w-xl w-full bg-surface border border-border-subtle rounded-2xl shadow-subtle p-6 sm:p-8" x-data="paymentConfirmation({{ $is_pro ? 'true' : 'false' }})">
-        <!-- Header Status -->
         <div class="text-center">
             <template x-if="isPro">
                 <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-success-bg text-success border border-success-border mb-4">

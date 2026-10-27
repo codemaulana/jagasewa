@@ -13,7 +13,7 @@ class FineCalculatorService
 
     /**
      * Calculate late days, fines, damage deductions, and final deposit settlement.
-     * Implements business rule BR-03 with integer rupiah arithmetic.
+     * Uses integer rupiah arithmetic.
      *
      * @param  CarbonInterface|string  $endDate  Agreed return date
      * @param  CarbonInterface|string  $actualReturnDate  Actual return date
@@ -35,24 +35,14 @@ class FineCalculatorService
         $safeDeposit = max(0, $deposit);
         $safeDamage = max(0, $damageDeduction);
 
-        // BR-03: late_days = max(0, return_date - end_date)
         $lateDays = $actualReturn->greaterThan($end)
             ? (int) $end->diffInDays($actualReturn)
             : 0;
 
-        // BR-03: late_fine = late_days × fine_per_day
         $lateFine = $lateDays * $safeFinePerDay;
-
-        // BR-03: total_deduction = late_fine + damage_deduction
         $totalDeduction = $lateFine + $safeDamage;
-
-        // BR-03: deposit_remaining = deposit - total_deduction
         $depositRemaining = $safeDeposit - $totalDeduction;
-
-        // BR-03: shortfall = max(0, -deposit_remaining)
         $shortfall = max(0, -$depositRemaining);
-
-        // BR-03: refund = max(0, deposit_remaining)
         $refund = max(0, $depositRemaining);
 
         return new FineCalculationResult(

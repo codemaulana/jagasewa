@@ -80,7 +80,7 @@ class WaNotificationHelper
 
     /**
      * Generate wa.me URL for vendor to contact renter (e.g. approved, rejected, settled, return_reminder actions).
-     * Pro vendors can customize message templates with dynamic tags (T-48 / US-12).
+     * Pro vendors can customize message templates with dynamic placeholder variables.
      */
     public static function generateRenterChatUrl(Booking $booking, string $action = 'approved'): ?string
     {

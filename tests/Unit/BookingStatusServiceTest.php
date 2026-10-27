@@ -91,7 +91,7 @@ class BookingStatusServiceTest extends TestCase
         $this->assertEquals('Identitas tidak valid', $result->vendor_notes);
         $this->assertEquals(2, $result->lock_version);
 
-        // Document retention rescheduled to 3 days (BR-05)
+        // Document retention rescheduled to 3 days
         $doc->refresh();
         $expectedDate = Carbon::now('Asia/Jakarta')->addDays(3)->format('Y-m-d');
         $this->assertEquals($expectedDate, $doc->delete_scheduled_at->format('Y-m-d'));

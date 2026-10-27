@@ -1,8 +1,6 @@
 <x-filament-panels::page>
     <div class="space-y-6">
-        <!-- Toolbar Kontrol: Navigasi Periode, Filter Barang, & Mode Tampilan -->
         <div class="bg-surface border border-border-subtle rounded-xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <!-- Navigasi Periode & Mode Tampilan -->
             <div class="flex items-center flex-wrap gap-2">
                 <button
                     type="button"
@@ -144,14 +142,12 @@
         <!-- Kisi Kalender Bulanan (Bisa discroll horizontal di mobile 375px agar sel tidak terjepit) -->
         <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
             <div class="min-w-[640px] sm:min-w-full bg-surface border border-border-subtle rounded-xl overflow-hidden shadow-xs">
-                <!-- Header Nama Hari (Sen - Min) -->
                 <div class="grid grid-cols-7 border-b border-border-subtle bg-surface-subtle text-center py-2.5 text-xs font-semibold text-text-secondary">
                     @foreach($daysOfWeek as $dow)
                         <div>{{ $dow }}</div>
                     @endforeach
                 </div>
 
-                <!-- Grid Hari per Minggu -->
                 <div class="divide-y divide-border-subtle">
                     @foreach($weeks as $week)
                         <div class="grid grid-cols-7 divide-x divide-border-subtle min-h-[90px] sm:min-h-[120px]">
@@ -170,7 +166,6 @@
                                         {{ $isSelected ? 'ring-2 ring-inset ring-primary' : 'hover:bg-surface-subtle' }}
                                     "
                                 >
-                                    <!-- Tanggal -->
                                     <div class="flex items-center justify-between mb-1">
                                         <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-semibold rounded-full
                                             {{ $isToday ? 'bg-primary text-primary-text' : '' }}
@@ -227,7 +222,6 @@
             </div>
         </div>
 
-        <!-- Rincian Agenda Hari Yang Dipilih -->
         @if($selectedDate)
             <div class="bg-surface border border-border-subtle rounded-xl p-4 sm:p-5 shadow-xs">
                 <div class="flex items-center justify-between mb-4 border-b border-border-subtle pb-3">

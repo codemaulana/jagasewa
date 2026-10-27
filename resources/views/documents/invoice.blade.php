@@ -14,7 +14,6 @@
     </style>
 </head>
 <body class="bg-bg-base text-text-main antialiased font-sans p-4 sm:p-8 min-h-screen">
-    <!-- Toolbar Aksi Dokumen (Disembunyikan saat dicetak) -->
     <div class="no-print max-w-3xl mx-auto mb-6 flex flex-wrap items-center justify-between gap-3 p-4 bg-surface border border-border-subtle rounded-xl shadow-xs">
         <div class="flex items-center gap-2">
             <a href="{{ url('/vendor/bookings/' . $booking->id) }}" class="inline-flex items-center justify-center min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border border-border-subtle bg-surface hover:bg-surface-subtle transition">
@@ -32,9 +31,7 @@
         </div>
     </div>
 
-    <!-- Kontainer Lembar Dokumen A4 -->
     <div class="print-container max-w-3xl mx-auto bg-surface border border-border-subtle rounded-xl p-8 sm:p-12 shadow-sm space-y-8">
-        <!-- Header Dokumen -->
         <div class="flex items-start justify-between border-b border-border-subtle pb-6 gap-4">
             <div>
                 <h1 class="text-xl sm:text-2xl font-bold text-text-main tracking-tight uppercase">
@@ -63,7 +60,6 @@
             </div>
         </div>
 
-        <!-- Rincian Penyewa & Pesanan -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
             <div class="space-y-1">
                 <span class="font-bold text-text-secondary uppercase tracking-wider text-[10px]">Ditagihkan Kepada:</span>

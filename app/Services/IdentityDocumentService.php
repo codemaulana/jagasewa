@@ -11,13 +11,13 @@ use Throwable;
 class IdentityDocumentService
 {
     /**
-     * Generate temporary signed URL for an identity document (TTL in minutes, default 60 per SEC-27).
+     * Generate temporary signed URL for an identity document (TTL in minutes, default 60).
      */
     public function generateTemporaryUrl(IdentityDocument $document, int $ttlMinutes = 60): string
     {
         $expiresAt = Carbon::now('Asia/Jakarta')->addMinutes($ttlMinutes);
 
-        // 1. Audit log generation (SEC-27: without raw storage path)
+        // Audit log generation without raw storage path
         AuditService::log(
             'identity_document_signed_url_generated',
             'identity_document',

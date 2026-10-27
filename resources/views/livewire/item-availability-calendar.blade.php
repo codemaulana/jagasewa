@@ -1,5 +1,4 @@
 <x-ui.card class="space-y-3.5">
-    <!-- Header Bagian Kalender -->
     <div class="flex items-center justify-between">
         <div>
             <h3 class="text-sm font-semibold text-text-main">
@@ -33,16 +32,13 @@
         </div>
     </div>
 
-    <!-- Pesan Peringatan Galat -->
     @if($errorMessage)
         <x-ui.alert type="danger">
             {{ $errorMessage }}
         </x-ui.alert>
     @endif
 
-    <!-- Grid Kalender -->
     <div class="pt-0.5">
-        <!-- Hari dalam seminggu -->
         <div class="grid grid-cols-7 gap-1 text-center text-[11px] font-semibold text-text-muted mb-1 select-none">
             <div>Sn</div>
             <div>Sl</div>
@@ -53,14 +49,11 @@
             <div>Mg</div>
         </div>
 
-        <!-- Tanggal Grid -->
         <div class="grid grid-cols-7 gap-1.5">
-            <!-- Sel Kosong Bulan Sebelumnya -->
             @for($i = 0; $i < $leadingEmptyDays; $i++)
                 <div class="aspect-square" aria-hidden="true"></div>
             @endfor
 
-            <!-- Sel Tanggal -->
             @foreach($days as $dayData)
                 @php
                     $date = $dayData['date'];
@@ -92,7 +85,6 @@
         </div>
     </div>
 
-    <!-- Legenda Status Kalender -->
     <div class="flex items-center justify-between text-[11px] text-text-secondary pt-2.5 border-t border-border-subtle/50 select-none">
         <div class="flex items-center gap-1.5">
             <span class="w-3 h-3 rounded bg-surface border border-border-subtle inline-block shadow-2xs"></span>
@@ -108,7 +100,6 @@
         </div>
     </div>
 
-    <!-- Rincian Tanggal Sewa yang Dipilih -->
     @if($selectedStartDate)
         <div class="bg-surface-subtle border border-border-subtle rounded-lg p-3.5 space-y-2.5">
             <div class="flex items-center justify-between">

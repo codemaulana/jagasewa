@@ -5,7 +5,6 @@
 
 @if($vendor)
     <div class="flex items-center gap-2 mr-2 select-none">
-        <!-- Tombol Sekunder Toko Publik -->
         <a 
             href="{{ route('public.vendor.catalog', ['vendor_slug' => $vendor->slug]) }}" 
             target="_blank" 

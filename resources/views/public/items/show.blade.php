@@ -76,7 +76,6 @@
             <h1 class="text-lg sm:text-xl font-bold text-text-main leading-snug">{{ $item->name }}</h1>
         </div>
 
-        <!-- Kartu Tarif Sewa -->
         <div class="bg-surface-subtle border border-border-subtle rounded-lg p-3.5 flex items-baseline justify-between shadow-2xs">
             <div>
                 <span class="text-xs text-text-secondary block">Tarif sewa harian</span>
@@ -88,7 +87,6 @@
             </div>
         </div>
 
-        <!-- Grid Deposit & Denda -->
         <div class="grid grid-cols-2 gap-3">
             <div class="bg-surface-subtle border border-border-subtle rounded-lg p-3">
                 <span class="text-xs text-text-secondary block mb-0.5">Uang jaminan (deposit)</span>

@@ -31,7 +31,7 @@ class ProFeaturesCustomWaTemplateTest extends TestCase
     }
 
     /**
-     * T-48 / BUG-06: Pro vendor can save custom WhatsApp templates and generate custom wa.me links with tags.
+     * Pro vendor can save custom WhatsApp templates and generate custom wa.me links with tags.
      */
     public function test_pro_vendor_can_save_and_use_custom_wa_templates(): void
     {
@@ -107,7 +107,7 @@ class ProFeaturesCustomWaTemplateTest extends TestCase
     }
 
     /**
-     * T-48 / BUG-06: Free vendor always uses standard notification message and cannot save custom templates.
+     * Free vendor always uses standard notification message and cannot save custom templates.
      */
     public function test_free_vendor_uses_standard_wa_templates(): void
     {
@@ -162,7 +162,7 @@ class ProFeaturesCustomWaTemplateTest extends TestCase
     }
 
     /**
-     * T-48 / BUG-06: Pro vendor can customize return reminder message.
+     * Pro vendor can customize return reminder message.
      */
     public function test_pro_vendor_custom_return_reminder_template(): void
     {
@@ -207,7 +207,7 @@ class ProFeaturesCustomWaTemplateTest extends TestCase
     }
 
     /**
-     * T-48 / BUG-06: Photo quota enforcement - Free tier max 5 photos, Pro tier allows up to 8 photos.
+     * Photo quota enforcement - Free tier max 5 photos, Pro tier allows up to 8 photos.
      */
     public function test_photo_quota_enforcement_free_vs_pro(): void
     {

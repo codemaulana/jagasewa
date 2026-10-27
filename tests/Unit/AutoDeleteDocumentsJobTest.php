@@ -72,7 +72,7 @@ class AutoDeleteDocumentsJobTest extends TestCase
     }
 
     /**
-     * TC-36: AutoDeleteDocumentsJob -> file > 7 hari setelah booking closed terhapus.
+     * AutoDeleteDocumentsJob -> file > 7 hari setelah booking closed terhapus.
      */
     public function test_auto_delete_purges_document_for_booking_closed_more_than_seven_days_ago(): void
     {
@@ -97,7 +97,7 @@ class AutoDeleteDocumentsJobTest extends TestCase
     }
 
     /**
-     * TC-36 (Cancelled): AutoDeleteDocumentsJob -> file > 3 hari setelah booking cancelled/rejected terhapus.
+     * AutoDeleteDocumentsJob -> file > 3 hari setelah booking cancelled/rejected terhapus.
      */
     public function test_auto_delete_purges_document_for_booking_cancelled_more_than_three_days_ago(): void
     {
@@ -121,7 +121,7 @@ class AutoDeleteDocumentsJobTest extends TestCase
     }
 
     /**
-     * TC-36 (Rejected): AutoDeleteDocumentsJob -> file > 3 hari setelah rejected terhapus.
+     * AutoDeleteDocumentsJob -> file > 3 hari setelah rejected terhapus.
      */
     public function test_auto_delete_purges_document_for_booking_rejected_more_than_three_days_ago(): void
     {
@@ -143,7 +143,7 @@ class AutoDeleteDocumentsJobTest extends TestCase
     }
 
     /**
-     * TC-37: AutoDeleteDocumentsJob -> audit_log tidak mengandung path file setelah hapus.
+     * AutoDeleteDocumentsJob -> audit_log tidak mengandung path file setelah hapus.
      */
     public function test_auto_delete_records_audit_log_without_raw_storage_path_or_pii(): void
     {
@@ -171,7 +171,7 @@ class AutoDeleteDocumentsJobTest extends TestCase
         $this->assertEquals('ktp', $payload['doc_type']);
         $this->assertArrayHasKey('deleted_at', $payload);
 
-        // SEC-31 & TC-37: Raw path and PII must NOT appear in audit log
+        // Raw path and PII must NOT appear in audit log
         $payloadJson = json_encode($payload);
         $this->assertStringNotContainsString($filePath, $payloadJson, 'Audit log payload tidak boleh memuat path storage');
         $this->assertStringNotContainsString('identity-documents', $payloadJson, 'Audit log payload tidak boleh memuat folder storage');
@@ -180,7 +180,7 @@ class AutoDeleteDocumentsJobTest extends TestCase
     }
 
     /**
-     * TC-38: Fallback -> file > 90 hari setelah upload (booking tidak pernah closed) terhapus.
+     * Fallback -> file > 90 hari setelah upload (booking tidak pernah closed) terhapus.
      */
     public function test_auto_delete_purges_fallback_document_created_more_than_ninety_days_ago(): void
     {

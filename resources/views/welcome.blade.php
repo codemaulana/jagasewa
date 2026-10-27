@@ -26,47 +26,38 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-accent-lime selection:text-white">
 
-    <!-- ========================================================
-         NAVBAR / HEADER (Tersinkronisasi Urutan: Katalog -> Panggung Mitra -> Cara Kerja -> Keunggulan)
-         ======================================================== -->
+    
     <header id="site-header" class="w-full border-b border-border-subtle/70 bg-bg-base/90 backdrop-blur-md sticky top-0 z-50 transition-colors duration-500">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
-            <!-- Logo JagaSewa -->
             <a href="{{ url('/') }}" class="flex items-center gap-2 group transition hover:opacity-90">
                 <img src="{{ asset('jagasewa_logo1.png') }}" 
                      alt="JagaSewa" 
                      class="h-10 sm:h-11 w-auto object-contain">
             </a>
 
-            <!-- Navigasi Menu Tengah (Berurutan Tepat Sesuai Alur Halaman) -->
             <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-sm font-medium text-text-main">
-                <!-- 1. Katalog (#jelajahi-rental) -->
                 <a href="#jelajahi-rental" id="nav-katalog" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Katalog</span>
                     <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
-                <!-- 2. Panggung Mitra Curtain Reveal (#reveal-showcase) -->
                 <a href="#reveal-showcase" id="nav-mitra" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Panggung Mitra</span>
                     <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
-                <!-- 3. Cara Kerja (#cara-kerja) -->
                 <a href="#cara-kerja" id="nav-cara-kerja" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Cara Kerja</span>
                     <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
 
-                <!-- 4. Keunggulan (#keunggulan) -->
                 <a href="#keunggulan" id="nav-keunggulan" class="nav-link hover:text-text-main transition-colors py-2 relative group">
                     <span>Keunggulan</span>
                     <span class="nav-indicator absolute bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </a>
             </nav>
 
-            <!-- Tombol Aksi Kanan (Masuk Vendor) -->
             <div class="flex items-center gap-3">
                 <a href="{{ url('/vendor/login') }}" class="btn-fill-dark btn-magnetic text-xs sm:text-sm font-semibold h-11 px-5 sm:px-6 rounded-full inline-flex items-center gap-2 text-white bg-primary shadow-sm">
                     <svg class="w-4 h-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
@@ -112,12 +103,9 @@
         </div>
     </header>
 
-
     <main id="main-content">
 
-        <!-- ========================================================
-             1. HERO SECTION: EDITORIAL TYPOGRAPHY & GSAP BOUNCE ENTRANCE
-             ======================================================== -->
+        
         <section id="hero-section" class="relative overflow-hidden pt-8 pb-14 sm:pt-12 sm:pb-20 lg:pt-16 lg:pb-24">
             
             <!-- Golden Ribbon Background Curve SVG -->
@@ -150,7 +138,6 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center min-h-[540px]">
                     
-                    <!-- SISI KIRI: Headline dengan Animasi Muncul dari Kiri dengan Bounce -->
                     <div class="lg:col-span-5 space-y-6 text-left hero-text-block">
                         <div class="space-y-2 overflow-hidden">
                             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold text-text-main tracking-tight leading-[1.12]">
@@ -163,29 +150,23 @@
                             Temukan dan booking barang rental dari berbagai bisnis, tanpa perlu membuat akun.
                         </p>
 
-                        <!-- Tombol Aksi Hero Responsif (Pill Buttons) -->
                         <div class="hero-bounce-cta flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-2 w-full max-w-md sm:max-w-none">
-                            <!-- Primary CTA -->
                             <a href="#jelajahi-rental" class="btn-fill-dark btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 rounded-full text-sm sm:text-base font-bold inline-flex items-center justify-center gap-2.5 text-white bg-primary shadow-md group">
                                 <span>Jelajahi Rental</span>
                                 <span class="text-lg leading-none transition-transform duration-300 group-hover:translate-x-1.5">&rarr;</span>
                             </a>
 
-                            <!-- Secondary CTA -->
                             <a href="{{ url('/vendor/register') }}" class="btn-fill-outline btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-7 rounded-full text-xs sm:text-sm font-semibold inline-flex items-center justify-center text-center text-text-main border-2 border-border-subtle bg-transparent">
                                 <span>Gabung sebagai<br class="hidden sm:inline"> Pemilik Rental</span>
                             </a>
                         </div>
                     </div>
 
-                    <!-- SISI KANAN: Komposisi 4 Aset Visual dengan Interaktivitas GSAP -->
                     <div class="lg:col-span-7 relative w-full flex items-center justify-center lg:justify-end">
                         <div id="hero-interactive-canvas" class="relative w-full max-w-[680px] h-[380px] sm:h-[460px] md:h-[520px] lg:h-[560px]">
                             
-                            <!-- Bayangan Halus di Lantai -->
                             <div class="hero-shadow-floor absolute bottom-4 left-1/2 -translate-x-1/2 w-4/5 h-14 bg-black/15 blur-2xl rounded-full pointer-events-none"></div>
 
-                            <!-- 1. Kostum Cosplay (Interaktif: GSAP Zoom-Out Entrance & Hover Zoom-Out) -->
                             <div class="hero-cosplay js-zoom-out absolute bottom-6 sm:bottom-8 left-[12%] sm:left-[16%] h-[82%] sm:h-[84%] flex items-end justify-center z-10 cursor-pointer"
                                  title="Arahkan kursor untuk efek zoom out">
                                 <img src="{{ asset('cosplay.png') }}" 
@@ -195,7 +176,6 @@
                                      fetchpriority="high">
                             </div>
 
-                            <!-- 2. Kebaya Modern (Manekin Kebaya Brokat Peach/Pink dengan Jarik) -->
                             <div class="hero-kebaya absolute bottom-6 sm:bottom-8 left-[44%] sm:left-[46%] h-[90%] sm:h-[93%] flex items-end justify-center z-10">
                                 <img src="{{ asset('kebaya.png') }}" 
                                      alt="Rental Kebaya Modern & Wisuda" 
@@ -204,7 +184,6 @@
                                      fetchpriority="high">
                             </div>
 
-                            <!-- 3. Busana Adat Tradisional (Interaktif: GSAP Zoom-Out Entrance & Hover Zoom-Out) -->
                             <div class="hero-adat js-zoom-out absolute bottom-6 sm:bottom-8 right-[-2%] sm:right-[1%] h-[86%] sm:h-[89%] flex items-end justify-center z-10 cursor-pointer"
                                  title="Arahkan kursor untuk efek zoom out">
                                 <img src="{{ asset('adat.png') }}" 
@@ -214,7 +193,6 @@
                                      fetchpriority="high">
                             </div>
 
-                            <!-- 4. Kamera Mirrorless (Sony Alpha di Foreground Kiri dengan Parallax Kursor) -->
                             <div class="hero-camera absolute bottom-2 sm:bottom-3 left-[-2%] sm:left-[2%] h-[48%] sm:h-[54%] flex items-end justify-center z-20">
                                 <img src="{{ asset('kamera.png') }}" 
                                      alt="Rental Kamera Mirrorless & Lensa Sony" 
@@ -230,11 +208,7 @@
             </div>
         </section>
 
-
-        <!-- ========================================================
-             2. KATALOG KATEGORI RENTAL POPULER
-             (Scrubbed Background: Transisi ke Warm Linen rgb(245, 244, 240))
-             ======================================================== -->
+        
         <section id="jelajahi-rental" class="py-16 sm:py-24 border-t border-border-subtle/70 relative overflow-hidden bg-transparent">
             
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -259,10 +233,8 @@
                     </a>
                 </div>
 
-                <!-- 4 KARTU KATEGORI MEWAH DENGAN GAMBAR ASLI -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-7">
                     
-                    <!-- Kartu 1: Kostum Cosplay Anime (Interaktif Zoom-Out) -->
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
@@ -302,7 +274,6 @@
                         </div>
                     </div>
 
-                    <!-- Kartu 2: Kamera & Alat Dokumentasi -->
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
@@ -342,7 +313,6 @@
                         </div>
                     </div>
 
-                    <!-- Kartu 3: Kebaya & Gaun Wisuda -->
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
@@ -382,7 +352,6 @@
                         </div>
                     </div>
 
-                    <!-- Kartu 4: Busana Adat Tradisional (Animasi Zoom-Out pada Gambar) -->
                     <div class="kategori-card card-editorial rounded-2xl p-5 flex flex-col justify-between h-full group">
                         <div>
                             <div class="pedestal-stage h-48 w-full rounded-xl mb-4 flex items-center justify-center p-3 relative overflow-hidden">
@@ -426,18 +395,12 @@
             </div>
         </section>
 
-
-        <!-- ========================================================
-             3. CURTAIN REVEAL SHOWCASE
-             (Posisi Tepat Setelah Kategori — Panggung Pinned & Tirai Membuka)
-             (Scrubbed Background: Transisi ke Deep Obsidian rgb(17, 17, 17))
-             ======================================================== -->
+        
         <section id="reveal-showcase" class="relative overflow-hidden w-full min-h-screen flex items-center justify-center bg-primary">
 
             <!-- THE INNER STAGE: Teater Gelap Mewah Obsidian rgb(17, 17, 17) yang Terbuka -->
             <div id="curtain-stage" class="relative w-full min-h-screen py-20 sm:py-28 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center text-center bg-primary text-white z-10 overflow-hidden">
                 
-                <!-- Ambient Glowing Orbs -->
                 <div class="curtain-glow-1 absolute -top-32 -right-32 w-96 h-96 bg-primary/35 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="curtain-glow-2 absolute -bottom-32 -left-32 w-96 h-96 bg-[rgb(200, 195, 185)]/25 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -457,7 +420,6 @@
                         Tinggalkan rekap spreadsheet manual dan perdebatan jadwal di DM. Kelola pesanan sewa, verifikasi KTP penyewa, dan terima pembayaran langsung di WhatsApp toko Anda.
                     </p>
 
-                    <!-- 3 Kartu Metrik Keunggulan -->
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 max-w-3xl mx-auto pt-2 text-left w-full">
                         <div class="curtain-metric-card bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 space-y-1.5 hover:border-border-hover/60 transition">
                             <div class="text-2xl sm:text-3xl font-extrabold text-text-main">0%</div>
@@ -478,15 +440,12 @@
                         </div>
                     </div>
 
-                    <!-- TOMBOL AKSI RESPONSIF 100% (Sesuai Presisi Gambar Acuan Pengguna) -->
                     <div class="pt-4 sm:pt-6 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 sm:gap-4 max-w-md sm:max-w-none mx-auto w-full">
-                        <!-- Button Putih Solid: Buka Toko Rental Sekarang -->
                         <a href="{{ url('/vendor/register') }}" 
                            class="btn-fill-light btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 sm:px-10 rounded-full text-sm sm:text-base font-bold inline-flex items-center justify-center shadow-2xl">
                             <span>Buka Toko Rental Sekarang &rarr;</span>
                         </a>
 
-                        <!-- Button Outline: Masuk Dashboard Vendor -->
                         <a href="{{ url('/vendor/login') }}" 
                            class="btn-fill-outline-light btn-magnetic w-full sm:w-auto min-h-[52px] sm:min-h-[56px] px-8 sm:px-10 rounded-full text-sm sm:text-base font-semibold inline-flex items-center justify-center border-2 border-white/40 hover:border-white">
                             <span>Masuk Dashboard Vendor</span>
@@ -496,7 +455,6 @@
                 </div>
             </div>
 
-            <!-- DUA TIRAI TEATER MEWAH (Membuka ke Kiri & Kanan saat di-scroll) -->
             <div id="curtain-left" class="absolute inset-y-0 left-0 w-1/2 bg-[rgb(245, 244, 240)] border-r-2 border-border-subtle/60 z-30 flex items-center justify-end pr-6 sm:pr-12 pointer-events-none shadow-2xl">
                 <div class="text-right space-y-2 opacity-85">
                     <span class="text-xs uppercase tracking-widest text-text-secondary font-semibold block">Platform Terpadu</span>
@@ -513,11 +471,7 @@
 
         </section>
 
-
-        <!-- ========================================================
-             4. CARA KERJA (ARCHITECTURAL STEP DESIGN)
-             (Scrubbed Background: Transisi ke Artisan Sand rgb(245, 244, 240))
-             ======================================================== -->
+        
         <section id="cara-kerja" class="py-16 sm:py-24 border-t border-border-subtle/70 relative overflow-hidden bg-transparent">
             
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -535,10 +489,8 @@
                     </p>
                 </div>
 
-                <!-- 3 Kartu Langkah Terstruktur dengan Animasi Stagger Bounce -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 sm:mt-16 text-left relative">
                     
-                    <!-- Langkah 1 -->
                     <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
                         <div class="flex items-center justify-between">
                             <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-base shadow-sm">
@@ -558,7 +510,6 @@
                         </div>
                     </div>
 
-                    <!-- Langkah 2 -->
                     <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
                         <div class="flex items-center justify-between">
                             <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-base shadow-sm">
@@ -578,7 +529,6 @@
                         </div>
                     </div>
 
-                    <!-- Langkah 3 -->
                     <div class="step-card card-editorial p-7 rounded-2xl relative space-y-4">
                         <div class="flex items-center justify-between">
                             <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center font-bold text-base shadow-sm">
@@ -602,15 +552,10 @@
             </div>
         </section>
 
-
-        <!-- ========================================================
-             5. KEUNGGULAN (STICKY STACKING CARDS ARCHITECTURE)
-             (Scrubbed Background: Transisi ke Soft Linen rgb(250, 249, 246))
-             ======================================================== -->
+        
         <section id="keunggulan" class="py-20 sm:py-28 border-t border-border-subtle/70 relative bg-transparent">
             <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-                <!-- Header Keunggulan dengan Bounce Reveal dari Kiri -->
                 <div class="keunggulan-header text-center max-w-2xl mx-auto mb-14 sm:mb-20 space-y-3">
                     <span class="reveal-bounce-left inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-surface-subtle/70 text-text-secondary border border-border-subtle/40">
                         <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
@@ -624,10 +569,8 @@
                     </p>
                 </div>
 
-                <!-- STICKY STACKING CARDS WRAPPER -->
                 <div class="sticky-stack-wrapper relative space-y-6 sm:space-y-8 pb-16">
                     
-                    <!-- STACK CARD 1: Smart Buffer Calendar -->
                     <div class="sticky-card sticky top-24 sm:top-28 z-10 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-border-subtle/50 shadow-xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
@@ -666,7 +609,6 @@
                         </div>
                     </div>
 
-                    <!-- STACK CARD 2: Kepatuhan UU PDP & Watermark -->
                     <div class="sticky-card sticky top-28 sm:top-36 z-20 bg-surface-subtle backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-border-subtle/60 shadow-xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
@@ -705,7 +647,6 @@
                         </div>
                     </div>
 
-                    <!-- STACK CARD 3: Pessimistic Row Locking -->
                     <div class="sticky-card sticky top-32 sm:top-44 z-30 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-border-subtle/60 shadow-xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
@@ -744,7 +685,6 @@
                         </div>
                     </div>
 
-                    <!-- STACK CARD 4: Kalkulator Denda Pasti & Auto-Release -->
                     <div class="sticky-card sticky top-36 sm:top-52 z-40 bg-primary text-white rounded-3xl p-6 sm:p-10 border border-[rgb(200, 195, 185)]/40 shadow-2xl transition-all duration-300">
                         <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
                             <div class="md:col-span-8 space-y-4">
@@ -790,10 +730,7 @@
 
     </main>
 
-
-    <!-- ========================================================
-         6. FOOTER
-         ======================================================== -->
+    
     <footer id="site-footer" class="border-t border-border-subtle/70 py-10 transition-colors duration-500 bg-primary text-neutral-400">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-xs">
             <div class="flex items-center gap-3">
@@ -813,10 +750,7 @@
         </div>
     </footer>
 
-
-    <!-- ========================================================
-         GSAP 3D PARALLAX, CURTAIN REVEAL, STICKY STACKING, & SCRUB
-         ======================================================== -->
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof gsap === 'undefined') {
@@ -880,7 +814,6 @@
                 }
             });
 
-
             /* ====================================================
                2. SCROLLSPY NAVBAR AKTIF SESUAI URUTAN SECTION
                ==================================================== */
@@ -914,7 +847,6 @@
                     current.classList.add('active-nav');
                 }
             }
-
 
             /* ====================================================
                3. CURTAIN REVEAL SHOWCASE (Tirai Teater Membuka)
@@ -952,7 +884,6 @@
                     stagger: 0.1,
                     ease: 'power2.out'
                 }, 0.25);
-
 
             /* ====================================================
                4. ANIMASI ENTRANCE SAAT WEBSITE PERTAMA KALI DIBUKA
@@ -1042,7 +973,6 @@
                     ease: 'back.out(1.5)'
                 }, 0.6);
 
-
             /* ====================================================
                5. INTERACTIVE 3D MOUSE PARALLAX PADA HERO SECTION
                ==================================================== */
@@ -1100,7 +1030,6 @@
                     ribbonX(0);
                 });
             }
-
 
             /* ====================================================
                6. HERO SCROLL PARALLAX SCRUBBING
@@ -1173,7 +1102,6 @@
                 }
             });
 
-
             /* ====================================================
                7. SCROLL REVEAL BOUNCE ANIMATION (TEXT DARI KIRI)
                ==================================================== */
@@ -1218,7 +1146,6 @@
                 ease: 'power3.out'
             });
 
-
             /* ====================================================
                8. STICKY STACKING CARDS DI SECTION KEUNGGULAN
                (Kartu berikutnya menumpuk, kartu sebelumnya scale down & dim)
@@ -1240,7 +1167,6 @@
                     });
                 }
             });
-
 
             /* ====================================================
                9. INTERAKTIF HOVER ZOOM-OUT KHUSUS COSPLAY & ADAT
@@ -1266,7 +1192,6 @@
                     });
                 });
             });
-
 
             /* ====================================================
                10. MAGNETIC BUTTONS (Desktop Pointer)

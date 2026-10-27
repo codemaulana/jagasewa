@@ -24,7 +24,7 @@ class VendorCalendarPageTest extends TestCase
     }
 
     /**
-     * T-50 / BUG-05: Unauthenticated access redirects to login.
+     * Unauthenticated access redirects to login.
      */
     public function test_unauthenticated_user_redirected_from_calendar_page(): void
     {
@@ -33,7 +33,7 @@ class VendorCalendarPageTest extends TestCase
     }
 
     /**
-     * T-50 / BUG-05: Authenticated vendor can render calendar page.
+     * Authenticated vendor can render calendar page.
      */
     public function test_vendor_can_render_calendar_page(): void
     {
@@ -56,7 +56,7 @@ class VendorCalendarPageTest extends TestCase
     }
 
     /**
-     * T-50 / BUG-05: Calendar renders vendor's bookings and enforces strict vendor isolation.
+     * Calendar renders vendor's bookings and enforces strict vendor isolation.
      */
     public function test_calendar_displays_vendor_bookings_with_isolation(): void
     {
@@ -115,7 +115,7 @@ class VendorCalendarPageTest extends TestCase
     }
 
     /**
-     * T-50 / BUG-05: Filtering by specific item narrows down the visible events.
+     * Filtering by specific item narrows down the visible events.
      */
     public function test_calendar_item_filter_narrows_displayed_bookings(): void
     {
@@ -164,7 +164,7 @@ class VendorCalendarPageTest extends TestCase
     }
 
     /**
-     * T-50 / BUG-05: Month navigation updates calendar month and events.
+     * Month navigation updates calendar month and events.
      */
     public function test_calendar_month_navigation_updates_view(): void
     {
@@ -191,7 +191,7 @@ class VendorCalendarPageTest extends TestCase
     }
 
     /**
-     * T-50 / BUG-05: Buffer zones render on calendar dates.
+     * Buffer zones render on calendar dates.
      */
     public function test_calendar_renders_buffer_zones_correctly(): void
     {

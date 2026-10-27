@@ -14,7 +14,6 @@
     </style>
 </head>
 <body class="bg-bg-base text-text-main antialiased font-sans p-4 sm:p-8 min-h-screen">
-    <!-- Toolbar Aksi Dokumen -->
     <div class="no-print max-w-3xl mx-auto mb-6 flex flex-wrap items-center justify-between gap-3 p-4 bg-surface border border-border-subtle rounded-xl shadow-xs">
         <div class="flex items-center gap-2">
             <a href="{{ url('/vendor/bookings/' . $booking->id) }}" class="inline-flex items-center justify-center min-h-[44px] px-3.5 text-xs font-semibold rounded-lg border border-border-subtle bg-surface hover:bg-surface-subtle transition">
@@ -34,7 +33,6 @@
 
     <!-- Lembar Surat Perjanjian -->
     <div class="print-container max-w-3xl mx-auto bg-surface border border-border-subtle rounded-xl p-8 sm:p-12 shadow-sm space-y-6 text-xs text-text-main leading-relaxed">
-        <!-- Judul Kontrak -->
         <div class="text-center border-b border-border-subtle pb-6 space-y-1">
             <h1 class="text-base sm:text-lg font-bold uppercase tracking-tight text-text-main">
                 Surat Perjanjian Sewa Menyewa Barang
@@ -46,7 +44,6 @@
 
         <p>Pada hari ini, disepakati perjanjian sewa-menyewa antara pihak-pihak di bawah ini:</p>
 
-        <!-- Identitas Para Pihak -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-surface-subtle border border-border-subtle rounded-lg p-4">
             <div class="space-y-1">
                 <span class="font-bold uppercase tracking-wider text-[10px] text-text-secondary">PIHAK PERTAMA (VENDOR / PEMILIK):</span>
@@ -66,7 +63,6 @@
             </div>
         </div>
 
-        <!-- Objek Sewa -->
         <div class="space-y-2">
             <h2 class="font-bold text-xs uppercase tracking-wider text-text-secondary border-b border-border-subtle pb-1">
                 PASAL 1: OBJEK SEWA & JANGKA WAKTU
@@ -76,7 +72,6 @@
             <p>3. Jangka waktu sewa berlangsung mulai tanggal <strong>{{ $booking->start_date ? $booking->start_date->format('d M Y') : '-' }}</strong> sampai dengan <strong>{{ $booking->end_date ? $booking->end_date->format('d M Y') : '-' }}</strong> (Total: {{ $booking->total_days }} Hari).</p>
         </div>
 
-        <!-- Biaya & Jaminan -->
         <div class="space-y-2">
             <h2 class="font-bold text-xs uppercase tracking-wider text-text-secondary border-b border-border-subtle pb-1">
                 PASAL 2: BIAYA SEWA, UANG JAMINAN & KETERLAMBATAN
@@ -86,7 +81,6 @@
             <p>3. Keterlambatan pengembalian unit dikenakan denda sebesar <strong>Rp {{ number_format((int) ($item?->fine_per_day ?? 0), 0, ',', '.') }}</strong> per hari keterlambatan.</p>
         </div>
 
-        <!-- Kewajiban Pihak Kedua -->
         <div class="space-y-2">
             <h2 class="font-bold text-xs uppercase tracking-wider text-text-secondary border-b border-border-subtle pb-1">
                 PASAL 3: PERAWATAN & KERUSAKAN
@@ -95,7 +89,6 @@
             <p>2. Apabila unit mengalami kerusakan, noda permanen, atau kehilangan kelengkapan aksesoris selama masa sewa, Pihak Kedua bersedia menanggung biaya perbaikan atau penggantian yang dipotong langsung dari uang jaminan atau ditagihkan kekurangannya.</p>
         </div>
 
-        <!-- Blok Tanda Tangan -->
         <div class="pt-8 border-t border-border-subtle grid grid-cols-2 text-center gap-8">
             <div class="space-y-16">
                 <p class="font-semibold text-text-secondary">Pihak Pertama (Vendor)</p>

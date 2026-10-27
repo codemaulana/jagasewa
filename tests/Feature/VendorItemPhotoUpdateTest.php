@@ -28,7 +28,7 @@ class VendorItemPhotoUpdateTest extends TestCase
     }
 
     /**
-     * T-46 / BUG-02: Vendor can upload initial photos and replace/update them via EditItem form.
+     * Vendor can upload initial photos and replace/update them via EditItem form.
      */
     public function test_vendor_can_upload_and_replace_photos_on_item(): void
     {
@@ -86,7 +86,7 @@ class VendorItemPhotoUpdateTest extends TestCase
     }
 
     /**
-     * T-46 & T-48: Pro vendor can upload up to 8 photos for an item.
+     * Pro vendor can upload up to 8 photos for an item.
      */
     public function test_pro_vendor_can_upload_up_to_eight_photos(): void
     {
@@ -133,7 +133,7 @@ class VendorItemPhotoUpdateTest extends TestCase
     }
 
     /**
-     * T-46: Item deletion cleans up physical image files from storage disk.
+     * Item deletion cleans up physical image files from storage disk.
      */
     public function test_item_deletion_cleans_up_stored_photos(): void
     {
@@ -158,7 +158,7 @@ class VendorItemPhotoUpdateTest extends TestCase
     }
 
     /**
-     * T-46: Content Security Policy header includes blob: and S3 origins for preview and upload.
+     * Content Security Policy header includes blob: and S3 origins for preview and upload.
      */
     public function test_csp_header_allows_blob_and_s3_storage_origins(): void
     {

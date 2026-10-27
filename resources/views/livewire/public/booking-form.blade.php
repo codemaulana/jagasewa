@@ -16,7 +16,6 @@
     @endif
 
     <form wire:submit="submit" class="space-y-4">
-        <!-- 1. INFORMASI PENYEWA -->
         <div class="space-y-3">
             <h4 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Identitas Kontak</h4>
 
@@ -56,7 +55,6 @@
             </div>
         </div>
 
-        <!-- 2. JADWAL SEWA -->
         <div class="space-y-3 pt-3 border-t border-border-subtle/50">
             <div class="flex items-center justify-between">
                 <h4 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Jadwal Sewa</h4>
@@ -105,7 +103,6 @@
             @endif
         </div>
 
-        <!-- 3. CATATAN TAMBAHAN -->
         <div class="space-y-2 pt-3 border-t border-border-subtle/50">
             <x-ui.textarea 
                 label="Catatan untuk vendor (opsional)" 
@@ -117,7 +114,6 @@
             />
         </div>
 
-        <!-- 4. DOKUMEN IDENTITAS (KYC) -->
         <div class="space-y-3 pt-3 border-t border-border-subtle/50">
             <div>
                 <h4 class="text-xs font-semibold text-text-muted uppercase tracking-wider">Verifikasi Identitas</h4>
@@ -156,7 +152,6 @@
             </div>
         </div>
 
-        <!-- 5. CHECKBOX PERSETUJUAN PRIVASI -->
         <div class="pt-3 border-t border-border-subtle/50">
             <label class="flex items-start gap-2.5 cursor-pointer min-h-[44px]">
                 <input 
@@ -173,7 +168,6 @@
             @enderror
         </div>
 
-        <!-- 6. TOMBOL SUBMIT -->
         <div class="pt-2">
             <x-ui.button 
                 type="submit" 

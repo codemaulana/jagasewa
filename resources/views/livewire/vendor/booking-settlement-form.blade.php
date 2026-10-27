@@ -1,5 +1,4 @@
 <div class="space-y-6">
-    <!-- Header Informasi Singkat -->
     <div class="bg-white border border-neutral-200 rounded-xl p-4 sm:p-6 shadow-xs space-y-2">
         <div class="flex items-center justify-between flex-wrap gap-2">
             <div>
@@ -188,7 +187,6 @@
             ></textarea>
         </div>
 
-        <!-- Tombol Aksi Submit -->
         <div class="flex items-center justify-end gap-3 pt-2">
             <button 
                 type="submit"

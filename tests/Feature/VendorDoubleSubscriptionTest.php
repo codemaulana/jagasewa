@@ -14,7 +14,7 @@ class VendorDoubleSubscriptionTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * T-45 / BUG-01: Pro vendor cannot initiate another subscription checkout (prevents double billing).
+     * Pro vendor cannot initiate another subscription checkout (prevents double billing).
      */
     public function test_pro_vendor_cannot_checkout_again(): void
     {
@@ -47,7 +47,7 @@ class VendorDoubleSubscriptionTest extends TestCase
     }
 
     /**
-     * T-45 / BUG-01: Rapid duplicate checkout submissions (double click / race condition) do not create duplicate pending subscriptions.
+     * Rapid duplicate checkout submissions (double click / race condition) do not create duplicate pending subscriptions.
      */
     public function test_rapid_double_checkout_does_not_create_duplicate_pending_subscriptions(): void
     {
@@ -79,7 +79,7 @@ class VendorDoubleSubscriptionTest extends TestCase
     }
 
     /**
-     * T-45 / BUG-01: Vendor can cancel an existing pending subscription and pick another plan cleanly.
+     * Vendor can cancel an existing pending subscription and pick another plan cleanly.
      */
     public function test_vendor_can_cancel_pending_subscription_and_choose_another_plan(): void
     {
@@ -118,7 +118,7 @@ class VendorDoubleSubscriptionTest extends TestCase
     }
 
     /**
-     * T-45 / BUG-01: Active Pro entitlement is never lost even if historical cancelled or pending subscriptions exist.
+     * Active Pro entitlement is never lost even if historical cancelled or pending subscriptions exist.
      */
     public function test_active_pro_entitlement_persists_regardless_of_subscription_history(): void
     {
@@ -148,7 +148,7 @@ class VendorDoubleSubscriptionTest extends TestCase
     }
 
     /**
-     * T-45 / UI: Billing page displays active Pro status banner and disables checkout buttons when active.
+     * Billing page displays active Pro status banner and disables checkout buttons when active.
      */
     public function test_billing_index_renders_active_pro_banner_and_disables_duplicate_checkout(): void
     {
@@ -174,7 +174,7 @@ class VendorDoubleSubscriptionTest extends TestCase
     }
 
     /**
-     * T-45 / UI: Billing page renders pending payment notice and cancellation button when pending order exists.
+     * Billing page renders pending payment notice and cancellation button when pending order exists.
      */
     public function test_billing_index_renders_pending_payment_banner(): void
     {

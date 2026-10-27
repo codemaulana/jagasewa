@@ -16,7 +16,7 @@ class EntitlementCheckTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * T-43: Vendor Free mengakses fitur Pro diarahkan (redirect) ke halaman billing
+     * Vendor Free mengakses fitur Pro diarahkan (redirect) ke halaman billing
      */
     public function test_free_vendor_accessing_pro_route_is_redirected_to_billing(): void
     {
@@ -38,7 +38,7 @@ class EntitlementCheckTest extends TestCase
     }
 
     /**
-     * T-43: Request JSON / API fitur Pro oleh vendor Free mengembalikan 403 Forbidden
+     * Request JSON / API fitur Pro oleh vendor Free mengembalikan 403 Forbidden
      */
     public function test_free_vendor_accessing_pro_json_route_returns_403_forbidden(): void
     {
@@ -60,7 +60,7 @@ class EntitlementCheckTest extends TestCase
     }
 
     /**
-     * T-43: Vendor Pro dapat mengakses fitur Pro dengan sukses (HTTP 200)
+     * Vendor Pro dapat mengakses fitur Pro dengan sukses (HTTP 200)
      */
     public function test_pro_vendor_accessing_pro_route_returns_200_stream(): void
     {
@@ -80,7 +80,7 @@ class EntitlementCheckTest extends TestCase
     }
 
     /**
-     * SEC-25: Entitlement dicek secara dinamis di server setiap request.
+     * Entitlement dicek secara dinamis di server setiap request.
      * Jika subscription Pro kedaluwarsa (expired), akses Pro langsung tertutup seketika.
      */
     public function test_expired_pro_vendor_immediately_loses_access(): void

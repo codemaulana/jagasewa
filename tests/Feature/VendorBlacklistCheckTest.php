@@ -239,7 +239,7 @@ class VendorBlacklistCheckTest extends TestCase
         $this->actingAs($user, 'vendor');
         session(['vendor_id' => $vendor->id]);
 
-        // Vendor decides to approve anyway (US-10 / BR-04: keputusan tetap di tangan vendor)
+        // Vendor decides to approve anyway (decision remains with vendor)
         Livewire::test(ViewBooking::class, ['record' => $booking->ulid])
             ->assertActionVisible('approve')
             ->callAction('approve')

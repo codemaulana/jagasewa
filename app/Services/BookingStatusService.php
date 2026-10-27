@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 class BookingStatusService
 {
     /**
-     * Approve a pending booking (BR-02).
+     * Approve a pending booking.
      */
     public function approve(Booking $booking): Booking
     {
@@ -46,7 +46,7 @@ class BookingStatusService
     }
 
     /**
-     * Reject a pending booking (BR-02).
+     * Reject a pending booking.
      */
     public function reject(Booking $booking, ?string $reason = null): Booking
     {
@@ -66,7 +66,7 @@ class BookingStatusService
             $lockedBooking->lock_version = ($lockedBooking->lock_version ?? 0) + 1;
             $lockedBooking->save();
 
-            // Reschedule identity documents retention to cancelled retention period (BR-05)
+            // Reschedule identity documents retention to cancelled retention period
             $cancelledDays = (int) config('jagasewa.retention.cancelled_days', 3);
             $lockedBooking->identityDocuments()->update([
                 'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays($cancelledDays),
@@ -88,7 +88,7 @@ class BookingStatusService
     }
 
     /**
-     * Mark booking as active when item is handed over or shipped to renter (BR-02).
+     * Mark booking as active when item is handed over or shipped to renter.
      * Allowed only from 'approved' status.
      */
     public function activate(Booking $booking): Booking
@@ -124,7 +124,7 @@ class BookingStatusService
     }
 
     /**
-     * Mark booking as returned when item is received back from renter (BR-02).
+     * Mark booking as returned when item is received back from renter.
      * Allowed only from 'active' status.
      */
     public function markReturned(Booking $booking): Booking
@@ -160,7 +160,7 @@ class BookingStatusService
     }
 
     /**
-     * Complete booking with settlement and damage items, closing the booking (BR-02, BR-03).
+     * Complete booking with settlement and damage items, closing the booking.
      * Allowed only from 'returned' status.
      *
      * @param  array<string, mixed>  $settlementData
@@ -205,7 +205,7 @@ class BookingStatusService
                 }
             }
 
-            // Schedule identity documents auto-delete after retention period (BR-05)
+            // Schedule identity documents auto-delete after retention period
             $closedDays = (int) config('jagasewa.retention.closed_days', 7);
             $lockedBooking->identityDocuments()->update([
                 'delete_scheduled_at' => Carbon::now('Asia/Jakarta')->addDays($closedDays),

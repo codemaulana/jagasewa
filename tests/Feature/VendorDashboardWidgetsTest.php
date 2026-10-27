@@ -31,7 +31,7 @@ class VendorDashboardWidgetsTest extends TestCase
     }
 
     /**
-     * T-49 / BUG-03: Unauthenticated user redirected to login.
+     * Unauthenticated user redirected to login.
      */
     public function test_unauthenticated_user_redirected_from_dashboard(): void
     {
@@ -40,7 +40,7 @@ class VendorDashboardWidgetsTest extends TestCase
     }
 
     /**
-     * T-49 / BUG-03: Dashboard renders custom rental widgets and does not render default Filament widgets.
+     * Dashboard renders custom rental widgets and does not render default Filament widgets.
      */
     public function test_dashboard_renders_custom_widgets_and_removes_default_filament_widgets(): void
     {
@@ -73,7 +73,7 @@ class VendorDashboardWidgetsTest extends TestCase
     }
 
     /**
-     * T-49 / BUG-03: Rental stats overview widget reflects actual vendor database records with vendor isolation.
+     * Rental stats overview widget reflects actual vendor database records with vendor isolation.
      */
     public function test_dashboard_statistics_reflect_actual_vendor_records_with_isolation(): void
     {
@@ -116,7 +116,7 @@ class VendorDashboardWidgetsTest extends TestCase
     }
 
     /**
-     * T-49 / BUG-03: Store link and plan widget reflects Free vs Pro tier status.
+     * Store link and plan widget reflects Free vs Pro tier status.
      */
     public function test_store_link_and_plan_widget_displays_pro_status(): void
     {
@@ -145,7 +145,7 @@ class VendorDashboardWidgetsTest extends TestCase
     }
 
     /**
-     * T-49 / BUG-03: Onboarding checklist tracks setup steps.
+     * Onboarding checklist tracks setup steps.
      */
     public function test_onboarding_checklist_calculates_steps(): void
     {
@@ -166,7 +166,7 @@ class VendorDashboardWidgetsTest extends TestCase
     }
 
     /**
-     * T-49 / BUG-03: Initial avatar provider generates clean SVG data URI and avoids broken external URLs.
+     * Initial avatar provider generates clean SVG data URI and avoids broken external URLs.
      */
     public function test_initial_avatar_provider_generates_valid_avatar(): void
     {

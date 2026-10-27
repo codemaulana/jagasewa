@@ -92,7 +92,7 @@ class VendorBookingSettlementTest extends TestCase
 
         $component = Livewire::test(BookingSettlementForm::class, ['booking' => $booking]);
 
-        // Scenario DT-02: 2 days late (actual_return_date = 2026-10-22)
+        // 2 days late (actual_return_date = 2026-10-22)
         $component->set('actual_return_date', '2026-10-22');
         $calcDt02 = $component->get('calculation');
         $this->assertEquals(2, $calcDt02->lateDays);
@@ -102,7 +102,7 @@ class VendorBookingSettlementTest extends TestCase
         $this->assertFalse($calcDt02->hasRefund);
         $this->assertFalse($calcDt02->hasShortfall);
 
-        // Scenario DT-01: Returned on time (2026-10-20)
+        // Returned on time (2026-10-20)
         $component->set('actual_return_date', '2026-10-20');
         $calcDt01 = $component->get('calculation');
         $this->assertEquals(0, $calcDt01->lateDays);
@@ -240,7 +240,7 @@ class VendorBookingSettlementTest extends TestCase
             'repair_cost' => 25000,
         ]);
 
-        // Verify identity document retention schedule (BR-05)
+        // Verify identity document retention schedule
         $identityDoc->refresh();
         $this->assertNotNull($identityDoc->delete_scheduled_at);
 
@@ -264,7 +264,7 @@ class VendorBookingSettlementTest extends TestCase
         ]);
         $renter = Renter::factory()->create();
 
-        // DT-04: end_date 2026-10-20, returned 2026-10-23 (3 days late = 150.000 late fine)
+        // end_date 2026-10-20, returned 2026-10-23 (3 days late = 150.000 late fine)
         // Damage = 50.000 -> Total deduction = 200.000 -> Shortfall = 100.000
         $booking = Booking::factory()->create([
             'vendor_id' => $vendor->id,

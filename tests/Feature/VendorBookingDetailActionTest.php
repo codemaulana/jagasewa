@@ -76,7 +76,7 @@ class VendorBookingDetailActionTest extends TestCase
             ->withSession(['vendor_id' => $vendorA->id])
             ->get("/vendor/bookings/{$bookingB->ulid}");
 
-        // IDOR-02 & BR-06: Must return 404, not 403
+        // Must return 404, not 403
         $response->assertStatus(404);
     }
 
@@ -169,7 +169,7 @@ class VendorBookingDetailActionTest extends TestCase
         $this->assertEquals('Barang sedang dalam jadwal pembersihan mendalam.', $booking->vendor_notes);
         $this->assertEquals(2, $booking->lock_version);
 
-        // BR-05: Document retention must be rescheduled to 3 days
+        // Document retention must be rescheduled to 3 days
         $doc->refresh();
         $expectedRetentionDate = Carbon::now('Asia/Jakarta')->addDays(3)->format('Y-m-d');
         $this->assertEquals($expectedRetentionDate, $doc->delete_scheduled_at->format('Y-m-d'));
