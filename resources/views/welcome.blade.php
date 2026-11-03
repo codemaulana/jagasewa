@@ -13,16 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter+Tight:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <!-- GSAP & ScrollTrigger (Local First with CDN Fallback) -->
-    <script src="{{ asset('js/gsap.min.js') }}"></script>
-    <script src="{{ asset('js/ScrollTrigger.min.js') }}"></script>
-    <script>
-        if (typeof gsap === 'undefined') {
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"><\/script>');
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"><\/script>');
-        }
-    </script>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-accent-lime selection:text-white">
 
@@ -750,9 +740,27 @@
         </div>
     </footer>
 
-    
+    <!-- GSAP & ScrollTrigger (Deferred & Non-blocking) -->
+    <script src="{{ asset('js/gsap.min.js') }}" defer></script>
+    <script src="{{ asset('js/ScrollTrigger.min.js') }}" defer></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('load', function() {
+            if (typeof gsap === 'undefined') {
+                const s1 = document.createElement('script');
+                s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+                s1.onload = function() {
+                    const s2 = document.createElement('script');
+                    s2.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js';
+                    s2.onload = initAnimations;
+                    document.body.appendChild(s2);
+                };
+                document.body.appendChild(s1);
+            } else {
+                initAnimations();
+            }
+        });
+
+        function initAnimations() {
             if (typeof gsap === 'undefined') {
                 console.warn('GSAP tidak tersedia atau diblokir; mode tampilan statis aktif.');
                 return;
@@ -1215,7 +1223,7 @@
                     });
                 });
             }
-        });
+        }
     </script>
 
 </body>

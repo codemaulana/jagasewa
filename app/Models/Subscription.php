@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\BelongsToVendor;
+use App\Services\Billing\EntitlementService;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -158,5 +159,23 @@ class Subscription extends Model
     public function isFree(): bool
     {
         return $this->plan === self::PLAN_FREE;
+    }
+
+    /**
+     * Model booted listener to automatically clear EntitlementService memo caches.
+     */
+    protected static function booted(): void
+    {
+        static::saved(function (Subscription $subscription) {
+            if ($subscription->vendor_id && app()->bound(EntitlementService::class)) {
+                app(EntitlementService::class)->clearMemo((int) $subscription->vendor_id);
+            }
+        });
+
+        static::deleted(function (Subscription $subscription) {
+            if ($subscription->vendor_id && app()->bound(EntitlementService::class)) {
+                app(EntitlementService::class)->clearMemo((int) $subscription->vendor_id);
+            }
+        });
     }
 }

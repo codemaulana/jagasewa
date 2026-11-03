@@ -36,8 +36,8 @@ class StoreLinkAndPlanWidget extends Widget
         $activeItems = Item::where('vendor_id', $vendor->id)->where('is_active', true)->count();
         $totalItems = Item::where('vendor_id', $vendor->id)->count();
         $blacklistCount = BlacklistEntry::where('vendor_id', $vendor->id)->count();
-        $activeSubscription = $vendor->activeSubscription()->first();
-        $pendingSubscription = $vendor->pendingSubscription()->first();
+        $activeSubscription = $vendor->activeSubscription;
+        $pendingSubscription = $vendor->pendingSubscription;
 
         return [
             'vendor' => $vendor,

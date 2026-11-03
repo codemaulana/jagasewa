@@ -77,40 +77,48 @@ class TodayAgendaWidget extends Widget
 
         $today = now(VendorMetricsService::TIMEZONE)->toDateString();
 
-        // 1. Pengambilan: start_date = today, status pending/approved
-        $pickups = Booking::where('vendor_id', $vendor->id)
+        // 1. Efficient counts (lightweight COUNT(*) queries instead of hydrating full collections)
+        $pickupCount = Booking::where('vendor_id', $vendor->id)
             ->whereIn('status', [Booking::STATUS_APPROVED, Booking::STATUS_PENDING])
             ->whereDate('start_date', $today)
-            ->with(['item', 'renter'])
-            ->orderBy('id', 'desc')
-            ->get();
+            ->count();
 
-        // 2. Pengembalian: end_date = today, status active
-        $returns = Booking::where('vendor_id', $vendor->id)
+        $returnCount = Booking::where('vendor_id', $vendor->id)
             ->where('status', Booking::STATUS_ACTIVE)
             ->whereDate('end_date', $today)
-            ->with(['item', 'renter'])
-            ->orderBy('id', 'desc')
-            ->get();
+            ->count();
 
-        // 3. Terlambat: end_date < today, status active
-        $overdue = Booking::where('vendor_id', $vendor->id)
+        $overdueCount = Booking::where('vendor_id', $vendor->id)
             ->where('status', Booking::STATUS_ACTIVE)
             ->whereDate('end_date', '<', $today)
-            ->with(['item', 'renter'])
-            ->orderBy('end_date', 'asc')
-            ->get();
+            ->count();
 
         $counts = [
-            'pengambilan' => $pickups->count(),
-            'pengembalian' => $returns->count(),
-            'terlambat' => $overdue->count(),
+            'pengambilan' => $pickupCount,
+            'pengembalian' => $returnCount,
+            'terlambat' => $overdueCount,
         ];
 
+        // 2. Only hydrate full models and eager load relations for the active tab
         $currentItems = match ($this->activeTab) {
-            'pengembalian' => $returns,
-            'terlambat' => $overdue,
-            default => $pickups,
+            'pengembalian' => Booking::where('vendor_id', $vendor->id)
+                ->where('status', Booking::STATUS_ACTIVE)
+                ->whereDate('end_date', $today)
+                ->with(['item', 'renter'])
+                ->orderBy('id', 'desc')
+                ->get(),
+            'terlambat' => Booking::where('vendor_id', $vendor->id)
+                ->where('status', Booking::STATUS_ACTIVE)
+                ->whereDate('end_date', '<', $today)
+                ->with(['item', 'renter'])
+                ->orderBy('end_date', 'asc')
+                ->get(),
+            default => Booking::where('vendor_id', $vendor->id)
+                ->whereIn('status', [Booking::STATUS_APPROVED, Booking::STATUS_PENDING])
+                ->whereDate('start_date', $today)
+                ->with(['item', 'renter'])
+                ->orderBy('id', 'desc')
+                ->get(),
         };
 
         return [

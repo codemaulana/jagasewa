@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\UpdateVendorUserLastLogin;
+use App\Services\Billing\EntitlementService;
 use App\Services\IdentityHashService;
 use Carbon\Carbon;
 use Filament\Forms\Components\FileUpload;
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->singleton(EntitlementService::class);
+
         if (file_exists(app_path('Helpers/EntitlementHelper.php'))) {
             require_once app_path('Helpers/EntitlementHelper.php');
         }

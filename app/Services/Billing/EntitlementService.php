@@ -21,6 +21,30 @@ class EntitlementService
     public const MAX_PRO_PHOTOS_PER_ITEM = 8;
 
     /**
+     * In-memory memoization caches for per-request speedup.
+     *
+     * @var array<string, bool>
+     */
+    protected array $isProCache = [];
+
+    /**
+     * Reset memoized values (useful for tests or after subscription updates).
+     */
+    public function clearMemo(?int $vendorId = null): void
+    {
+        if ($vendorId !== null) {
+            $prefix = "{$vendorId}_";
+            foreach (array_keys($this->isProCache) as $key) {
+                if (str_starts_with((string) $key, $prefix)) {
+                    unset($this->isProCache[$key]);
+                }
+            }
+        } else {
+            $this->isProCache = [];
+        }
+    }
+
+    /**
      * Determine if the vendor has an active Pro entitlement or is within the grace period.
      * Always evaluated server-side per request (SEC-25).
      */
@@ -30,9 +54,14 @@ class EntitlementService
             return false;
         }
 
+        $cacheKey = "{$vendor->id}_".now()->timestamp;
+        if (isset($this->isProCache[$cacheKey])) {
+            return $this->isProCache[$cacheKey];
+        }
+
         $graceDays = (int) config('plans.grace_period_days', 3);
 
-        return $vendor->subscriptions()
+        $isPro = $vendor->subscriptions()
             ->where('plan', Subscription::PLAN_PRO)
             ->where(function ($query) use ($graceDays) {
                 // 1. Active and not expired
@@ -51,6 +80,8 @@ class EntitlementService
                     });
             })
             ->exists();
+
+        return $this->isProCache[$cacheKey] = $isPro;
     }
 
     /**
@@ -210,7 +241,7 @@ class EntitlementService
      */
     public function isInGracePeriod(?Vendor $vendor): bool
     {
-        if (! $vendor) {
+        if (! $vendor || ! $vendor->id) {
             return false;
         }
 
