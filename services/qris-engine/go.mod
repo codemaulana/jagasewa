@@ -1,6 +1,6 @@
 module jagasewa-qris-engine
 
-go 1.25.1
+go 1.22
 
 require (
 	github.com/bytedance/gopkg v0.1.3 // indirect
