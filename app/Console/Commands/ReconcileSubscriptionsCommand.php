@@ -20,7 +20,7 @@ class ReconcileSubscriptionsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Reconcile local subscription statuses against payment gateways (Mayar/Xendit)';
+    protected $description = 'Reconcile local subscription statuses against payment gateways (Xendit/QRIS)';
 
     /**
      * Execute the console command.

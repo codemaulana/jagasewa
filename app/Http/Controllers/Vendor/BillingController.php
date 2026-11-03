@@ -8,10 +8,11 @@ use App\Models\Item;
 use App\Models\Subscription;
 use App\Models\Vendor;
 use App\Services\Billing\EntitlementService;
-use App\Services\Billing\MayarPaymentService;
+use App\Services\QrisService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BillingController extends Controller
@@ -46,11 +47,29 @@ class BillingController extends Controller
             ->take(10)
             ->get();
 
+        $pendingQris = null;
+        if ($pendingSubscription) {
+            $amount = Subscription::getPlanPrice($pendingSubscription->billing_cycle);
+            $ref = $pendingSubscription->gateway_subscription_id ?: (string) $pendingSubscription->ulid;
+            try {
+                $pendingQris = app(QrisService::class)->generateDynamicQris(
+                    amount: $amount,
+                    referenceCode: $ref,
+                    merchantName: 'JAGASEWA PRO',
+                    city: 'JAKARTA',
+                    expiredMinutes: 1440
+                );
+            } catch (\Throwable $e) {
+                $pendingQris = null;
+            }
+        }
+
         $data = [
             'vendor' => $vendor,
             'subscription' => $subscription,
             'active_subscription' => $activeSubscription,
             'pending_subscription' => $pendingSubscription,
+            'pending_qris' => $pendingQris,
             'is_pro' => $isPro,
             'in_grace_period' => $this->entitlement->isInGracePeriod($vendor),
             'is_near_expiration' => $this->entitlement->isNearExpiration($vendor),
@@ -181,10 +200,10 @@ class BillingController extends Controller
     }
 
     /**
-     * Initiate checkout for Pro subscription tier via Mayar.id (Pilihan A).
+     * Initiate checkout for Pro subscription tier.
      * Protected by pessimistic locking and single-active-subscription rule (T-45 / BUG-01).
      */
-    public function checkout(Request $request, MayarPaymentService $paymentService)
+    public function checkout(Request $request)
     {
         $request->validate([
             'cycle' => ['required', 'string', 'in:monthly,quarterly,annually'],
@@ -200,7 +219,7 @@ class BillingController extends Controller
         $cycle = $request->input('cycle');
         $isRenewal = $request->boolean('is_renewal') || $request->input('action') === 'extend';
 
-        return DB::transaction(function () use ($user, $cycle, $isRenewal, $paymentService, $request) {
+        return DB::transaction(function () use ($user, $cycle, $isRenewal, $request) {
             /** @var Vendor $vendor */
             $vendor = Vendor::where('id', $user->vendor_id)->lockForUpdate()->firstOrFail();
 
@@ -240,17 +259,8 @@ class BillingController extends Controller
                         ], 409);
                     }
 
-                    $mockInvoiceId = $pendingSub->gateway_subscription_id;
-                    $paymentUrl = $mockInvoiceId && str_starts_with($mockInvoiceId, 'pay_mock_')
-                        ? "https://sandbox.mayar.id/pay/{$mockInvoiceId}"
-                        : null;
-
-                    if ($paymentUrl) {
-                        return redirect()->away($paymentUrl);
-                    }
-
                     return redirect()->route('vendor.billing.index')
-                        ->with('error', 'Anda sudah memiliki tagihan pending untuk paket ini. Silakan selesaikan pembayaran atau batalkan tagihan sebelum membuat yang baru.');
+                        ->with('status', 'Tagihan untuk paket ini sudah dibuat. Silakan selesaikan pembayaran via QRIS.');
                 }
 
                 // If vendor deliberately chooses a different billing cycle, cancel previous pending order
@@ -265,6 +275,8 @@ class BillingController extends Controller
                 ? $activeSub->current_period_end
                 : now('Asia/Jakarta');
 
+            $referenceId = 'qris_sub_'.strtolower(Str::random(12));
+
             /** @var Subscription $subscription */
             $subscription = Subscription::create([
                 'vendor_id' => $vendor->id,
@@ -272,29 +284,19 @@ class BillingController extends Controller
                 'status' => Subscription::STATUS_PENDING_PAYMENT,
                 'billing_cycle' => $cycle,
                 'current_period_start' => $periodStart,
+                'gateway_subscription_id' => $referenceId,
             ]);
 
-            try {
-                $result = $paymentService->createPaymentLink($subscription, $user);
-
-                if ($request->expectsJson() || $request->is('api/*')) {
-                    return response()->json([
-                        'status' => 'success',
-                        'payment_url' => $result['payment_url'],
-                        'subscription_ulid' => $subscription->ulid,
-                    ]);
-                }
-
-                return redirect()->away($result['payment_url']);
-            } catch (\Exception $e) {
-                $subscription->delete();
-
-                if ($request->expectsJson() || $request->is('api/*')) {
-                    return response()->json(['error' => $e->getMessage()], 500);
-                }
-
-                return redirect()->route('vendor.billing.index')->with('error', $e->getMessage());
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'status' => 'success',
+                    'subscription_ulid' => $subscription->ulid,
+                    'gateway_subscription_id' => $referenceId,
+                ]);
             }
+
+            return redirect()->route('vendor.billing.index')
+                ->with('status', 'Tagihan paket Pro berhasil dibuat. Silakan lakukan pembayaran via QRIS.');
         });
     }
 

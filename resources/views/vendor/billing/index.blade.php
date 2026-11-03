@@ -139,33 +139,50 @@
 
         <!-- Pending Payment Invoice Banner -->
         @if($pending_subscription)
-            <div class="mb-8 p-5 bg-warning-bg border border-warning-border rounded-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                <div class="flex items-start gap-3">
-                    <div class="p-2 rounded-lg bg-surface border border-warning-border text-warning mt-0.5">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+            <div class="mb-8 p-5 bg-warning-bg border border-warning-border rounded-xl">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-surface border border-warning-border text-warning mt-0.5">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-bold text-text-main">Tagihan Menunggu Pembayaran</h2>
+                            <p class="text-xs text-text-secondary mt-0.5">
+                                Tagihan paket Pro <span class="font-semibold">{{ ucfirst($pending_subscription->billing_cycle) }}</span> sebesar <span class="font-bold tabular-nums">Rp {{ number_format(\App\Models\Subscription::getPlanPrice($pending_subscription->billing_cycle), 0, ',', '.') }}</span>.
+                            </p>
+                            <p class="text-[11px] text-text-muted mt-0.5 font-mono">Kode Tagihan: {{ $pending_subscription->gateway_subscription_id ?: $pending_subscription->ulid }}</p>
+                        </div>
                     </div>
-                    <div>
-                        <h2 class="text-sm font-bold text-text-main">Tagihan Menunggu Pembayaran</h2>
-                        <p class="text-xs text-text-secondary mt-0.5">
-                            Tagihan paket Pro <span class="font-semibold">{{ ucfirst($pending_subscription->billing_cycle) }}</span> sebesar <span class="font-bold tabular-nums">Rp {{ number_format(\App\Models\Subscription::getPlanPrice($pending_subscription->billing_cycle), 0, ',', '.') }}</span>.
-                        </p>
-                    </div>
-                </div>
-                <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
-                    @if($pending_subscription->gateway_subscription_id)
-                        <a href="https://sandbox.mayar.id/pay/{{ $pending_subscription->gateway_subscription_id }}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center px-4 py-2.5 bg-primary hover:bg-neutral-800 text-white text-xs font-semibold rounded-lg transition text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
+                    <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
+                        <a href="#qris-payment-box" class="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center px-4 py-2.5 bg-primary hover:bg-neutral-800 text-white text-xs font-semibold rounded-lg transition text-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
                             Lanjutkan Pembayaran
                         </a>
-                    @endif
-                    <form method="POST" action="{{ route('vendor.billing.cancel-pending') }}" class="w-full sm:w-auto">
-                        @csrf
-                        <button type="submit" onclick="return confirm('Batalkan tagihan tertunda ini?')" class="w-full sm:w-auto min-h-[44px] px-4 py-2.5 bg-surface border border-border-subtle hover:bg-surface-subtle text-text-secondary hover:text-text-main text-xs font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
-                            Batalkan Tagihan
-                        </button>
-                    </form>
+                        <form method="POST" action="{{ route('vendor.billing.cancel-pending') }}" class="w-full sm:w-auto">
+                            @csrf
+                            <button type="submit" onclick="return confirm('Batalkan tagihan tertunda ini?')" class="w-full sm:w-auto min-h-[44px] px-4 py-2.5 bg-surface border border-border-subtle hover:bg-surface-subtle text-text-secondary hover:text-text-main text-xs font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1">
+                                Batalkan Tagihan
+                            </button>
+                        </form>
+                    </div>
                 </div>
+
+                @if(!empty($pending_qris['qr_image_data_uri']))
+                    <div id="qris-payment-box" class="mt-4 pt-4 border-t border-warning-border flex flex-col sm:flex-row items-center gap-5 bg-surface p-4 rounded-lg">
+                        <div class="p-2 bg-white rounded-lg border border-border-subtle shadow-xs">
+                            <img src="{{ $pending_qris['qr_image_data_uri'] }}" alt="QRIS Pembayaran Pro" class="w-36 h-36 mx-auto object-contain" />
+                        </div>
+                        <div class="text-center sm:text-left space-y-1">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-neutral-900 text-white tracking-widest uppercase">QRIS Dinamis</span>
+                            <h3 class="text-xs font-bold text-text-main">Pindai QRIS untuk Aktivasi Otomatis</h3>
+                            <p class="text-xs text-text-secondary leading-relaxed">
+                                Buka aplikasi m-Banking (BCA, Mandiri, BRI, BNI) atau e-Wallet (GoPay, OVO, Dana) Anda dan pindai kode QR di atas.
+                            </p>
+                            <p class="text-[11px] text-text-muted">Total Bayar: <span class="font-bold text-text-main">Rp {{ number_format($pending_qris['amount'] ?? 0, 0, ',', '.') }}</span></p>
+                        </div>
+                    </div>
+                @endif
             </div>
         @endif
 

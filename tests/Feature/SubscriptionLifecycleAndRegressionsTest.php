@@ -8,9 +8,9 @@ use App\Models\SubscriptionEvent;
 use App\Models\Vendor;
 use App\Models\VendorUser;
 use App\Services\Billing\EntitlementService;
-use App\Services\Billing\MayarWebhookHandler;
 use App\Services\Billing\SubscriptionReconciliationService;
 use App\Services\Billing\SubscriptionStateMachine;
+use App\Services\Billing\XenditWebhookHandler;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
@@ -182,16 +182,13 @@ class SubscriptionLifecycleAndRegressionsTest extends TestCase
             'current_period_start' => now('Asia/Jakarta'),
         ]);
 
-        $handler = app(MayarWebhookHandler::class);
+        $handler = app(XenditWebhookHandler::class);
         $payload = [
-            'event' => 'payment.received',
-            'data' => [
-                'id' => 'evt_test_unique_999',
-                'order_id' => (string) $subscription->id,
-                'status' => 'SUCCESS',
-                'amount' => 15000,
-                'currency' => 'IDR',
-            ],
+            'id' => 'evt_test_unique_999',
+            'external_id' => (string) $subscription->ulid,
+            'status' => 'PAID',
+            'amount' => 15000,
+            'currency' => 'IDR',
         ];
 
         // First execution

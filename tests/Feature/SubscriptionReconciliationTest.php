@@ -20,8 +20,6 @@ class SubscriptionReconciliationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Config::set('services.mayar.api_key', 'test_mayar_key_reconcile');
-        Config::set('services.mayar.api_url', 'https://api.mayar.id/hl/v1');
         Config::set('services.xendit.secret_key', 'test_xendit_key_reconcile');
     }
 
@@ -36,17 +34,14 @@ class SubscriptionReconciliationTest extends TestCase
             'plan' => Subscription::PLAN_PRO,
             'status' => Subscription::STATUS_PENDING_PAYMENT,
             'billing_cycle' => Subscription::CYCLE_MONTHLY,
-            'gateway_subscription_id' => 'mayar_pay_rec_001',
+            'gateway_subscription_id' => 'inv_pay_rec_001',
         ]);
 
         Http::fake([
-            'https://api.mayar.id/hl/v1/invoice/mayar_pay_rec_001' => Http::response([
-                'statusCode' => 200,
-                'data' => [
-                    'id' => 'mayar_pay_rec_001',
-                    'status' => 'paid',
-                    'amount' => 15000,
-                ],
+            'https://api.xendit.co/v2/invoices/inv_pay_rec_001' => Http::response([
+                'id' => 'inv_pay_rec_001',
+                'status' => 'PAID',
+                'amount' => 15000,
             ], 200),
         ]);
 
@@ -106,16 +101,13 @@ class SubscriptionReconciliationTest extends TestCase
         $subscription = Subscription::factory()->create([
             'vendor_id' => $vendor->id,
             'status' => Subscription::STATUS_PENDING_PAYMENT,
-            'gateway_subscription_id' => 'mayar_pay_expired_001',
+            'gateway_subscription_id' => 'inv_pay_expired_001',
         ]);
 
         Http::fake([
-            'https://api.mayar.id/hl/v1/invoice/mayar_pay_expired_001' => Http::response([
-                'statusCode' => 200,
-                'data' => [
-                    'id' => 'mayar_pay_expired_001',
-                    'status' => 'expired',
-                ],
+            'https://api.xendit.co/v2/invoices/inv_pay_expired_001' => Http::response([
+                'id' => 'inv_pay_expired_001',
+                'status' => 'EXPIRED',
             ], 200),
         ]);
 
@@ -145,17 +137,14 @@ class SubscriptionReconciliationTest extends TestCase
         $subscription = Subscription::factory()->create([
             'vendor_id' => $vendor->id,
             'status' => Subscription::STATUS_PENDING_PAYMENT,
-            'gateway_subscription_id' => 'mayar_pending_stuck',
+            'gateway_subscription_id' => 'inv_pending_stuck',
             'created_at' => Carbon::now('Asia/Jakarta')->subMinutes(45),
         ]);
 
         Http::fake([
-            'https://api.mayar.id/hl/v1/invoice/mayar_pending_stuck' => Http::response([
-                'statusCode' => 200,
-                'data' => [
-                    'id' => 'mayar_pending_stuck',
-                    'status' => 'unpaid',
-                ],
+            'https://api.xendit.co/v2/invoices/inv_pending_stuck' => Http::response([
+                'id' => 'inv_pending_stuck',
+                'status' => 'PENDING',
             ], 200),
         ]);
 
@@ -176,15 +165,13 @@ class SubscriptionReconciliationTest extends TestCase
             'vendor_id' => $vendor->id,
             'status' => Subscription::STATUS_ACTIVE,
             'current_period_end' => Carbon::now('Asia/Jakarta')->subHours(2),
-            'gateway_subscription_id' => 'mayar_unrenewed',
+            'gateway_subscription_id' => 'inv_unrenewed',
         ]);
 
         Http::fake([
-            'https://api.mayar.id/hl/v1/invoice/mayar_unrenewed' => Http::response([
-                'statusCode' => 200,
-                'data' => [
-                    'status' => 'unpaid',
-                ],
+            'https://api.xendit.co/v2/invoices/inv_unrenewed' => Http::response([
+                'id' => 'inv_unrenewed',
+                'status' => 'PENDING',
             ], 200),
         ]);
 
@@ -231,13 +218,13 @@ class SubscriptionReconciliationTest extends TestCase
         $sub = Subscription::factory()->create([
             'vendor_id' => $vendor->id,
             'status' => Subscription::STATUS_PENDING_PAYMENT,
-            'gateway_subscription_id' => 'mayar_cmd_test',
+            'gateway_subscription_id' => 'inv_cmd_test',
         ]);
 
         Http::fake([
-            'https://api.mayar.id/hl/v1/invoice/mayar_cmd_test' => Http::response([
-                'statusCode' => 200,
-                'data' => ['status' => 'paid'],
+            'https://api.xendit.co/v2/invoices/inv_cmd_test' => Http::response([
+                'id' => 'inv_cmd_test',
+                'status' => 'PAID',
             ], 200),
         ]);
 
@@ -257,13 +244,13 @@ class SubscriptionReconciliationTest extends TestCase
         Subscription::factory()->create([
             'vendor_id' => $vendor->id,
             'status' => Subscription::STATUS_PENDING_PAYMENT,
-            'gateway_subscription_id' => 'mayar_job_test',
+            'gateway_subscription_id' => 'inv_job_test',
         ]);
 
         Http::fake([
-            'https://api.mayar.id/hl/v1/invoice/mayar_job_test' => Http::response([
-                'statusCode' => 200,
-                'data' => ['status' => 'unpaid'],
+            'https://api.xendit.co/v2/invoices/inv_job_test' => Http::response([
+                'id' => 'inv_job_test',
+                'status' => 'PENDING',
             ], 200),
         ]);
 

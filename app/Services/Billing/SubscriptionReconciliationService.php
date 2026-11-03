@@ -62,42 +62,6 @@ class SubscriptionReconciliationService
             return null;
         }
 
-        // 2. Mayar Gateway
-        $mayarUrl = rtrim(config('services.mayar.api_url', 'https://api.mayar.id/hl/v1'), '/');
-        $mayarKey = config('services.mayar.api_key');
-
-        if (empty($mayarKey)) {
-            return null;
-        }
-
-        try {
-            // Check invoice or payment endpoint
-            $response = Http::withToken($mayarKey)
-                ->timeout(10)
-                ->get("{$mayarUrl}/invoice/{$gatewayId}");
-
-            if (! $response->successful()) {
-                $response = Http::withToken($mayarKey)
-                    ->timeout(10)
-                    ->get("{$mayarUrl}/payment/{$gatewayId}");
-            }
-
-            if ($response->successful()) {
-                $data = $response->json('data') ?? $response->json() ?? [];
-                $rawStatus = strtoupper((string) ($data['status'] ?? $data['payment_status'] ?? ''));
-
-                return match ($rawStatus) {
-                    'PAID', 'SETTLED', 'SUCCESS' => 'PAID',
-                    'EXPIRED', 'FAILED' => 'EXPIRED',
-                    default => 'PENDING',
-                };
-            }
-
-            Log::warning("Mayar reconciliation payment fetch failed [{$gatewayId}]: ".$response->status());
-        } catch (Exception $e) {
-            Log::error("Mayar reconciliation network error [{$gatewayId}]: ".$e->getMessage());
-        }
-
         return null;
     }
 

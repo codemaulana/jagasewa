@@ -6,25 +6,11 @@ use App\Models\Subscription;
 use App\Models\Vendor;
 use App\Models\VendorUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
-class MayarCheckoutTest extends TestCase
+class BillingCheckoutTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        Config::set('services.mayar.api_key', null);
-    }
-
-    protected function tearDown(): void
-    {
-        Config::set('services.mayar.api_key', null);
-        parent::tearDown();
-    }
 
     /**
      * Unauthenticated vendor cannot access checkout
@@ -55,9 +41,9 @@ class MayarCheckoutTest extends TestCase
     }
 
     /**
-     * Checkout bulanan (monthly) creates pending subscription and redirects to sandbox link
+     * Checkout bulanan (monthly) creates pending subscription and redirects to billing index
      */
-    public function test_vendor_checkout_monthly_creates_pending_subscription_and_redirects(): void
+    public function test_vendor_checkout_monthly_creates_pending_subscription(): void
     {
         $vendor = Vendor::factory()->create();
         $user = VendorUser::factory()->create(['vendor_id' => $vendor->id]);
@@ -67,9 +53,8 @@ class MayarCheckoutTest extends TestCase
                 'cycle' => 'monthly',
             ]);
 
-        $response->assertRedirect();
-        $targetUrl = $response->headers->get('Location') ?? '';
-        $this->assertTrue(str_contains($targetUrl, 'mayar') || str_contains($targetUrl, 'myr.lat') || str_contains($targetUrl, 'invoices'));
+        $response->assertRedirect(route('vendor.billing.index'));
+        $response->assertSessionHas('status');
 
         // Subscription created with pending_payment status
         $subscription = Subscription::where('vendor_id', $vendor->id)->latest()->first();
@@ -91,16 +76,19 @@ class MayarCheckoutTest extends TestCase
         // Quarterly
         $this->actingAs($user, 'vendor')
             ->post(route('vendor.billing.checkout'), ['cycle' => 'quarterly'])
-            ->assertRedirect();
+            ->assertRedirect(route('vendor.billing.index'));
 
         $subQuarterly = Subscription::where('vendor_id', $vendor->id)->where('billing_cycle', Subscription::CYCLE_QUARTERLY)->first();
         $this->assertNotNull($subQuarterly);
         $this->assertEquals(Subscription::CYCLE_QUARTERLY, $subQuarterly->billing_cycle);
 
-        // Annually
+        // Cancel previous pending order when choosing different cycle
         $this->actingAs($user, 'vendor')
             ->post(route('vendor.billing.checkout'), ['cycle' => 'annually'])
-            ->assertRedirect();
+            ->assertRedirect(route('vendor.billing.index'));
+
+        $subQuarterly->refresh();
+        $this->assertEquals(Subscription::STATUS_CANCELLED, $subQuarterly->status);
 
         $subAnnually = Subscription::where('vendor_id', $vendor->id)->where('billing_cycle', Subscription::CYCLE_ANNUALLY)->first();
         $this->assertNotNull($subAnnually);
@@ -108,25 +96,43 @@ class MayarCheckoutTest extends TestCase
     }
 
     /**
-     * Live Mayar API call integration when MAYAR_API_KEY is configured
+     * JSON checkout request returns subscription ulid and gateway subscription id
      */
-    public function test_checkout_calls_mayar_api_when_key_is_configured(): void
+    public function test_json_checkout_returns_success_response(): void
     {
-        Config::set('services.mayar.api_key', 'mayar_live_api_key_test_123');
-        Config::set('services.mayar.api_url', 'https://api.mayar.id/hl/v1');
-
         $vendor = Vendor::factory()->create();
         $user = VendorUser::factory()->create(['vendor_id' => $vendor->id]);
 
-        Http::fake([
-            'https://api.mayar.id/hl/v1/payment/create' => Http::response([
-                'statusCode' => 200,
-                'messages' => 'Payment successfully created',
-                'data' => [
-                    'id' => 'pay_mayar_api_real_999',
-                    'link' => 'https://pay.mayar.id/l/jagasewa-pro-monthly',
-                ],
-            ], 200),
+        $response = $this->actingAs($user, 'vendor')
+            ->postJson(route('vendor.billing.checkout'), [
+                'cycle' => 'monthly',
+            ]);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'status' => 'success',
+            ]);
+
+        $subscription = Subscription::where('vendor_id', $vendor->id)->latest()->first();
+        $response->assertJson([
+            'subscription_ulid' => $subscription->ulid,
+            'gateway_subscription_id' => $subscription->gateway_subscription_id,
+        ]);
+    }
+
+    /**
+     * Vendor already Pro cannot double subscribe without renewal flag
+     */
+    public function test_already_pro_vendor_cannot_checkout_without_renewal(): void
+    {
+        $vendor = Vendor::factory()->create();
+        $user = VendorUser::factory()->create(['vendor_id' => $vendor->id]);
+
+        Subscription::factory()->create([
+            'vendor_id' => $vendor->id,
+            'plan' => Subscription::PLAN_PRO,
+            'status' => Subscription::STATUS_ACTIVE,
+            'current_period_end' => now('Asia/Jakarta')->addDays(20),
         ]);
 
         $response = $this->actingAs($user, 'vendor')
@@ -134,16 +140,7 @@ class MayarCheckoutTest extends TestCase
                 'cycle' => 'monthly',
             ]);
 
-        $response->assertRedirect('https://pay.mayar.id/l/jagasewa-pro-monthly');
-
-        Http::assertSent(function ($request) {
-            return $request->url() === 'https://api.mayar.id/hl/v1/payment/create'
-                && $request->hasHeader('Authorization', 'Bearer mayar_live_api_key_test_123')
-                && $request['amount'] === 15000
-                && isset($request['extraData']['subscription_ulid']);
-        });
-
-        $subscription = Subscription::where('vendor_id', $vendor->id)->latest()->first();
-        $this->assertEquals('pay_mayar_api_real_999', $subscription->gateway_subscription_id);
+        $response->assertRedirect(route('vendor.billing.index'));
+        $response->assertSessionHas('error');
     }
 }
