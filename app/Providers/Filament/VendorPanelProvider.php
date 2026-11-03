@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\AvatarProviders\InitialAvatarProvider;
+use App\Filament\Vendor\Pages\Auth\Login;
 use App\Filament\Vendor\Pages\Auth\Register;
 use App\Filament\Vendor\Pages\Dashboard;
 use App\Filament\Vendor\Pages\StoreSettings;
@@ -41,21 +42,21 @@ class VendorPanelProvider extends PanelProvider
             ->favicon(fn () => asset('jagasewa_logo3.png'))
             ->authGuard('vendor')
             ->authPasswordBroker('vendor_users')
-            ->login()
+            ->login(Login::class)
             ->registration(Register::class)
             ->colors([
                 'primary' => [
-                    50 => '#f6f6f5',
-                    100 => '#e7e7e5',
-                    200 => '#d1d1cd',
-                    300 => '#b2b1ab',
-                    400 => '#6b6963',
-                    500 => '#1B1B19',
-                    600 => '#1B1B19',
-                    700 => '#161614',
-                    800 => '#11110f',
-                    900 => '#0c0c0b',
-                    950 => '#050505',
+                    50 => '#f8fafc',
+                    100 => '#f1f5f9',
+                    200 => '#e2e8f0',
+                    300 => '#cbd5e1',
+                    400 => '#94a3b8',
+                    500 => '#64748b',
+                    600 => '#475569',
+                    700 => '#334155',
+                    800 => '#1e293b',
+                    900 => '#0f172a',
+                    950 => '#020617',
                 ],
             ])
             ->font('Plus Jakarta Sans')
@@ -65,6 +66,10 @@ class VendorPanelProvider extends PanelProvider
             ->collapsibleNavigationGroups(false)
             ->sidebarCollapsibleOnDesktop()
             ->renderHook(PanelsRenderHook::HEAD_END, fn () => Blade::render("@vite(['resources/js/app.js'])"))
+            ->renderHook(PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE, fn () => view('filament.vendor.auth.trust-banner'))
+            ->renderHook(PanelsRenderHook::AUTH_LOGIN_FORM_AFTER, fn () => view('filament.vendor.auth.security-note'))
+            ->renderHook(PanelsRenderHook::AUTH_REGISTER_FORM_BEFORE, fn () => view('filament.vendor.auth.trust-banner'))
+            ->renderHook(PanelsRenderHook::AUTH_REGISTER_FORM_AFTER, fn () => view('filament.vendor.auth.security-note'))
             ->renderHook(PanelsRenderHook::USER_MENU_BEFORE, fn () => view('filament.vendor.layout.topbar-badge'))
             ->renderHook(PanelsRenderHook::BODY_END, fn () => view('filament.vendor.layout.bottom-nav'))
             ->renderHook(PanelsRenderHook::SIDEBAR_FOOTER, fn () => view('filament.vendor.layout.sidebar-plan-card'))

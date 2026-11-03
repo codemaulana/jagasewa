@@ -11,17 +11,17 @@
 ])
 
 @php
-    $id = $id ?? $name ?? Str::random(8);
+    $id = $id ?? $name ?? \Illuminate\Support\Str::random(8);
     $hasError = $error || ($name && $errors->has($name));
     $errorMessage = $error ?? ($name ? $errors->first($name) : null);
 @endphp
 
 <div class="space-y-1.5 w-full">
     @if($label)
-        <label for="{{ $id }}" class="block text-xs font-semibold text-text-main">
+        <label for="{{ $id }}" class="block text-xs font-semibold text-slate-800">
             {{ $label }}
             @if($required)
-                <span class="text-danger ml-0.5" aria-hidden="true">*</span>
+                <span class="text-rose-500 ml-0.5" aria-hidden="true">*</span>
             @endif
         </label>
     @endif
@@ -34,23 +34,23 @@
         @required($required)
         placeholder="{{ $placeholder }}"
         {{ $attributes->merge([
-            'class' => 'w-full text-sm bg-surface text-text-main rounded-lg border p-3 leading-relaxed transition shadow-subtle ' .
+            'class' => 'w-full text-sm bg-white text-slate-900 rounded-lg border p-3 leading-relaxed transition duration-150 shadow-2xs ' .
                 ($hasError 
-                    ? 'border-danger focus:border-danger focus:ring-1 focus:ring-danger ' 
-                    : 'border-border-subtle hover:border-border-hover focus:border-primary focus:ring-1 focus:ring-primary ') .
-                'placeholder:text-text-muted focus:outline-none disabled:bg-surface-subtle disabled:text-text-muted disabled:cursor-not-allowed resize-y'
+                    ? 'border-rose-300 text-rose-900 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 ' 
+                    : 'border-slate-200 hover:border-slate-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-500/20 ') .
+                'placeholder:text-slate-400 focus:outline-none disabled:bg-slate-50 disabled:text-slate-400 disabled:cursor-not-allowed resize-y'
         ]) }}
         @if($hasError) aria-invalid="true" aria-describedby="{{ $id }}-error" @endif
     >{{ $slot }}</textarea>
 
     @if($hasError)
-        <p id="{{ $id }}-error" class="text-xs text-danger font-medium flex items-center gap-1.5 mt-1" role="alert">
-            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+        <p id="{{ $id }}-error" class="text-xs font-medium text-rose-600 flex items-center gap-1 mt-1" role="alert">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <span>{{ $errorMessage }}</span>
         </p>
     @elseif($hint)
-        <p class="text-[11px] text-text-secondary leading-normal mt-1">{{ $hint }}</p>
+        <p class="text-xs text-slate-500 mt-1">{{ $hint }}</p>
     @endif
 </div>

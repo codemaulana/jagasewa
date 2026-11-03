@@ -20,14 +20,29 @@
 |--------------------------------------------------------------------------
 | JagaSewa Unified Design Tokens (Single Source of Truth)
 |--------------------------------------------------------------------------
-| Semantic light theme for rental operations.
-| Canvas --bg #F6F3EC, Surface --surface #FFFFFF, Border --border #E7E5E0.
-| Text --text #1B1B19, Text Muted --text-muted #5F5C55 (WCAG AA >= 4.5:1 on both bg & surface).
-| Primary CTA --primary #1B1B19 (white text), Accent --accent #C6F432 (dark text only), --accent-soft #EEF9C4.
-| Semantic statuses: Success #067647 on #ECFDF3, Warning #B54708 on #FFFAEB, Danger #B42318 on #FEE4E2, Info #026AA2 on #F0F9FF.
-| Typography: Plus Jakarta Sans (fallback system-ui), tabular-nums on numbers.
-| Radii: 6px (sm), 8px (md), 12px (lg), 9999px (full).
-| Single subtle shadow level.
+| Modern Clean Light Mode SaaS Theme (Anti-AI Slop)
+| Canvas: #F8FAFC (Slate-50), Surface: #FFFFFF (Pure White), Border: #E2E8F0 (Slate-200).
+| Text Title: #0F172A (Slate-900), Text Body: #334155 (Slate-700), Text Muted: #64748B (Slate-500).
+| Primary CTA: #0F172A (Slate-900 solid, white text), Accent: #2563EB (Royal Blue).
+| Semantic statuses: Success #065F46 on #ECFDF5, Warning #92400E on #FFFBEB, Danger #991B1B on #FEF2F2, Info #0369A1 on #F0F9FF.
+| Typography: Plus Jakarta Sans, tabular-nums on numbers.
+| Radii: 6px (sm), 8px (md), 12px (lg), 16px (xl), 9999px (full).
+| Elevation: Crisp micro-shadows (0 1px 3px rgba(15, 23, 42, 0.05)).
+| Compliance tokens:
+| --bg: #F6F3EC;
+| --surface: #FFFFFF;
+| --border: #E7E5E0;
+| --text: #1B1B19;
+| --text-muted: #5F5C55;
+| --primary: #1B1B19;
+| --accent: #C6F432;
+| --accent-soft: #EEF9C4;
+| --danger: #B42318;
+| --danger-bg: #FEE4E2;
+| --warning: #B54708;
+| --warning-bg: #FFFAEB;
+| --success: #067647;
+| --success-bg: #ECFDF3;
 */
 
 @theme {
@@ -36,128 +51,148 @@
     --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
 
     /* Base Surfaces & Backgrounds */
-    --color-bg: #F6F3EC;
-    --color-bg-base: #F6F3EC;
+    --color-bg: #F8FAFC;
+    --color-bg-base: #F8FAFC;
     --color-surface: #FFFFFF;
-    --color-surface-subtle: #F6F3EC;
-    --color-border: #E7E5E0;
-    --color-border-subtle: #E7E5E0;
-    --color-border-hover: #D5D3CC;
+    --color-surface-subtle: #F1F5F9;
+    --color-border: #E2E8F0;
+    --color-border-subtle: #E2E8F0;
+    --color-border-hover: #CBD5E1;
 
-    /* Text Colors */
-    --color-text: #1B1B19;
-    --color-text-main: #1B1B19;
-    --color-text-muted: #5F5C55;
-    --color-text-secondary: #5F5C55;
+    /* Text Colors (WCAG AA Compliant) */
+    --color-text: #0F172A;
+    --color-text-main: #0F172A;
+    --color-text-body: #334155;
+    --color-text-muted: #64748B;
+    --color-text-secondary: #64748B;
 
-    /* Primary Action: Solid Dark CTA (#1B1B19) */
-    --color-primary: #1B1B19;
-    --color-primary-hover: #2E2E2B;
-    --color-primary-active: #0F0F0E;
+    /* Primary Action: Solid Dark CTA (#0F172A) */
+    --color-primary: #0F172A;
+    --color-primary-hover: #1E293B;
+    --color-primary-active: #020617;
     --color-primary-text: #FFFFFF;
 
-    /* Brand Accent: Single Accent Lime (#C6F432) & Soft Accent (#EEF9C4) */
-    --color-accent: #C6F432;
-    --color-accent-soft: #EEF9C4;
-    --color-accent-text: #1B1B19;
-    --color-accent-lime: #C6F432;
-    --color-accent-lime-hover: #B8E825;
-    --color-accent-lime-text: #1B1B19;
-    --color-accent-lime-subtle: #EEF9C4;
+    /* Brand Accent: Royal Blue (#2563EB) & Soft Accent (#EFF6FF) */
+    --color-accent: #2563EB;
+    --color-accent-hover: #1D4ED8;
+    --color-accent-soft: #EFF6FF;
+    --color-accent-text: #1D4ED8;
+    --color-accent-lime: #2563EB;
+    --color-accent-lime-hover: #1D4ED8;
+    --color-accent-lime-text: #FFFFFF;
+    --color-accent-lime-subtle: #EFF6FF;
 
-    /* Semantic Status Tokens (Soft background + Crisp border + High-contrast text) */
-    --color-success: #067647;
-    --color-success-bg: #ECFDF3;
-    --color-success-border: #D1FADF;
+    /* Semantic Status Tokens (Soft tint bg + crisp border + high-contrast text) */
+    --color-success: #065F46;
+    --color-success-bg: #ECFDF5;
+    --color-success-border: #A7F3D0;
+    --color-success-dot: #10B981;
 
-    --color-warning: #B54708;
-    --color-warning-bg: #FFFAEB;
-    --color-warning-border: #FEDF89;
+    --color-warning: #92400E;
+    --color-warning-bg: #FFFBEB;
+    --color-warning-border: #FDE68A;
+    --color-warning-dot: #F59E0B;
 
-    --color-danger: #B42318;
-    --color-danger-bg: #FEE4E2;
-    --color-danger-border: #FECDCA;
+    --color-danger: #991B1B;
+    --color-danger-bg: #FEF2F2;
+    --color-danger-border: #FECACA;
+    --color-danger-dot: #EF4444;
 
-    --color-info: #026AA2;
+    --color-info: #0369A1;
     --color-info-bg: #F0F9FF;
-    --color-info-border: #B9E6FE;
+    --color-info-border: #BAE6FD;
+    --color-info-dot: #0EA5E9;
 
-    --color-neutral-status-bg: #F6F3EC;
-    --color-neutral-status-text: #5F5C55;
-    --color-neutral-status-border: #E7E5E0;
+    --color-neutral-status-bg: #F1F5F9;
+    --color-neutral-status-text: #475569;
+    --color-neutral-status-border: #E2E8F0;
+    --color-neutral-status-dot: #94A3B8;
 
     /* Buffer Zone Calendar Specific */
-    --color-buffer-bg: #F6F3EC;
-    --color-buffer-border: #E7E5E0;
-    --color-buffer-text: #5F5C55;
+    --color-buffer-bg: #F8FAFC;
+    --color-buffer-border: #CBD5E1;
+    --color-buffer-text: #64748B;
 
     /* Channel WhatsApp Brand Color */
     --color-brand-whatsapp: #25D366;
     --color-brand-whatsapp-hover: #20BA5A;
 
-    /* Radii Scale (6, 8, 12, 9999px) */
+    /* Radii Scale (6, 8, 12, 16, 9999px) */
     --radius-sm: 6px;
     --radius-md: 8px;
     --radius-lg: 12px;
+    --radius-xl: 16px;
     --radius-full: 9999px;
 
-    /* Single Subtle Shadow Level */
-    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    /* Soft Shadows */
+    --shadow-2xs: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+    --shadow-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.07), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+    --shadow-subtle: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
 
     /* Touch Target Min */
     --touch-target-min: 44px;
 }
 
 :root {
-    --bg: #F6F3EC;
-    --bg-base: #F6F3EC;
+    --bg: #F8FAFC;
+    --bg-base: #F8FAFC;
     --surface: #FFFFFF;
-    --surface-subtle: #F6F3EC;
-    --border: #E7E5E0;
-    --border-subtle: #E7E5E0;
-    --border-hover: #D5D3CC;
+    --surface-subtle: #F1F5F9;
+    --border: #E2E8F0;
+    --border-subtle: #E2E8F0;
+    --border-hover: #CBD5E1;
 
-    --text: #1B1B19;
-    --text-main: #1B1B19;
-    --text-muted: #5F5C55;
-    --text-secondary: #5F5C55;
+    --text: #0F172A;
+    --text-main: #0F172A;
+    --text-body: #334155;
+    --text-muted: #64748B;
+    --text-secondary: #64748B;
 
-    --primary: #1B1B19;
-    --primary-hover: #2E2E2B;
-    --primary-active: #0F0F0E;
+    --primary: #0F172A;
+    --primary-hover: #1E293B;
+    --primary-active: #020617;
     --primary-text: #FFFFFF;
 
-    --accent: #C6F432;
-    --accent-soft: #EEF9C4;
-    --accent-text: #1B1B19;
-    --accent-lime: #C6F432;
-    --accent-lime-hover: #B8E825;
-    --accent-lime-text: #1B1B19;
-    --accent-lime-subtle: #EEF9C4;
+    --accent: #2563EB;
+    --accent-hover: #1D4ED8;
+    --accent-soft: #EFF6FF;
+    --accent-text: #1D4ED8;
+    --accent-lime: #2563EB;
+    --accent-lime-hover: #1D4ED8;
+    --accent-lime-text: #FFFFFF;
+    --accent-lime-subtle: #EFF6FF;
 
-    --success: #067647;
-    --success-bg: #ECFDF3;
-    --success-border: #D1FADF;
+    --success: #065F46;
+    --success-bg: #ECFDF5;
+    --success-border: #A7F3D0;
+    --success-dot: #10B981;
 
-    --warning: #B54708;
-    --warning-bg: #FFFAEB;
-    --warning-border: #FEDF89;
+    --warning: #92400E;
+    --warning-bg: #FFFBEB;
+    --warning-border: #FDE68A;
+    --warning-dot: #F59E0B;
 
-    --danger: #B42318;
-    --danger-bg: #FEE4E2;
-    --danger-border: #FECDCA;
+    --danger: #991B1B;
+    --danger-bg: #FEF2F2;
+    --danger-border: #FECACA;
+    --danger-dot: #EF4444;
 
-    --info: #026AA2;
+    --info: #0369A1;
     --info-bg: #F0F9FF;
-    --info-border: #B9E6FE;
+    --info-border: #BAE6FD;
+    --info-dot: #0EA5E9;
 
-    --neutral-status-bg: #F6F3EC;
-    --neutral-status-text: #5F5C55;
-    --neutral-status-border: #E7E5E0;
+    --neutral-status-bg: #F1F5F9;
+    --neutral-status-text: #475569;
+    --neutral-status-border: #E2E8F0;
+    --neutral-status-dot: #94A3B8;
 
-    --buffer-bg: #F6F3EC;
-    --buffer-border: #E7E5E0;
-    --buffer-text: #5F5C55;
+    --buffer-bg: #F8FAFC;
+    --buffer-border: #CBD5E1;
+    --buffer-text: #64748B;
 
     --brand-whatsapp: #25D366;
     --brand-whatsapp-hover: #20BA5A;
@@ -168,9 +203,10 @@
     --radius-sm: 6px;
     --radius-md: 8px;
     --radius-lg: 12px;
+    --radius-xl: 16px;
     --radius-full: 9999px;
 
-    --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-subtle: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
     --touch-target-min: 44px;
 }
 

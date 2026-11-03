@@ -5,30 +5,30 @@
 @endphp
 
 @if($vendor)
-    <div class="fi-sidebar-plan-card my-1">
+    <div class="fi-sidebar-plan-card my-1.5 px-3">
         <!-- Expanded Sidebar Card (Desktop full width 248px & Mobile Drawer) -->
-        <div class="fi-sidebar-plan-card-expanded rounded-xl border border-border bg-surface p-3 shadow-xs transition">
-            <div class="flex items-center justify-between gap-2 mb-1.5">
-                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold {{ $isPro ? 'bg-accent text-accent-text' : 'bg-surface-subtle text-text-muted border border-border' }}">
-                    <span class="w-1.5 h-1.5 rounded-full {{ $isPro ? 'bg-text' : 'bg-text-muted' }}"></span>
+        <div class="fi-sidebar-plan-card-expanded rounded-xl border border-slate-200/90 bg-white p-3.5 shadow-2xs transition">
+            <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border {{ $isPro ? 'bg-blue-50 text-blue-700 border-blue-200/80' : 'bg-slate-100 text-slate-700 border-slate-200/80' }}">
+                    <span class="w-1.5 h-1.5 rounded-full {{ $isPro ? 'bg-blue-600' : 'bg-slate-400' }}"></span>
                     {{ $isPro ? 'Paket Pro' : 'Paket Free' }}
                 </span>
                 <a 
                     href="{{ route('vendor.billing.index') }}" 
-                    class="text-[11px] font-semibold text-text hover:opacity-80 underline underline-offset-2 transition"
+                    class="text-[11px] font-semibold text-blue-600 hover:text-blue-700 hover:underline transition"
                 >
                     Kelola &rarr;
                 </a>
             </div>
-            <p class="text-[11px] text-text-muted leading-tight">
+            <p class="text-[11px] text-slate-500 leading-relaxed">
                 @if($isPro)
                     @if($expiresAt)
-                        Aktif sampai {{ $expiresAt->locale('id')->translatedFormat('d M Y') }}
+                        Aktif s/d <span class="font-medium text-slate-700 tabular-nums">{{ $expiresAt->locale('id')->translatedFormat('d M Y') }}</span>
                     @else
-                        Paket Pro Aktif
+                        Akses fitur penuh tanpa batas
                     @endif
                 @else
-                    Maks. 15 barang aktif
+                    Maks. 15 barang aktif. <a href="{{ route('vendor.billing.index') }}" class="font-semibold text-slate-800 hover:underline">Upgrade</a>
                 @endif
             </p>
         </div>
@@ -37,13 +37,13 @@
         <div class="fi-sidebar-plan-card-collapsed hidden justify-center">
             <a 
                 href="{{ route('vendor.billing.index') }}" 
-                class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border bg-surface hover:bg-surface-subtle transition text-text"
+                class="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition text-slate-800 shadow-2xs"
                 title="{{ $isPro ? 'Paket Pro (Kelola)' : 'Paket Free (Kelola)' }}"
             >
                 @if($isPro)
-                    <span class="text-xs font-bold text-accent-text bg-accent px-1.5 py-0.5 rounded">PRO</span>
+                    <span class="text-[10px] font-bold text-blue-700 bg-blue-50 px-1 py-0.5 rounded">PRO</span>
                 @else
-                    <span class="text-[10px] font-semibold text-text-muted">FREE</span>
+                    <span class="text-[9px] font-bold text-slate-500">FREE</span>
                 @endif
             </a>
         </div>

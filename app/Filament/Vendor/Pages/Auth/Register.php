@@ -15,6 +15,16 @@ use SensitiveParameter;
 
 class Register extends BaseRegister
 {
+    public function getHeading(): string
+    {
+        return 'Daftarkan Toko Rental Anda';
+    }
+
+    public function getSubheading(): ?string
+    {
+        return 'Mulai kelola pesanan sewa, ketersediaan unit, dan verifikasi penyewa dengan mudah.';
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
