@@ -14,6 +14,18 @@ class MayarCheckoutTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Config::set('services.mayar.api_key', null);
+    }
+
+    protected function tearDown(): void
+    {
+        Config::set('services.mayar.api_key', null);
+        parent::tearDown();
+    }
+
     /**
      * Unauthenticated vendor cannot access checkout
      */

@@ -29,6 +29,9 @@
         </div>
     </x-ui.card>
 
+    <!-- Pembayaran QRIS Dinamis Real-Time -->
+    <livewire:public.qris-payment-card :booking="$booking" />
+
     <x-ui.card class="space-y-3">
         <div>
             <h2 class="text-xs font-semibold text-text-secondary uppercase tracking-wider">Konfirmasi ke Vendor</h2>

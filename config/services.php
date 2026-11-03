@@ -71,15 +71,4 @@ return [
         'secret_key' => env('XENDIT_SECRET_KEY'),
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | High-Performance QRIS Engine (Golang Microservice)
-    |--------------------------------------------------------------------------
-    */
-    'qris_engine' => [
-        'url' => env('QRIS_ENGINE_URL', 'http://127.0.0.1:8081'),
-        'secret' => env('QRIS_ENGINE_SECRET', 'jagasewa-super-secret-key-2026'),
-        'enabled' => (bool) env('QRIS_ENGINE_ENABLED', false),
-    ],
-
 ];

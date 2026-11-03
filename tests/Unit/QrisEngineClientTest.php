@@ -2,71 +2,50 @@
 
 namespace Tests\Unit;
 
+use App\Models\Booking;
 use App\Services\Billing\QrisEngineClient;
-use Illuminate\Support\Facades\Http;
+use App\Services\QrisService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class QrisEngineClientTest extends TestCase
 {
-    public function test_health_check_returns_true_when_service_is_healthy(): void
-    {
-        Http::fake([
-            'http://127.0.0.1:8081/health' => Http::response([
-                'status' => 'healthy',
-                'service' => 'jagasewa-qris-engine',
-            ], 200),
-        ]);
+    use RefreshDatabase;
 
+    public function test_health_check_always_returns_true(): void
+    {
         $client = new QrisEngineClient;
         $this->assertTrue($client->isHealthy());
     }
 
-    public function test_health_check_returns_false_on_connection_error(): void
+    public function test_create_dynamic_qris_returns_valid_payload(): void
     {
-        Http::fake([
-            'http://127.0.0.1:8081/health' => Http::response(null, 500),
-        ]);
-
         $client = new QrisEngineClient;
-        $this->assertFalse($client->isHealthy());
-    }
-
-    public function test_create_dynamic_qris_returns_payload_on_success(): void
-    {
-        Http::fake([
-            'http://127.0.0.1:8081/api/v1/qris/create' => Http::response([
-                'success' => true,
-                'data' => [
-                    'reference_code' => 'JS-20261027-TEST',
-                    'qris_content' => '00020101021226...',
-                    'amount' => 150000,
-                    'status' => 'pending',
-                ],
-            ], 201),
-        ]);
-
-        $client = new QrisEngineClient;
-        $result = $client->createDynamicQris('JS-20261027-TEST', 150000, 'Budi', 1, 30);
+        $result = $client->createDynamicQris('JS-20261103-TEST', 150000, 'Budi', 1, 30);
 
         $this->assertNotNull($result);
         $this->assertTrue($result['success']);
-        $this->assertEquals('JS-20261027-TEST', $result['data']['reference_code']);
+        $this->assertEquals('JS-20261103-TEST', $result['reference_code']);
+        $this->assertEquals(150000, $result['amount']);
+        $this->assertStringStartsWith('000201010212', $result['qris_content']);
+        $this->assertStringStartsWith('data:image/svg+xml;base64,', $result['qr_image_data_uri']);
     }
 
-    public function test_get_status_returns_data(): void
+    public function test_get_status_reflects_booking_settlement(): void
     {
-        Http::fake([
-            'http://127.0.0.1:8081/api/v1/qris/status/JS-20261027-TEST' => Http::response([
-                'success' => true,
-                'status' => 'settled',
-                'amount' => 150000,
-            ], 200),
+        $booking = Booking::factory()->create([
+            'reference_code' => 'JS-20261103-STAT',
+            'is_paid_in_full' => false,
         ]);
 
         $client = new QrisEngineClient;
-        $status = $client->getStatus('JS-20261027-TEST');
+        $statusPending = $client->getStatus('JS-20261103-STAT');
+        $this->assertEquals('pending', $statusPending['status']);
 
-        $this->assertNotNull($status);
-        $this->assertEquals('settled', $status['status']);
+        // Settle payment
+        app(QrisService::class)->settlePayment('JS-20261103-STAT', 'test');
+
+        $statusSettled = $client->getStatus('JS-20261103-STAT');
+        $this->assertEquals('settled', $statusSettled['status']);
     }
 }
